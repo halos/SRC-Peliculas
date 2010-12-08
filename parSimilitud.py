@@ -2,26 +2,26 @@
 # -*- coding: utf-8 -*-
 
 class ParSimilitud:
-	""" Class doc """
+	""" Clase que codifica la similitud entre dos usuarios """
 	
-	"""id de la primera película"""
-	idP1 = 0
+	"""id del primer usuario"""
+	idU1 = 0
 	
-	"""id de la segunda película"""
-	idP2 = 0
+	"""id del segundo usuario"""
+	idU2 = 0
 	
 	"""índice de similitud"""
 	similitud = 0.0
 	
-	def __init__ (self, idP1, idP2, similitud):
-		""" Calse qeu codifica una similitud entre dos películas """
+	def __init__ (self, idU1, idU2, similitud):
+		""" Clase que codifica una similitud entre dos películas """
 		
-		self.idP1 = idP1
-		self.idP2 = idP2
+		self.idU1 = idU1
+		self.idU2 = idU2
 		self.similitud = similitud
 		
 	def __eq__(self, other):
-		""" == : Comapra si los usuarios son los mismos
+		""" == : Compara si los usuarios son los mismos
 	
 		Params:
 	
@@ -34,8 +34,8 @@ class ParSimilitud:
 			mismo usuario.
 		"""
 		
-		return (self.idP1,self.idP2) == (other.idP1,other.idP2) | \
-		(self.idP1,self.idP2) == (other.idP2,other.idP1)
+		return (self.idU1,self.idU2) == (other.idU1,other.idU2) | \
+		(self.idU1,self.idU2) == (other.idU2,other.idU1)
 
 	def __neq__(self, other):
 		""" == : Comapra si los usuarios son diferentes
@@ -51,5 +51,5 @@ class ParSimilitud:
 			al mismo usuario.
 		"""
 		
-		return (self.idP1,self.idP2) != (other.idP1,other.idP2) & \
-		(self.idP1,self.idP2) &= (other.idP2,other.idP1)
+		return (self.idU1,self.idU2) != (other.idU1,other.idU2) & \
+		(self.idU1,self.idU2) &= (other.idU2,other.idU1)
