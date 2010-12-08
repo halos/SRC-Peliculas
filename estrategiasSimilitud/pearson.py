@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from math import sqrt
+
 import parSimilitud
 
 class Pearson:
@@ -11,7 +13,7 @@ class Pearson:
 		""" Constructor """
 		pass	
 	
-	def calcula_parSimilitud(self, u1, u2):
+	def calcula_similitud(self, u1, u2):
 		""" Función que calcula la similitud entre dos usuarios
 	
 		Params:
@@ -21,7 +23,7 @@ class Pearson:
 	
 		Return:
 	
-			(ParSimilitud): Similitud entre dos usuarios (0,1)
+			(float): Similitud entre dos usuarios (0,1)
 		"""
 		
 		# obtener la lista de todas las películas vistas por los dos usuarios
@@ -35,6 +37,13 @@ class Pearson:
 			if i not in pels:
 				pels += i
 		
+		# Las películas no valoradas se pondrán a 0
+		for i in pels:
+			if i not in u1.keys()
+				u1[i] = 0
+			if i not in u2.keys()
+				u2[i] = 0
+		
 		#medias
 		mu1 = float(sum(u1.values()))
 		mu1 /= len(u1)
@@ -46,10 +55,19 @@ class Pearson:
 		num = 0
 		
 		for j in pels:
-			
+			num += (u1[j] - mu1)(u2[j] - mu2)
 		
-		den = 0# denominador
+		# denominador
+		sum1 = 0
+		sum2 = 0
+		
+		for j in pels:
+			sum1 += (u1[j] - mu1)**2
+			sum2 += (u2[j] - mu2)**2
+		
+		den = sqrt(sum1 * sum2)
+		
+		sim = num / den
 		
 		#normaliza similitud
 		sim = (sim+1)/2
-		
