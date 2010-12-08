@@ -14,7 +14,7 @@ class EstrategiaSimilitud:
 			valoraciones por parámetro
 		"""
 		
-		self.__calcula_parSimilitud = sim_func
+		self.__calcula_similitud = sim_func
 
 	def similitud(self, valoraciones):
 		""" Function doc
@@ -38,7 +38,7 @@ class EstrategiaSimilitud:
 				
 			similitudes[i.idUsu][i.idPel] = i.valoracion
 		
-		# obtención de usuarios
+		# obtención de los id de los usuarios
 		u1 = vals_per_usu.keys()
 		u2 = u1[:] # copia
 		
@@ -46,6 +46,8 @@ class EstrategiaSimilitud:
 		for i in u1:
 			del u2[i]
 			for j in u2:
-				similitudes.append(self.__calcula_parSimilitud(i, j)
+				similitud = self.__calcula_similitud(u1[i], u2[j])
+				ps = ParSimilitud(i, j, similitud)
+				similitudes.append(ps)
 		
 		return similitudes
