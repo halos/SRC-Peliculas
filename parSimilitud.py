@@ -4,24 +4,24 @@
 class ParSimilitud:
 	""" Clase que codifica la similitud entre dos usuarios """
 	
-	"""id del primer usuario"""
-	idU1 = 0
+	"""id de la primera película"""
+	idP1 = 0
 	
-	"""id del segundo usuario"""
-	idU2 = 0
+	"""id de la segunda película"""
+	idP2 = 0
 	
 	"""índice de similitud"""
 	similitud = 0.0
 	
-	def __init__ (self, idU1, idU2, similitud):
+	def __init__ (self, idP1, idP2, similitud):
 		""" Clase que codifica una similitud entre dos películas """
 		
-		self.idU1 = idU1
-		self.idU2 = idU2
+		self.idP1 = idP1
+		self.idP2 = idP2
 		self.similitud = similitud
 		
 	def __eq__(self, other):
-		""" == : Compara si los usuarios son los mismos
+		""" == : Compara si las dos películas son las mismas
 	
 		Params:
 	
@@ -30,15 +30,15 @@ class ParSimilitud:
 	
 		Return:
 	
-			(bool): Boobleano indicando si los dos ParSimilitud se refieren al
-			mismo usuario.
+			(bool): Boobleano indicando si los dos ParSimilitud se refieren a
+			la misma película.
 		"""
 		
-		return (self.idU1,self.idU2) == (other.idU1,other.idU2) | \
-		(self.idU1,self.idU2) == (other.idU2,other.idU1)
+		return (self.idP1,self.idP2) == (other.idP1,other.idP2) | \
+		(self.idP1,self.idP2) == (other.idP2,other.idP1)
 
 	def __ne__(self, other):
-		""" == : Comapra si los usuarios son diferentes
+		""" == : Comapra si las película son diferentes
 	
 		Params:
 	
@@ -48,7 +48,7 @@ class ParSimilitud:
 		Return:
 	
 			(bool): Boobleano indicando si los dos ParSimilitud no se refieren
-			al mismo usuario.
+			a la misma película.
 		"""
 		
-		return ((self.idU1,self.idU2) != (other.idU1,other.idU2)) & ((self.idU1,self.idU2) != (other.idU2,other.idU1))
+		return ((self.idP1,self.idP2) != (other.idP1,other.idP2)) & ((self.idP1,self.idP2) != (other.idP2,other.idP1))
