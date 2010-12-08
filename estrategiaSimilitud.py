@@ -1,22 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from parSimilitud import ParSimilitud
 
 class EstrategiaSimilitud:
 	""" Interfaz de la estrategia de similitud """
 	
-		def __init__(self,  sim_func):
+	def __init__(self,  sim_func):
 		""" Constructor
 	
 		Params:
 	
-			sim_func(): Función de similitud que recibe una lista de
+			sim_func(function): Función de similitud que recibe una lista de
 			valoraciones por parámetro
 		"""
 		
 		self.__calcula_similitud = sim_func
 
-	def similitud(self, valoraciones):
+	def similitud(self, _valoraciones):
 		""" Function doc
 	
 		Params:
@@ -28,26 +29,29 @@ class EstrategiaSimilitud:
 			(list): Lista de similitudes entre los usuarios
 		"""
 		
-		similitudes = {} # lista con los ParSimilitud
+		# lista con los ParSimilitud
+		paresSimilitud = []
+		valoraciones = {}
 		
 		#creación de la estructura de datos
 		#	dict{idusu:dict{idPel:valoracion}}
-		for i in valoraciones:
-			if i.idUsu not in similitudes:
-				similitudes[i.idUsu] = {}
+		for i in _valoraciones:
+			if i.idUsu not in valoraciones:
+				valoraciones[i.idUsu] = {}
 				
-			similitudes[i.idUsu][i.idPel] = i.valoracion
+			valoraciones[i.idUsu][i.idPel] = i.valoracion
 		
 		# obtención de los id de los usuarios
-		u1 = vals_per_usu.keys()
+		u1 = valoraciones.keys()
 		u2 = u1[:] # copia
 		
 		# obtención de las valoraciones de cada usuario
+		
 		for i in u1:
 			del u2[i]
 			for j in u2:
 				similitud = self.__calcula_similitud(u1[i], u2[j])
 				ps = ParSimilitud(i, j, similitud)
-				similitudes.append(ps)
+				paresSimilitud.append(ps)
 		
-		return similitudes
+		return paresSimilitud

@@ -3,8 +3,6 @@
 
 from math import sqrt
 
-import parSimilitud
-
 class Pearson:
 	""" Clase que codifica el cálculo del Coeficiente de Correlación de 
 	Pearson """
