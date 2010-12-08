@@ -17,7 +17,7 @@ class Pearson:
 		Params:
 	
 			p1 (dict): dict{idUsu:valoracion}
-			p2 (list): dict{idUsu:valoracion}
+			p2 (dict): dict{idUsu:valoracion}
 	
 		Return:
 	
