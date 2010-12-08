@@ -33,25 +33,13 @@ class EstrategiaSimilitud:
 		paresSimilitud = []
 		valoraciones = {}
 		
-		#creación de la estructura de datos
-		#	dict{idusu:dict{idPel:valoracion}}
-		for i in _valoraciones:
-			if i.idUsu not in valoraciones:
-				valoraciones[i.idUsu] = {}
-				
-			valoraciones[i.idUsu][i.idPel] = i.valoracion
-		
-		# #####################################################
-		
+		#creación de la estructura de datos		
 		#	dict{idPel:dict{idUsu:valoracion}}
 		for i in _valoraciones:
 			if i.Pel not in valoraciones:
 				valoraciones[i.idPel] = {}
 				
 			valoraciones[i.idPel][i.idUsu] = i.valoracion
-		
-		# #####################################################
-		
 		
 		# obtención de los id de las películas
 		p1 = valoraciones.keys()
