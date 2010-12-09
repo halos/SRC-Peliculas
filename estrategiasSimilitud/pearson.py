@@ -37,9 +37,9 @@ class Pearson:
 		
 		# Los usuarios que no la hayan visto tenfrán la valoración a 0
 		for i in usus:
-			if i not in p1.keys()
+			if i not in p1.keys():
 				p1[i] = 0
-			if i not in p2.keys()
+			if i not in p2.keys():
 				p2[i] = 0
 				
 		
@@ -53,14 +53,14 @@ class Pearson:
 		# numerador
 		num = 0
 		
-		for j in pels:
+		for j in usus:
 			num += (p1[j] - mp1)(p2[j] - mp2)
 		
 		# denominador
 		sum1 = 0
 		sum2 = 0
 		
-		for j in pels:
+		for j in usus:
 			sum1 += (p1[j] - mp1)**2
 			sum2 += (p2[j] - mp2)**2
 		

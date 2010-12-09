@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from time import time
+import os
+import time
 
 def mae(predicciones, reales):
 	""" Function doc
@@ -39,4 +40,7 @@ def get_clock():
 		(float): Hora de linux
 	"""
 	
-	return time.time()
+	if os.name == 'posix':
+		return time.time()
+	else: # nt
+		return time.clock()

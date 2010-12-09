@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from math import sqrt
 
 class Coseno:
 	""" Clase que codifica el cálculo de la similitud del coseno """
@@ -35,9 +36,9 @@ class Coseno:
 		
 		# Los usuarios que no la hayan visto tenfrán la valoración a 0
 		for i in usus:
-			if i not in p1.keys()
+			if i not in p1.keys():
 				p1[i] = 0
-			if i not in p2.keys()
+			if i not in p2.keys():
 				p2[i] = 0
 		
 		# numerador
