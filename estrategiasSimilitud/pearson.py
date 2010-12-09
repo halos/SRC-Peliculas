@@ -2,70 +2,65 @@
 # -*- coding: utf-8 -*-
 
 from math import sqrt
+	
+def calcula_similitud(p1, p2):
+	""" Función que calcula la similitud entre dos películas
 
-class Pearson:
-	""" Clase que codifica el cálculo del Coeficiente de Correlación de 
-	Pearson """
+	Params:
+
+		p1 (dict): dict{idUsu:valoracion}
+		p2 (dict): dict{idUsu:valoracion}
+
+	Return:
+
+		(float): Similitud entre dos películas (0,1)
+	"""
 	
-	def __init__ (self):
-		""" Constructor """
-		pass	
+	# obtener la lista de todos los usuarios que han valorado la película
+	usus = []
 	
-	def calcula_similitud(self, u1, u2):
-		""" Función que calcula la similitud entre dos usuarios
+	for i in p1.keys():
+		if i not in usus:
+			usus.append(i)
+			
+	for i in p2.keys():
+		if i not in usus:
+			usus.append(i)
 	
-		Params:
+	# Los usuarios que no la hayan visto tenfrán la valoración a 0
+	for i in usus:
+		if i not in p1.keys():
+			p1[i] = 0
+		if i not in p2.keys():
+			p2[i] = 0
+			
 	
-			u1 (dict): dict{idPel:valoracion}
-			u2 (list): dict{idPel:valoracion}
+	#medias
+	mp1 = (float)(sum(p1.values()))
+	mp1 /= len(p1)
 	
-		Return:
+	mp2 = (float)(sum(p2.values()))
+	mp2 /= len(p2)
 	
-			(float): Similitud entre dos usuarios (0,1)
-		"""
-		
-		# obtener la lista de todas las películas vistas por los dos usuarios
-		pels = []
-		
-		for i in u1.keys():
-			if i not in pels:
-				pels += i
-				
-		for i in u2.keys():
-			if i not in pels:
-				pels += i
-		
-		# Las películas no valoradas se pondrán a 0
-		for i in pels:
-			if i not in u1.keys()
-				u1[i] = 0
-			if i not in u2.keys()
-				u2[i] = 0
-		
-		#medias
-		mu1 = float(sum(u1.values()))
-		mu1 /= len(u1)
-		
-		mu2 = float(sum(u2.values()))
-		mu2 /= len(u2)
-		
-		# numerador
-		num = 0
-		
-		for j in pels:
-			num += (u1[j] - mu1)(u2[j] - mu2)
-		
-		# denominador
-		sum1 = 0
-		sum2 = 0
-		
-		for j in pels:
-			sum1 += (u1[j] - mu1)**2
-			sum2 += (u2[j] - mu2)**2
-		
-		den = sqrt(sum1 * sum2)
-		
-		sim = num / den
-		
-		#normaliza similitud
-		sim = (sim+1)/2
+	# numerador
+	num = 0
+	
+	for j in usus:
+		num += (p1[j] - mp1) * (p2[j] - mp2)
+	
+	# denominador
+	sum1 = 0
+	sum2 = 0
+	
+	for j in usus:
+		sum1 += (p1[j] - mp1) ** 2
+		sum2 += (p2[j] - mp2) ** 2
+	
+	den = sqrt(sum1 * sum2)
+	
+	sim = num / den
+	
+	#normaliza similitud
+	sim = (sim + 1) / 2
+
+	return sim
