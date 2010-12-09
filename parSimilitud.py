@@ -57,3 +57,5 @@ class ParSimilitud:
 		"""Método para obtener una representación en cadena de la clase"""
 		
 		cad = "%s <==> %s : %f" % (self.idP1, self.idP2, self.similitud)
+
+		return cad

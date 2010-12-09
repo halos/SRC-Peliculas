@@ -3,7 +3,7 @@
 
 from math import sqrt
 	
-def calcula_similitud(self, p1, p2):
+def calcula_similitud(p1, p2):
 	""" Función que calcula la similitud entre dos películas
 
 	Params:
@@ -36,29 +36,31 @@ def calcula_similitud(self, p1, p2):
 			
 	
 	#medias
-	mp1 = float(sum(p1.values()))
+	mp1 = (float)(sum(p1.values()))
 	mp1 /= len(p1)
 	
-	mp2 = float(sum(p2.values()))
+	mp2 = (float)(sum(p2.values()))
 	mp2 /= len(p2)
 	
 	# numerador
 	num = 0
 	
 	for j in usus:
-		num += (p1[j] - mp1)(p2[j] - mp2)
+		num += (p1[j] - mp1) * (p2[j] - mp2)
 	
 	# denominador
 	sum1 = 0
 	sum2 = 0
 	
 	for j in usus:
-		sum1 += (p1[j] - mp1)**2
-		sum2 += (p2[j] - mp2)**2
+		sum1 += (p1[j] - mp1) ** 2
+		sum2 += (p2[j] - mp2) ** 2
 	
 	den = sqrt(sum1 * sum2)
 	
 	sim = num / den
 	
 	#normaliza similitud
-	sim = (sim+1)/2
+	sim = (sim + 1) / 2
+
+	return sim
