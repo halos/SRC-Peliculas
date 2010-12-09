@@ -36,7 +36,7 @@ class EstrategiaSimilitud:
 		#creación de la estructura de datos		
 		#	dict{idPel:dict{idUsu:valoracion}}
 		for i in _valoraciones:
-			if i.Pel not in valoraciones:
+			if i.idPel not in valoraciones:
 				valoraciones[i.idPel] = {}
 				
 			valoraciones[i.idPel][i.idUsu] = i.valoracion
@@ -48,9 +48,9 @@ class EstrategiaSimilitud:
 		# obtención de las valoraciones de cada usuario
 		
 		for i in p1:
-			del p2[i]
+			p2.remove(i)
 			for j in p2:
-				similitud = self.__calcula_similitud(p1[i], p2[j])
+				similitud = self.__calcula_similitud(valoraciones[i], valoraciones[j])
 				ps = ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
 		
