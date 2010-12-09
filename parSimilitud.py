@@ -52,3 +52,8 @@ class ParSimilitud:
 		"""
 		
 		return ((self.idP1,self.idP2) != (other.idP1,other.idP2)) & ((self.idP1,self.idP2) != (other.idP2,other.idP1))
+
+	def __repr__(self):
+		"""Método para obtener una representación en cadena de la clase"""
+		
+		cad = "%s <==> %s : %f" % (self.idP1, self.idP2, self.similitud)

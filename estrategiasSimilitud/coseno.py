@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from math import sqrt
+
 def calcula_similitud(p1, p2):
 	""" Función que calcula la similitud entre dos películas
 
@@ -19,13 +21,13 @@ def calcula_similitud(p1, p2):
 	
 	for i in p1.keys():
 		if i not in usus:
-			usus += i
+			usus.append(i)
 			
 	for i in p2.keys():
 		if i not in usus:
-			usus += i
+			usus.append(i)
 	
-	# Los usuarios que no la hayan visto tenfrán la valoración a 0
+	# Los usuarios que no la hayan visto tendrán la valoración a 0
 	for i in usus:
 		if i not in p1.keys():
 			p1[i] = 0
