@@ -1,0 +1,65 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+__author__="sramirez"
+__date__ ="$07-dic-2010 10:22:31$"
+
+
+def class ItemAvgAdjN:
+    
+    """ Clase que implementa el método de prediccion Item Average Adjustament (N) """
+
+    def __init__(self, idUsu, idItem):
+	
+	self.idUsu = idUsu
+	self.idItem = idItem
+
+
+    def mediausuario(self, valoraciones):
+
+        lval_usuario = valoraciones.get(self.idUsu)
+
+        nval = 0
+        media_usuario = 0
+
+        for valoracion in lval_usuario:
+            if valoracion.getVal() != 0:
+                media_usuario += valoracion.getVal()
+                nval+= 1
+
+        return media_usuario / nval
+
+    def mediaitem(self, valoraciones):
+
+        media_item = 0
+        nval = 0
+
+        for i in valoraciones.values():
+            item = i.get(self.idItem)
+            if item.getVal() != 0:
+                media_item += item.getVal()
+                nval += 1
+
+        return media_item / nval
+
+    def predice(self, similares, valoraciones):
+
+        media_item = mediaitem(valoraciones)
+
+        media_usuario = mediausuario(valoraciones)
+
+        suma_denom = 0
+	
+	suma_num = 0
+
+	"Cálculo de la fórmula de la prediccion"
+	  
+        for similitud in similares:
+	    valoracion = valoraciones.get(idUsu).get(similitud)
+	    suma_denom += similitud.getVal()
+	    suma_num += similitud.getVal() * (valoracion.getVal() - media_usuario)
+	
+	prediccion = suma_num / suma_denom + media_item
+
+
+    
