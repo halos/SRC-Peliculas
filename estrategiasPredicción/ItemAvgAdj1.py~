@@ -103,9 +103,9 @@ class ItemAvgAdj1:
 				
 		"Cálculo del numerador"
 		
-		for i in range(lvaloraciones):
-			if lvaloraciones[i] != 0:
-				suma_num += lsimilares[i].similitud * (valoraciones[i].valoracion - media_usuario)
+			for i in range(lvaloraciones):
+				if lvaloraciones[i] != 0:
+					suma_num += lsimilares[i].similitud * (valoraciones[i].valoracion - media_usuario)
 		
 		vprediccion = suma_num / suma_denom + media_item
 			

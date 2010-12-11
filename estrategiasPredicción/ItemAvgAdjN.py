@@ -6,7 +6,7 @@ __date__ ="$07-dic-2010 10:22:31$"
 
 from math import fabs
 
-def class ItemAvgAdjN:
+class ItemAvgAdjN:
     
 	""" Clase que implementa el método de prediccion Item Average Adjustament (N) """
 
@@ -38,8 +38,8 @@ def class ItemAvgAdjN:
 		nval = 0
 		media_usuario = 0
 		for valoracion in lval_usuario:
-			if valoracion.getVal()	!= 0:
-				media_usuario += valoracion.getVal()
+			if valoracion.valoracion	!= 0:
+				media_usuario += valoracion.valoracion
 			nval+= 1
 		media_usuario = media_usuario / nval
 		return media_usuario
@@ -61,8 +61,8 @@ def class ItemAvgAdjN:
 		nval = 0
 		for lvaloracion in valoraciones.values():
 			item = lvaloracion.get(idItem)
-			if item.getVal() != 0:
-				media_item += item.getVal()
+			if item.valoracion != 0:
+				media_item += item.valoracion
 			nval += 1
 		media_item = media_item / nval
 		return media_item
@@ -95,16 +95,16 @@ def class ItemAvgAdjN:
 		"Calculo del denominador"
 
 		for similitud in similitudes:
-			idItem2 = similitud.getAtributes().get(similitud.getAtributes().index(idItem) - 1)
+			idItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
 			if lvaloraciones.get(idItem2) != 0:
-				suma_denom += math.fabs(similitud.getVal())
+				suma_denom += math.fabs(similitud.similitud)
 		
 		"Cálculo del numerador"
 		  
 		for similitud in similitudes:
-			idItem2 = similitud.getAtributes().get(similitud.getAtributes().index(idItem) - 1)
+			idItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
 			if lvaloraciones.get(idItem2) != 0:
-				suma_num += similitud.getVal() * (lvaloraciones.get(idItem2).getVal() - media_usuario)
+				suma_num += similitud.similitud * (lvaloraciones.get(idItem2).valoracion - media_usuario)
 		
 		vprediccion = suma_num / suma_denom + media_item
 			

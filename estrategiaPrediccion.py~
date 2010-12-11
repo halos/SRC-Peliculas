@@ -39,7 +39,7 @@ class EstrategiaPrediccion:
 			
 		for valoracion in lvaloraciones:
 			idUsu = valoracion.idUsu
-			idItem = valoracion.idPel
+			idItem = valoracion.getItem()
 			if idUsu not in dvaloraciones:
 				dvaloraciones[idUsu] = {}
 			dvaloraciones[idUsu, idItem] = valoracion.valoracion
@@ -48,7 +48,7 @@ class EstrategiaPrediccion:
 			
 		for similitud in lsimilitudes:
 			idItem1 = similitud.idUsu
-			idItem2 = similitud.idPel
+			idItem2 = similitud.getItem()
 			if idItem1 not in dvaloraciones:
 				dsimilitudes[idItem1] = {}
 			dsimilitudes[idItem1, idItem2] = similitud.similitud

@@ -6,9 +6,10 @@ __date__ ="$07-dic-2010 10:22:31$"
 
 from math import fabs
 
-class ItemAvgAdj1:
-	""" Clase que implementa el método de prediccion Item Average Adjustament (All-1) """
-	
+def class ItemAvgAdjN:
+    
+	""" Clase que implementa el método de prediccion Item Average Adjustament (N) """
+
 	def __init__(self, idUsu):
 		""" Constructor
 		
@@ -17,7 +18,6 @@ class ItemAvgAdj1:
 			idUsu: Identificador del usuario registrado en el sistema
 
 		"""
-		
 		self.idUsu = idUsu
 
 
@@ -67,7 +67,6 @@ class ItemAvgAdj1:
 		media_item = media_item / nval
 		return media_item
 		
-		
 	def predice(self, idItem, similitudes, valoraciones):
 		"""
 			
@@ -77,8 +76,8 @@ class ItemAvgAdj1:
 		
 				idItem: Identificador del item cuyo valora deseamos predecir
 				valoraciones(dict): Contiene todos las valoraciones aportadas por todos los usuarios
-				similitudes(dict): Contiene los pares de similitud entre items devueltos por el agrupamiento			
-
+				similitudes(dict): Contiene todos los pares de similitud entre items del sistema		
+				
 		Return:
 					
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
@@ -89,23 +88,23 @@ class ItemAvgAdj1:
 		media_usuario = mediausuario(valoraciones)
 		suma_denom = 0
 		suma_num = 0
-		
-		"Cálculo de la fórmula de la prediccion"
-		
-		"Cálculo del denominador"
-		
-		lsimilares = similitudes.get(idItem).values()
 		lvaloraciones = valoraciones.get(self.idUsu).values()
+
+		"Cálculo de la fórmula de la prediccion"
+
+		"Calculo del denominador"
+
+		for similitud in similitudes:
+			idItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
+			if lvaloraciones.get(idItem2) != 0:
+				suma_denom += math.fabs(similitud.similitud)
 		
-		for i in range(lsimilares):
-			if lvaloraciones[i] != 0:
-				suma_denom += math.fabs(lsimilares[i])
-				
 		"Cálculo del numerador"
-		
-		for i in range(lvaloraciones):
-			if lvaloraciones[i] != 0:
-				suma_num += lsimilares[i].similitud * (valoraciones[i].valoracion - media_usuario)
+		  
+		for similitud in similitudes:
+			idItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
+			if lvaloraciones.get(idItem2) != 0:
+				suma_num += similitud.similitud * (lvaloraciones.get(idItem2).valoracion - media_usuario)
 		
 		vprediccion = suma_num / suma_denom + media_item
 			

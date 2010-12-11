@@ -45,16 +45,16 @@ def class WeithedSum:
 		"Calculo del denominador"
 
 		for similitud in similitudes:
-			idItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
+			idItem2 = similitud.getItems().get(similitud.getItems().index(idItem) - 1)
 			if lvaloraciones.get(idItem2) != 0:
-				suma_denom += similitud.similitud
+				suma_denom += similitud.getVal()
 	
 		"Cálculo del numerador"
 	  
 		for similitud in similitudes:
-			idItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
+			idItem2 = similitud.getAtributes().get(similitud.getAtributes().index(idItem) - 1)
 			if lvaloraciones.get(idItem2) != 0:
-				suma_num += similitud.similitud * lvaloraciones.get(idItem2).valoracion
+				suma_num += similitud.getVal() * lvaloraciones.get(idItem2).getVal()
 	
 		vprediccion = suma_num / suma_denom
 		
