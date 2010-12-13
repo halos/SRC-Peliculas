@@ -94,8 +94,8 @@ class ItemAvgAdj1:
 		lvaloraciones = valoraciones.get(self.idUsu).values()
 		
 		for similitud in lsimilares:
-			dItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
-			if idItem2 in lvaloraciones:
+		    dItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
+		    if idItem2 in lvaloraciones:
 				suma_denom += math.fabs(similitud.similitud)
 				valoracion = lvaloraciones.get(idItem2)
 				suma_num += similitud.similitud * (valoracion.valoracion - media_usuario)

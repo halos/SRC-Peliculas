@@ -73,6 +73,7 @@ def class WeithedSum:
 				valoracion = lvaloraciones.get(idItem2)
 				suma_num += similitud.similitud * valoracion.valoracion
 		
-		vprediccion = suma_num / suma_denom
+		vprediccion = suma_num / suma_denom + media_item
+						
 		return Valoracion(self.idUsu, idItem, vprediccion)
 
