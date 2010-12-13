@@ -4,7 +4,7 @@
 __author__="sramirez"
 __date__ ="$07-dic-2010 10:22:31$"
 
-def class WeithedSum:
+class WeithedSum:
     
 	""" Clase que implementa el método de prediccion WeithedSum """
 

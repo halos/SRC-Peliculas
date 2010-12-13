@@ -39,9 +39,9 @@ class ItemAvgAdjN:
 		media_usuario = 0
 		
 		for valoracion in lval_usuario:
-		    media_usuario += valoracion.valoracion
-		    nval+= 1
-		
+			media_usuario += valoracion.valoracion
+			nval+= 1
+			
 		media_usuario = media_usuario / nval
 		return media_usuario
 			    
@@ -61,9 +61,9 @@ class ItemAvgAdjN:
 		nval = 0
 		
 		for lval_usuario in valoraciones.values():
-		if idItem in lval_usuario:
-			media_item += item.valoracion
-			nval += 1
+			if idItem in lval_usuario:
+				media_item += item.valoracion
+				nval += 1
 		
 		media_item = media_item / nval
 		return media_item
