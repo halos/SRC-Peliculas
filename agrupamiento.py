@@ -56,9 +56,9 @@ class Agrupamiento:
 
 		while i < k | i < lksimil.len():
 			pelicula = lksimil[i]
-			if valoraciones.get(self.idUsu).get(pelicula.idPel) != 0:
+			if pelicula.idPel not in valoraciones.get(self.idUsu):
 				similares.append(pelicula)
-			i += 1; 
+			i += 1;
 			
 		return lksimil
             
