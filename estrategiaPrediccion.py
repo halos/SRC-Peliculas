@@ -47,8 +47,8 @@ class EstrategiaPrediccion:
 		dsimilitudes = {}
 			
 		for similitud in lsimilitudes:
-			idItem1 = similitud.idUsu
-			idItem2 = similitud.idPel
+			idItem1 = similitud.idP1
+			idItem2 = similitud.idP2
 			if idItem1 not in dvaloraciones:
 				dsimilitudes[idItem1] = {}
 			dsimilitudes[idItem1, idItem2] = similitud.similitud
