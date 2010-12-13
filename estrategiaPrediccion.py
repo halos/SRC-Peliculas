@@ -53,7 +53,7 @@ class EstrategiaPrediccion:
 				dsimilitudes[idItem1] = {}
 			dsimilitudes[idItem1, idItem2] = similitud.similitud
 			
-		prediccion = self.predice(self, idItem, dvaloraciones, dsimilitudes)
+		prediccion = self.predice(idItem, dvaloraciones, dsimilitudes)
 				
 		return prediccion
 			

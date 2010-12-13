@@ -45,20 +45,22 @@ class Agrupamiento:
 			
 			Return:
 				
-			lksimil(list): contiene <=k paresSimilitud similares a idItem
+			similares(list): contiene <=k paresSimilitud similares a idItem
 
 		"""
-
-		lksimil = similitudes.get(idItem).values()
+		
+		i = 0;
+		lsimil_usu = similitudes.get(idItem).values()
+		similares = []
 
 		"Ordenamos de mayor a menor, segun similitud"
-		lksimil.sort(cmp=cmpsimilitud, key=None, reverse=true)
+		lsimil_usu.sort(cmp=None, key=None, reverse=True)
 
-		while i < k | i < lksimil.len():
-			pelicula = lksimil[i]
+		while i < k | i < lsimil_usu.len():
+			pelicula = lsimil_usu[i]
 			if pelicula.idPel not in valoraciones.get(self.idUsu):
 				similares.append(pelicula)
 			i += 1;
 			
-		return lksimil
+		return similares
             
