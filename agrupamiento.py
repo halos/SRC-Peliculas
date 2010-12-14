@@ -20,17 +20,6 @@ class Agrupamiento:
 		
 		self.idUsu = idUsu
 
-	def cmpsimilitud(self, x, y):
-		""" Función comparación entre parSimilitud (Clase)
-	
-			Params:
-	
-			x: Primer elemento a comparar			
-			y: Segundo elemento a comparar
- 			
-		"""
-
-		return x.similitud - y.similitud
 		
 	def agrupknn(self, idItem, k, similitudes, valoraciones):
 	
@@ -58,7 +47,7 @@ class Agrupamiento:
 
 		while i < k | i < lsimil_usu.len():
 			pelicula = lsimil_usu[i]
-			if pelicula.idPel not in valoraciones.get(self.idUsu):
+			if pelicula.idPel not in valoraciones.get(self.idUsu).keys():
 				similares.append(pelicula)
 			i += 1;
 			

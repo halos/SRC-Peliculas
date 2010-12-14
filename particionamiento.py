@@ -10,17 +10,9 @@ class Particionamiento:
 	 
 	""" Clase que implementa el particionamiento de los datos en dos grupos: train y test """
 	 
-	def __init__(self, idUsu):
-		""" Constructor
-		 
-		Params:
-		 
-		idUsu: Identificador del usuario registrado en el sistema 
-		 
-		"""
-		 
-		self.idUsu = idUsu
-		 
+	def __init__(self):
+		""" Constructor Básico """
+
 	def divTrainTest(self, valoraciones, pct_train):
 		""" Función principal de la clase que divide todas las valoraciones en dos grupos: train y test
 		 

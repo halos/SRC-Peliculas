@@ -52,7 +52,7 @@ class ParSimilitud:
 		"""
 		
 		return (self.idP1,self.idP2) != (other.idP1,other.idP2) & \
-		(self.idP1,self.idP2) &= (other.idP2,other.idP1)
+		(self.idP1,self.idP2) != (other.idP2,other.idP1)
 		
 	def setsimilitud(self, similitud):
 		""" Setter para el atributo similitud
