@@ -35,7 +35,7 @@ ees.append((pearson.calcula_similitud, "pearson"))
 
 eep = []
 
-ws = WeithedSum()
+ws = WeithedSum.WeithedSum()
 
 eep.append((ws.predice, "weithed sum"))
 eep.append((ItemAvgAdj1().predice, "Item average + Adjustment, todos menos 1"))

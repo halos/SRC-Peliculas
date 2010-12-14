@@ -27,7 +27,7 @@ class Particionamiento:
 				
 		"""
 		
-		ntrain = valoraciones.len() * (pct_train / 100)
+		ntrain = valoraciones.len() * ((float)(pct_train) / 100)
 		copiav = valoraciones[:]
 		train = []
 		test = []
