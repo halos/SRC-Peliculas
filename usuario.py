@@ -2,8 +2,17 @@
 # -*- coding: utf-8 -*-
 
 class Usuario:
-	""" Class doc """
+	""" Class Usuario """
 	
-	def __init__ (self):
+	""" Identificador de usuario """
+	
+	idUsu = 0
+	
+	""" Contraseña de usuario """
+	
+	passw = ""
+	
+	def __init__ (self, idUsu, passw):
 		""" Class initialiser """
-		pass
+		self.idUsu = idUsu
+		self.passw = passw

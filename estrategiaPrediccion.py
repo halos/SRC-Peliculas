@@ -18,7 +18,7 @@ class EstrategiaPrediccion:
 
 		self.predice = pred_func
 
-	def predice(self, idItem, lvaloraciones, lsimilitudes):
+	def predice(self, idUsu, idItem, lvaloraciones, lsimilitudes):
 		"""
 			
 		Metodo que devuelve el valor de prediccion para un item-usuario
@@ -34,26 +34,32 @@ class EstrategiaPrediccion:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-			
+
+		#creacion de las estructuras de datos			
+
 		dvaloraciones = {}
+
+		# dict{idUsu:dict{idPel:Valoracion}}
 			
 		for valoracion in lvaloraciones:
-			idUsu = valoracion.getUsu()
-			idItem = valoracion.getItem()
-			if idUsu not in dvaloraciones:
+			idUsu = valoracion.idUsu
+			idItem = valoracion.idPel
+			if idUsu not in dvaloraciones.keys():
 				dvaloraciones[idUsu] = {}
-			dvaloraciones[idUsu, idItem] = valoracion.getVal()
+			dvaloraciones[idUsu, idItem] = valoracion.valoracion
 		
 		dsimilitudes = {}
 			
+		# dict{idItem1:dict{idItem2:Similitud}}
+
 		for similitud in lsimilitudes:
-			idItem1 = similitud.getUsu()
-			idItem2 = similitud.getItem()
-			if idItem1 not in dvaloraciones:
+			idItem1 = similitud.idP1
+			idItem2 = similitud.idP2
+			if idItem1 not in dvaloraciones.keys():
 				dsimilitudes[idItem1] = {}
-			dsimilitudes[idItem1, idItem2] = similitud.getVal()
-		
-		prediccion = self.predice(self, idItem, dvaloraciones, dsimilitudes)
+			dsimilitudes[idItem1, idItem2] = similitud.similitud
+			
+		prediccion = self.predice(idUsu, idItem, dvaloraciones, dsimilitudes)
 				
 		return prediccion
 			

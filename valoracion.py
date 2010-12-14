@@ -21,3 +21,13 @@ class Valoracion:
 		self.idPel = idPel
 		self.valoracion = valoracion
 		
+	def setvaloracion(self, valor):
+		""" Setter para el atributo valoracion de la pelicula
+		
+		    Params: 
+			
+			valor: Nueva valoracion para el par Usuario-Pelicula
+		"""
+		
+		self.valoracion = valor
+		
