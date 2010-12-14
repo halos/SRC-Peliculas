@@ -27,13 +27,13 @@ class Particionamiento:
 				
 		"""
 		
-		ntrain = valoraciones.len() * ((float)(pct_train) / 100)
+		ntrain = len(valoraciones) * ((float)(pct_train) / 100)
 		copiav = valoraciones[:]
 		train = []
 		test = []
 		
 		for i in range(ntrain):
-			pos = random.randint(0,copiav.len())
+			pos = random.randint(0,len(copiav) - 1)
 			train.append(copiav.pop(pos))
 		
 		test = copiav[:]
