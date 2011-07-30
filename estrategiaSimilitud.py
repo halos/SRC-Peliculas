@@ -18,7 +18,7 @@ class EstrategiaSimilitud:
 		self.__calcula_similitud = sim_func
 
 	def similitud(self, _valoraciones):
-		""" Function doc
+		""" Método para calcular la similitud entre todas las películas
 	
 		Params:
 	
@@ -26,7 +26,7 @@ class EstrategiaSimilitud:
 	
 		Return:
 	
-			(list): Lista de similitudes entre los usuarios
+			(list): Lista de similitudes entre las películas (ParSimilitud)
 		"""
 		
 		# lista con los ParSimilitud
@@ -50,7 +50,8 @@ class EstrategiaSimilitud:
 		for i in p1:
 			p2.remove(i)
 			for j in p2:
-				similitud = self.__calcula_similitud(valoraciones[i], valoraciones[j])
+				similitud = self.__calcula_similitud(\
+				valoraciones[i], valoraciones[j])
 				ps = ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
 		
