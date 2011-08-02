@@ -37,7 +37,7 @@ class ParSimilitud:
 		return (self.idP1,self.idP2) == (other.idP1,other.idP2) | \
 		(self.idP1,self.idP2) == (other.idP2,other.idP1)
 
-	def __neq__(self, other):
+	def __ne__(self, other):
 		""" == : Comapra si los usuarios son diferentes
 	
 		Params:
