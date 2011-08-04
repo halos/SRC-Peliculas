@@ -37,14 +37,16 @@ def calcula_similitud(p1, p2):
 	# numerador
 	num = 0
 	
-	for i in usus:
-		num += p1[i] * p2[i]
-		
 	#denominador
 	sum1 = 0
 	sum2 = 0
 	
 	for i in usus:
+		
+		# numerador
+		num += p1[i] * p2[i]
+		
+		#denominador
 		sum1 += p1[i]**2
 		sum2 += p2[i]**2
 		

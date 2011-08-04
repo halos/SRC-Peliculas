@@ -82,11 +82,11 @@ print "Valoraciones cargadas"
 
 print "Pearson:"
 for i in estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud).similitud(vals):
-	print '%s, %s: --> %f' % (pels[i.idP1], pels[i.idP2], i.similitud)
+	print '%s, %s: --> %f' % (pels[i.idP1][:-1], pels[i.idP2][:-1], i.similitud)
 
 print "Coseno:"
 for i in estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud).similitud(vals):
-	print '%s, %s: --> %f' % (pels[i.idP1], pels[i.idP2], i.similitud)
+	print '%s, %s: --> %f' % (pels[i.idP1][:-1], pels[i.idP2][:-1], i.similitud)
 
 # break estrategiaSimilitud:45
 # break coseno:18

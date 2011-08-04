@@ -45,14 +45,15 @@ def calcula_similitud(p1, p2):
 	# numerador
 	num = 0
 	
-	for j in usus:
-		num += (p1[j] - mp1) * (p2[j] - mp2)
-	
 	# denominador
 	sum1 = 0
 	sum2 = 0
 	
 	for j in usus:
+		# numerador
+		num += (p1[j] - mp1) * (p2[j] - mp2)
+	
+		# denominador
 		sum1 += (p1[j] - mp1) ** 2
 		sum2 += (p2[j] - mp2) ** 2
 	
