@@ -1,10 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import estrategiaSimilitud
+
 class Motor:
 	""" Class doc """
+	
+	"""Identificador del usuario actual"""
 	__user = 0
+	
+	"""Número de valoraciones que se lleva sin actualizar el modelo"""
 	__nvaloraciones = 0
+	
+	"""Valoraciones nuevas desde que se actualizó el modelo por última vez"""
+	__nuevasValoraciones = []
 	
 	def __init__ (self):
 		""" Class initialiser """
@@ -42,6 +51,8 @@ class Motor:
 		valoracion = Valoracion(self.__user.idUsu, idPel, val)
 		daov = DAOValoracion()
 		daov.inserta(valoracion) # Si existe, se actualiza
+		__nuevasValoraciones.append(valoracion)
+		
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		self.__nvaloraciones += 1
 		if self.__nvaloraciones == 5:
@@ -79,16 +90,28 @@ class Motor:
 		return False
 	
 	def __actualizarModelo(self): # Para javi
-		""" Function doc
+		""" Método para actualizar el modelo tras haber nuevas valoraciones
 	
 		Params:
 	
-			PARAM(): DESCRIPTION
+			None
 	
 		Return:
 	
-			(): DESCRIPTION
+			None
 		"""
+		
+		valoraciones = []
+		
+		#obtener valoraciones de todas las películas puntuadas
+		for v in __nuevasValoraciones:
+			valoraciones += self.getValoracionesItem(v.idPel)
+		
+		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
+		similitudes = eSimilitud.actualizaSimilitud(valoraciones, __nuevasValoraciones)
+		
+		#almacenamiento de las similitudes
+		
 
 	def recomendar(self):
 			""" Function doc

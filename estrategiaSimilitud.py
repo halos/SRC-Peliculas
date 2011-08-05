@@ -16,6 +16,17 @@ class EstrategiaSimilitud:
 		"""
 		
 		self.__calcula_similitud = sim_func
+		
+	def __init__(self):
+		""" Constructor para ser llamado después de ser creado con la función
+		de similitud
+	
+		Params:
+	
+			None
+		"""
+		
+		raise NotImplementedError
 
 	def similitud(self, _valoraciones):
 		""" Método para calcular la similitud entre todas las películas
@@ -56,3 +67,18 @@ class EstrategiaSimilitud:
 				paresSimilitud.append(ps)
 		
 		return paresSimilitud
+
+	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
+		""" Function doc
+	
+		Params:
+	
+			valoraciones(list): Lista con las valoraciones de los usuarios
+			_nuevasValoraciones(list): Lista con las nuevas valoraciones
+	
+		Return:
+	
+			(list): Lista de similitudes entre las películas (ParSimilitud)
+		"""
+		
+		raise NotImplementedError
