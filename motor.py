@@ -6,10 +6,12 @@ class Motor:
 	
 	def __init__ (self):
 		""" Class initialiser """
-		pass
-		
+		self.__daov = DAOValoracion()
+		self.__daou = DAOUsuario()
+		self.__daop = DAOPelicula()
+		self.__daos = DAOParSimilitud()		
 
-	def getValoracionesUsuario(self):
+	def getValoracionesUsuario(self, idUsu):
 		""" Function doc
 	
 		Params:
@@ -20,8 +22,10 @@ class Motor:
 	
 			(): DESCRIPTION
 		"""
+		return self.__daov.getValoracionesUsuario(idUsu)
 		
-	def getValoracionesItem(self):
+		
+	def getValoracionesItem(self, idItem):
 		""" Function doc
 	
 		Params:
@@ -32,6 +36,7 @@ class Motor:
 	
 			(): DESCRIPTION
 		"""
+		return self.__daov.getValoracionesItem(idItem)
 		
 	def getValoraciones(self):
 		""" Function doc
@@ -44,6 +49,7 @@ class Motor:
 	
 			(): DESCRIPTION
 		"""
+		return self.__daov.getValoraciones()
 		
 	def getSimilitudes(self):
 		""" Function doc
@@ -56,8 +62,9 @@ class Motor:
 	
 			(): DESCRIPTION
 		"""
+		return self.__daos.getSimilitudes()
 		
-	def getSimilitudesItem(self):
+	def getSimilitudesItem(self, idItem):
 		""" Function doc
 	
 		Params:
@@ -68,4 +75,4 @@ class Motor:
 	
 			(): DESCRIPTION
 		"""
-		
+		return self.__daos.getSimilitudesItem(idItem)
