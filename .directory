@@ -1,6 +1,10 @@
 [Dolphin]
-ShowPreview=true
-Timestamp=2010,12,11,11,59,0
+<<<<<<< HEAD
+Timestamp=2011,8,5,11,40,9
+=======
+Timestamp=2011,8,4,19,13,49
+>>>>>>> develop
+Version=2
 
 [Settings]
 ShowDotFiles=true
