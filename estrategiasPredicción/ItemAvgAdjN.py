@@ -4,18 +4,64 @@
 __author__="sramirez"
 __date__ ="$07-dic-2010 10:22:31$"
 
-from ItemAvgAdj1 import *
-
 from math import fabs
 from valoracion import Valoracion
 
-class ItemAvgAdjN(ItemAvgAdj1):
+class ItemAvgAdjN():
     """ Clase que implementa el método de prediccion Item Average Adjustament (N), 
 	    hereda de ItemAvgAdj1
 	"""
     def __init__(self, motor):
         """ Constructor básico"""
-        super(ItemAvgAdjN, self, motor).__init__()
+        self.__motor = motor
+        
+    def __mediausuario(self, idUsu, idItem):
+        """
+            Metodo que calcula la media de las valoraciones
+            hechas por un usuario a todos sus items
+            
+            Params:
+                    idUsu (Integer):
+                    idItem (Integer):
+                    
+            Return:
+                    media_usuario (Float): Media de las valoraciones hechas por un usuario a todos sus items
+            
+        """
+        
+        lval_usuario = self.__motor.getValoracionesUsuario(idUsu)
+        nval = 0
+        media_usuario = 0
+        for valoracion in lval_usuario:
+            if valoracion.idPel != idItem: #Obviamos la valoracion del item a predecir
+                media_usuario += valoracion.valoracion
+                nval+= 1
+        media_usuario /= nval
+        return media_usuario
+
+    def __mediaitem(self, idUsu, idItem):
+
+        """
+            Metodo que calcula la media de las valoraciones
+            hechas para un determinado item
+            
+            Params:
+                    idUsu    (Integer):
+                    idItem    (Integer): 
+                    
+            Return:
+                    media_usuario: Media de las valoraciones hechas para un determinado item
+            
+        """
+        lval_item = self.__motor.getValoracionesItem(idItem)
+        nval = 0
+        media_item = 0
+        for valoracion in lval_item:
+            if valoracion.idUsu != idUsu: #Obviamos la valoracion del usuario-item a predecir
+                media_item += valoracion.valoracion
+                nval+= 1
+        media_item /= nval
+        return media_item
         
     def predice(self, idUsu, idItem, n):
         """
