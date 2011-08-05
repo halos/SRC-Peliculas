@@ -1,5 +1,9 @@
 [Dolphin]
+<<<<<<< HEAD
 Timestamp=2011,8,5,11,40,9
+=======
+Timestamp=2011,8,4,19,13,49
+>>>>>>> develop
 Version=2
 
 [Settings]
