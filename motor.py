@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import estrategiaSimilitud
+import valoracion
 
 class Motor:
 	""" Class doc """
@@ -114,21 +115,6 @@ class Motor:
 		
 
 	def recomendar(self):
-			""" Function doc
-	
-		Params:
-	
-			PARAM(): DESCRIPTION
-	
-		Return:
-	
-			(): DESCRIPTION
-		"""
-		# Por implementar (Sergio)
-	
-	# Métodos adicionales (getter's)
-
-	def getValoracionesUsuario(self, idUsu):
 		""" Function doc
 	
 		Params:
@@ -138,35 +124,68 @@ class Motor:
 		Return:
 	
 			(): DESCRIPTION
+		"""
+		daop = DAOPelicula()
+		# Añadimos función de predicción 
+		ep = estrategiaPrediccion()
+		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
+		# Creamos una lista de valores predichos
+		lvalpred = []
+		for idPel in lpelnop:
+			prediccion = ep.predice(self.__user, idPel)
+			val = Valoracion(self.__user, idPel, prediccion)
+			lvalpred.append(val)
+		# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
+		lvalpred.sort(reverse=True)
+		return lvalpred[:5]
+		
+		
+		
+	
+	# Métodos adicionales (getter's)
+
+	def getValoracionesUsuario(self, idUsu):
+		""" Método que devuelve el conjunto de las valoraciones hechas por un usuario para todas las películas puntuadas.
+	
+		Params:
+	
+			idUsu (Integer): Número de que identifica al usuario en la aplicación 
+	
+		Return:
+	
+			Diccionario de valoraciones, cuyas claves son el idItem 
+			
 		"""
 		daov = DAOValoracion()
 		return daov.getValoracionesUsuario(idUsu)
 		
 		
 	def getValoracionesItem(self, idItem):
-		""" Function doc
+		""" Método que devuelve el conjunto de las valoraciones hechas para una película en concreto, por todos los usuarios del sistema.
 	
 		Params:
 	
-			PARAM(): DESCRIPTION
+			idItem (Integer): Número de que identifica a la película en la aplación
 	
 		Return:
 	
-			(): DESCRIPTION
+			Diccionario de valoraciones, cuyas claves son el idUsuario
+			
 		"""
 		daov = DAOValoracion()
 		return daov.getValoracionesItem(idItem)
 		
 	def getValoraciones(self):
-		""" Function doc
+		""" Método que devuelve el conjunto de todas las valoraciones hechas para todos los usuarios.
 	
 		Params:
 	
-			PARAM(): DESCRIPTION
+			None
 	
 		Return:
 	
-			(): DESCRIPTION
+			Diccionario de diccionarios, cuyas claves son el idUsu (primero), y despúes el idItem. 
+			
 		"""
 		daov = DAOValoracion()
 		return daov.getValoraciones()
@@ -186,15 +205,16 @@ class Motor:
 		return daos.getSimilitudes()
 		
 	def getSimilitudesItem(self, idItem):
-		""" Function doc
+		""" Método que devuelve el conjunto de las similitudes entre el item seleccionado y el resto.
 	
 		Params:
 	
-			PARAM(): DESCRIPTION
+			idItem (Integer): Número de que identifica a la película en la aplación
 	
 		Return:
 	
-			(): DESCRIPTION
+			Diccionario de similitudes, cuyas claves son el idItem del elemento a comparar.
+			
 		"""
 		daos = DAOParSimilitud()
 		return daos.getSimilitudesItem(idItem)

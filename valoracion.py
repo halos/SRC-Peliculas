@@ -21,6 +21,15 @@ class Valoracion:
 		self.idPel = idPel
 		self.valoracion = valoracion
 		
+	def __cmp__(self, other):
+		""" Class compare """
+		if self.valoracion < other.valoracion:
+			return -1
+		elif self.valoracion > other.valoracion:
+			return 1
+		else:
+			return 0		
+		
 	def setvaloracion(self, valor):
 		""" Setter para el atributo valoracion de la pelicula
 		
