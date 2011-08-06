@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import daoValoracion
 from parSimilitud import ParSimilitud
 
 class EstrategiaSimilitud:
@@ -28,12 +29,13 @@ class EstrategiaSimilitud:
 		
 		raise NotImplementedError
 
-	def similitud(self, _valoraciones):
-		""" Método para calcular la similitud entre todas las películas
+	def similitud(self, _valoraciones, _nuevasValoraciones=[]):
+		""" Método para calcular la similitud entre películas
 	
 		Params:
 	
-			valoraciones(list): Lista con las valoraciones de los usuarios
+			_valoraciones(list): Lista con las valoraciones de los usuarios
+			_nuevasValoraciones(list): Lista con las nuevas valoraciones
 	
 		Return:
 	
@@ -44,7 +46,7 @@ class EstrategiaSimilitud:
 		paresSimilitud = []
 		valoraciones = {}
 		
-		#creación de la estructura de datos		
+		# creación de la estructura de datos		
 		#	dict{idPel:dict{idUsu:valoracion}}
 		for i in _valoraciones:
 			if i.idPel not in valoraciones:
@@ -54,7 +56,11 @@ class EstrategiaSimilitud:
 		
 		# obtención de los id de las películas
 		p1 = valoraciones.keys()
-		p2 = p1[:] # copia
+		
+		if _nuevasValoraciones: # Se actualiza el modelo
+			p2 = _nuevasValoraciones
+		else: # Se crea por primera vez el modelo de similitudes
+			p2 = p1[:] # copia
 		
 		# obtención de las valoraciones de cada usuario
 		
@@ -69,11 +75,12 @@ class EstrategiaSimilitud:
 		return paresSimilitud
 
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
-		""" Function doc
+		""" Recalcula las similitudes en base a unas ya existentes y a las
+		nuevas valoraciones 
 	
 		Params:
 	
-			valoraciones(list): Lista con las valoraciones de los usuarios
+			_valoraciones(list): Lista con las valoraciones de los usuarios
 			_nuevasValoraciones(list): Lista con las nuevas valoraciones
 	
 		Return:
@@ -81,4 +88,18 @@ class EstrategiaSimilitud:
 			(list): Lista de similitudes entre las películas (ParSimilitud)
 		"""
 		
-		raise NotImplementedError
+		# para que no se actualicen las valoraciones en memoria
+		valoraciones = _valoraciones[:]
+		
+		# actualizar las valoraciones
+		for nv in _nuevasValoraciones:
+			if nv in valoraciones:
+				indice = valoraciones.index(nv)
+				valoraciones[indice] = nv.valoracion
+			else:
+				valoraciones.append(nv)
+		
+		# almacenar valoraciones actualizadas
+		#daoValoracion.DAOValoracion.guarda(valoraciones)
+		
+		return self.similitud(_valoraciones, _nuevasValoraciones)

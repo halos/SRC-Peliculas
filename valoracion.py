@@ -31,3 +31,31 @@ class Valoracion:
 		
 		self.valoracion = valor
 		
+	def __eq__(self, otro):
+	    """ Operador de igualdad
+	
+	    Params:
+	
+		otro(Valoracion): Objeto con el que va a ser comparado
+	
+	    Return:
+	
+		(Bool): True en caso de que el idUsu y el idPel sean iguales
+	    """
+	    
+	    return self.idUsu == otro.idUsu and self.idPel == otro.idPel
+	    
+	def __ne__(self, otro):
+	    """ Operador de desigualdad
+	
+	    Params:
+	
+		otro(Valoracion): Objeto con el que va a ser comparado
+	
+	    Return:
+	
+		(Bool): True en caso de que el idUsu o el idPel sean diferentes
+	    """
+	    
+	    return self.idUsu != otro.idUsu or self.idPel != otro.idPel
+	    
