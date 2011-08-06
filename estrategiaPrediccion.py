@@ -8,26 +8,24 @@ __date__ ="$07-dic-2010 10:25:53$"
 class EstrategiaPrediccion:
 	""" Interfaz de la estrategia de predicción """
 	
-	def __init__(self,  pred_func):
+	def __init__(self, pred_func):
 		""" Constructor
 	
 		Params:
 	
 			pred_func(): Función de predicción
 		"""
-
 		self.predice = pred_func
 
-	def predice(self, idUsu, idItem, lvaloraciones, lsimilitudes):
+	def predice(self, idUsu, idItem):
 		"""
 			
 		Metodo que devuelve el valor de prediccion para un item-usuario
 		
 		Params:
 		
-				idItem: Identificador del item cuyo valora deseamos predecir
-				lvaloraciones(list): Contiene todos las valoraciones aportadas por todos los usuarios
-				lsimilitudes(list): Contiene todos los pares de similitud entre items del sistema			
+				idUsu: Identificador del usuario al que queremos predecir
+				idItem: Identificador del item cuyo valor deseamos predecir
 
 		Return:
 					
@@ -35,34 +33,5 @@ class EstrategiaPrediccion:
 					
 		"""
 
-		#creacion de las estructuras de datos			
-
-		dvaloraciones = {}
-
-		# dict{idUsu:dict{idPel:Valoracion}}
-			
-		for valoracion in lvaloraciones:
-			idUsu = valoracion.idUsu
-			idItem = valoracion.idPel
-			if idUsu not in dvaloraciones.keys():
-				dvaloraciones[idUsu] = {}
-			dvaloraciones[idUsu, idItem] = valoracion.valoracion
-		
-		dsimilitudes = {}
-			
-		# dict{idItem1:dict{idItem2:Similitud}}
-
-		for similitud in lsimilitudes:
-			idItem1 = similitud.idP1
-			idItem2 = similitud.idP2
-			if idItem1 not in dvaloraciones.keys():
-				dsimilitudes[idItem1] = {}
-			dsimilitudes[idItem1, idItem2] = similitud.similitud
-			
-		prediccion = self.predice(idUsu, idItem, dvaloraciones, dsimilitudes)
-				
+		prediccion = self.predice(idUsu, idItem)
 		return prediccion
-			
-		
-			
-            
