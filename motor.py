@@ -1,8 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import estrategiaSimilitud
+import sys
+sys.path.append('estrategiasPredicción')
+
 from valoracion import Valoracion
+import ItemAvgAdj1
+from estrategiaSimilitud import EstrategiaSimilitud
+from estrategiaPrediccion import EstrategiaPrediccion
 
 class Motor (object):
 	
@@ -61,7 +66,7 @@ class Motor (object):
 		valoracion = Valoracion(self.__user.idUsu, idPel, val)
 		daov = DAOValoracion()
 		daov.inserta(valoracion) # Si existe, se actualiza
-		__nuevasValoraciones.append(valoracion)
+		self.__nuevasValoraciones.append(valoracion)
 		
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		self.__nvaloraciones += 1
@@ -114,11 +119,11 @@ class Motor (object):
 		valoraciones = []
 		
 		#obtener valoraciones de todas las películas puntuadas
-		for v in __nuevasValoraciones:
+		for v in self.__nuevasValoraciones:
 			valoraciones += self.getValoracionesItem(v.idPel)
 		
 		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
-		similitudes = eSimilitud.actualizaSimilitud(valoraciones, __nuevasValoraciones)
+		similitudes = eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
 		
 		#almacenamiento de las similitudes
 		
@@ -135,8 +140,10 @@ class Motor (object):
 			(): DESCRIPTION
 		"""
 		daop = DAOPelicula()
+		m = Motor()
+		it = ItemAvgAdj1(m)
 		# Añadimos función de predicción 
-		ep = estrategiaPrediccion()
+		ep = EstrategiaPrediccion(ItemAvgAdj1.predice)
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 		# Creamos una lista de valores predichos
 		lvalpred = []
