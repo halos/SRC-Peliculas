@@ -104,4 +104,4 @@ class ItemAvgAdjN():
         vprediccion = sum_num / sum_den + media_item
         prediccion = Valoracion(idUsu, idItem, vprediccion)
         return prediccion
-
+ 

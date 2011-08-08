@@ -7,8 +7,9 @@ from parSimilitud import ParSimilitud
 class EstrategiaSimilitud:
 	""" Interfaz de la estrategia de similitud """
 	
-	def __init__(self,  sim_func):
-		""" Constructor
+	def __init__(self,  sim_func = None):
+		""" Constructor. Cuando sea llamado después de ser creado con la 
+		función de similitud, no se le pasa el parámetro
 	
 		Params:
 	
@@ -16,18 +17,8 @@ class EstrategiaSimilitud:
 			valoraciones por parámetro
 		"""
 		
-		self.__calcula_similitud = sim_func
-		
-	def __init__(self):
-		""" Constructor para ser llamado después de ser creado con la función
-		de similitud
-	
-		Params:
-	
-			None
-		"""
-		
-		raise NotImplementedError
+		if sim_func:
+			self.__calcula_similitud = sim_func
 
 	def similitud(self, _valoraciones, _nuevasValoraciones=[]):
 		""" Método para calcular la similitud entre películas
@@ -46,6 +37,7 @@ class EstrategiaSimilitud:
 		paresSimilitud = []
 		valoraciones = {}
 		
+		# Todas las películas
 		# creación de la estructura de datos		
 		#	dict{idPel:dict{idUsu:valoracion}}
 		for i in _valoraciones:
@@ -57,23 +49,26 @@ class EstrategiaSimilitud:
 		# obtención de los id de las películas
 		p1 = valoraciones.keys()
 		
+		
+		# Si se actualiza el modelo solo será para unas pocas peliculas
 		if _nuevasValoraciones: # Se actualiza el modelo
-			p2 = _nuevasValoraciones
+			p2 = list(set([v.idPel for v in _nuevasValoraciones]))
+			
 		else: # Se crea por primera vez el modelo de similitudes
 			p2 = p1[:] # copia
-		
+			
 		# obtención de las valoraciones de cada usuario
-		
 		for i in p1:
-			p2.remove(i)
+			if i in p2:
+				p2.remove(i)
 			for j in p2:
 				similitud = self.__calcula_similitud(\
-				valoraciones[i], valoraciones[j])
+					valoraciones[i], valoraciones[j])
 				ps = ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
 		
 		return paresSimilitud
-
+		
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
 		""" Recalcula las similitudes en base a unas ya existentes y a las
 		nuevas valoraciones 
@@ -88,18 +83,17 @@ class EstrategiaSimilitud:
 			(list): Lista de similitudes entre las películas (ParSimilitud)
 		"""
 		
-		# para que no se actualicen las valoraciones en memoria
+		# para que no se modifiquen las valoraciones en memoria
 		valoraciones = _valoraciones[:]
 		
 		# actualizar las valoraciones
 		for nv in _nuevasValoraciones:
 			if nv in valoraciones:
 				indice = valoraciones.index(nv)
-				valoraciones[indice] = nv.valoracion
+				valoraciones[indice].valoracion = nv.valoracion
 			else:
 				valoraciones.append(nv)
-		
 		# almacenar valoraciones actualizadas
 		#daoValoracion.DAOValoracion.guarda(valoraciones)
 		
-		return self.similitud(_valoraciones, _nuevasValoraciones)
+		return self.similitud(valoraciones, _nuevasValoraciones)

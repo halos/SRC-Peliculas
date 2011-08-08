@@ -3,18 +3,21 @@
 
 from math import sqrt
 
-def calcula_similitud(p1, p2):
+def calcula_similitud(_p1, _p2):
 	""" Función que calcula la similitud entre dos películas
 
 	Params:
 
-		p1 (dict): dict{idUsu:valoracion}
-		p2 (dict): dict{idUsu:valoracion}
+		_p1 (dict): dict{idUsu:valoracion}
+		_p2 (dict): dict{idUsu:valoracion}
 
 	Return:
 
 		(float): Similitud entre dos películas (0,1)
 	"""
+	
+	p1 = dict(_p1)
+	p2 = dict(_p2)
 	
 	# obtener la lista de todos los usuarios que han valorado la película
 	usus = []

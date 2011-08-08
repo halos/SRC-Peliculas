@@ -13,7 +13,7 @@ class ItemAvgAdj1:
 	""" Clase que implementa el método de prediccion
 		Item Average Adjustament (All-1) 	
 	"""
-	
+
 	def __init__(self):
 		""" Constructor básico"""
 
@@ -64,8 +64,8 @@ class ItemAvgAdj1:
 			nval+= 1
 		media_item /= nval
 		return media_item
-		
-		
+
+
 	def predice(self, idUsu, idItem):
 		"""
 			
@@ -98,5 +98,4 @@ class ItemAvgAdj1:
 			sys.exit(-1)			
 		vprediccion = sum_num / sum_den + media_item
 		prediccion = Valoracion(idUsu, idItem, vprediccion)
-		return prediccion
-
+		return prediccion 

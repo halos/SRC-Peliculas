@@ -51,7 +51,6 @@ class Valoracion:
 	
 		(Bool): True en caso de que el idUsu y el idPel sean iguales
 	    """
-	    
 	    return self.idUsu == otro.idUsu and self.idPel == otro.idPel
 	    
 	def __ne__(self, otro):
@@ -68,3 +67,16 @@ class Valoracion:
 	    
 	    return self.idUsu != otro.idUsu or self.idPel != otro.idPel
 	    
+	def __repr__(self):
+	    """ Function doc
+	
+	    Params:
+	
+		PARAM(): DESCRIPTION
+	
+	    Return:
+	
+		(): DESCRIPTION
+	    """
+	    
+	    return "(idUsu: %s, idPel: %s --> val: %s)" % (self.idUsu, self.idPel, self.valoracion)

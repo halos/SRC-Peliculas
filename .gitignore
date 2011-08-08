@@ -3,8 +3,4 @@
 .pydevproject
 .project
 .directory
-<<<<<<< HEAD
 .settings/*
-=======
-.settings/*
->>>>>>> prediccion
