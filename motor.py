@@ -1,11 +1,20 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import estrategiaSimilitud
-import valoracion
+import sys
+sys.path.append('estrategiasPredicción')
 
-class Motor:
+from valoracion import Valoracion
+import ItemAvgAdj1
+from estrategiaSimilitud import EstrategiaSimilitud
+from estrategiaPrediccion import EstrategiaPrediccion
+
+class Motor (object):
+	
 	""" Class doc """
+	
+	""" Única instancia de la clase """
+	instance = None 
 	
 	"""Identificador del usuario actual"""
 	__user = 0
@@ -19,6 +28,11 @@ class Motor:
 	def __init__ (self):
 		""" Class initialiser """
 		pass
+	
+	def __new__(cls, *args, **kargs): 
+		if cls.instance is None:
+			cls.instance = object.__new__(cls, *args, **kargs)
+		return cls.instance
 		
 	def login(self, id, passw):
 		""" Function doc
@@ -52,7 +66,7 @@ class Motor:
 		valoracion = Valoracion(self.__user.idUsu, idPel, val)
 		daov = DAOValoracion()
 		daov.inserta(valoracion) # Si existe, se actualiza
-		__nuevasValoraciones.append(valoracion)
+		self.__nuevasValoraciones.append(valoracion)
 		
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		self.__nvaloraciones += 1
@@ -105,11 +119,11 @@ class Motor:
 		valoraciones = []
 		
 		#obtener valoraciones de todas las películas puntuadas
-		for v in __nuevasValoraciones:
+		for v in self.__nuevasValoraciones:
 			valoraciones += self.getValoracionesItem(v.idPel)
 		
 		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
-		similitudes = eSimilitud.actualizaSimilitud(valoraciones, __nuevasValoraciones)
+		similitudes = eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
 		
 		#almacenamiento de las similitudes
 		
@@ -126,8 +140,10 @@ class Motor:
 			(): DESCRIPTION
 		"""
 		daop = DAOPelicula()
+		m = Motor()
+		it = ItemAvgAdj1(m)
 		# Añadimos función de predicción 
-		ep = estrategiaPrediccion()
+		ep = EstrategiaPrediccion(ItemAvgAdj1.predice)
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 		# Creamos una lista de valores predichos
 		lvalpred = []

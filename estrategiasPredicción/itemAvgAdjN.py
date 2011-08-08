@@ -4,16 +4,17 @@
 __author__="sramirez"
 __date__ ="$07-dic-2010 10:22:31$"
 
+import sys
 from math import fabs
 from valoracion import Valoracion
+from motor import Motor
 
 class ItemAvgAdjN():
     """ Clase que implementa el método de prediccion Item Average Adjustament (N), 
 	    hereda de ItemAvgAdj1
 	"""
-    def __init__(self, motor):
+    def __init__(self):
         """ Constructor básico"""
-        self.__motor = motor
         
     def __mediausuario(self, idUsu, idItem):
         """
@@ -28,14 +29,13 @@ class ItemAvgAdjN():
                     media_usuario (Float): Media de las valoraciones hechas por un usuario a todos sus items
             
         """
-        
-        lval_usuario = self.__motor.getValoracionesUsuario(idUsu)
+        m = Motor() # Clase Singleton
+        lval_usuario = m.getValoracionesUsuario(idUsu).values()
         nval = 0
         media_usuario = 0
         for valoracion in lval_usuario:
-            if valoracion.idPel != idItem: #Obviamos la valoracion del item a predecir
-                media_usuario += valoracion.valoracion
-                nval+= 1
+            media_usuario += valoracion.valoracion
+            nval+= 1
         media_usuario /= nval
         return media_usuario
 
@@ -53,15 +53,16 @@ class ItemAvgAdjN():
                     media_usuario: Media de las valoraciones hechas para un determinado item
             
         """
-        lval_item = self.__motor.getValoracionesItem(idItem)
+        m = Motor() # Clase Singleton
+        lval_item = m.getValoracionesItem(idItem).values()
         nval = 0
         media_item = 0
         for valoracion in lval_item:
-            if valoracion.idUsu != idUsu: #Obviamos la valoracion del usuario-item a predecir
-                media_item += valoracion.valoracion
-                nval+= 1
+            media_item += valoracion.valoracion
+            nval+= 1
         media_item /= nval
         return media_item
+        
         
     def predice(self, idUsu, idItem, n):
         """
@@ -71,34 +72,36 @@ class ItemAvgAdjN():
         Params:
                 idUsu    (Integer):
                 idItem    (Integer): Identificador del item cuyo valora deseamos predecir
-
+                n (Integer): Número de valoraciones a tener en cuenta
         Return:
                     
                 prediccion(Valoracion): Valoración predicha para un valor desconocido
                     
         """
-        
+        m = Motor()
         media_item = self.__mediaitem(idItem)
         media_usu = self.__mediausuario(idUsu)
         sum_num = 0
         sum_den = 0
-        nveces = 0
-        lsim = self.__motor.getSimilitudesItem(idItem)
-        lval = self.__motor.getValoracionesItem(idUsu)
-        if n % 2 != 0 or n > (len(lval) - 1):
-            print 'Error!'
-        if len(lsim) != len(lval):
+        dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
+        lval = m.getValoracionesUsuario(idUsu) # Lista de valoraciones para un usuario
+        if n % 2 != 0 or n > len(lval):
             print 'Error!'
         #Cálculo de la fórmula de la prediccion
-        for i in len(lsim):
-            if lval[i].idPel != idItem: # Obviamos la casilla del item a predecir
-                sum_num += lsim[i].similitud * (lval[i].valoracion - media_usu)
-                sum_den += fabs(lsim[i].similitud)
-            if nveces >= n:
-                break
-            else:
-                nveces += 1                
+        nveces = 0 # Contador que vigila que no se superen n evaluaciones
+        for val in lval:
+            simil = dsim.get(val.idPel, 0)
+            if simil != 0: # Existe similitud para el item de esa valoracion
+                sum_num += simil.similitud * (val.valoracion - media_usu)
+                sum_den += fabs(simil.similitud)    
+                if nveces >= n:
+                    break
+                else:
+                    nveces += 1  
+        if sum_den == 0:
+            print 'Error, division por cero!'
+            sys.exit(-1)                          
         vprediccion = sum_num / sum_den + media_item
         prediccion = Valoracion(idUsu, idItem, vprediccion)
         return prediccion
-
+ 
