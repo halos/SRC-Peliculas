@@ -1,0 +1,11 @@
+*.pyc
+*/*~
+.pydevproject
+<<<<<<< HEAD
+.project
+.directory
+=======
+.directory
+.project
+>>>>>>> develop
+.settings/*
