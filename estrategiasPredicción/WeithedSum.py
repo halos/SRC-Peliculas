@@ -10,15 +10,14 @@ sys.path.append("..")
 from valoracion import Valoracion
 
 class WeithedSum:
-    
-	""" Clase que implementa el método de prediccion WeithedSum """
+    """ Clase que implementa el método de prediccion WeithedSum """
 
-	def __init__(self, idUsu):
-		""" Constructor básico"""
-		self.idUsu = idUsu
-
-	def predice(self, idUsu, idItem, similitudes, valoraciones):
-		"""
+    def __init__(self, motor):
+        """ Constructor básico"""
+        self.__motor = motor
+        
+    def predice(self, idUsu, idItem):
+        """
 			
 		Metodo que devuelve el valor de prediccion para un item-usuario
 		
@@ -33,24 +32,20 @@ class WeithedSum:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-		suma_denom = 0
-		suma_num = 0
-		
-		"Cálculo de la fórmula de la prediccion"
-		
-		dsimilares = similitudes.get(idItem)
-		dvaloraciones = valoraciones.get(idUsu)
-		
-		for similitud in dsimilares:
-			idItem2 = similitud.getIdsPels().get(similitud.getIdsPels().index(idItem) - 1)
-			if idItem2 in dvaloraciones.keys():
-				suma_denom += similitud.similitud
-				valoracion = dvaloraciones.get(idItem2)
-				suma_num += similitud.similitud * valoracion.valoracion
-				
-		vprediccion = suma_num / suma_denom
-		prediccion = Valoracion(idUsu, idItem, vprediccion)
-		return prediccion
-		
+        sum_num = 0
+        sum_den = 0
+        lsim = self.__motor.getSimilitudesItem(idItem)
+        lval = self.__motor.getValoracionesItem(idUsu)
+        #Cálculo de la fórmula de la prediccion        
+        if len(lsim) != len(lval):
+            print 'Error!'
+        for i in len(lsim):
+            if lsim[i].idPel != idItem: # Obviamos la casilla del item a predecir
+                sum_num += lsim[i].similitud * lval[i].valoracion
+                sum_den += lsim[i].similitud
+        vprediccion = sum_num / sum_den
+        prediccion = Valoracion(idUsu, idItem, vprediccion)
+        return prediccion
+        
 
 
