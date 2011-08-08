@@ -8,13 +8,13 @@ import sys
 sys.path.append("..")
 
 from valoracion import Valoracion
+from motor import Motor
 
 class WeithedSum:
     """ Clase que implementa el método de prediccion WeithedSum """
 
-    def __init__(self, motor):
+    def __init__(self):
         """ Constructor básico"""
-        self.__motor = motor
         
     def predice(self, idUsu, idItem):
         """
@@ -32,17 +32,20 @@ class WeithedSum:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
+        m = Motor()
         sum_num = 0
         sum_den = 0
-        lsim = self.__motor.getSimilitudesItem(idItem)
-        lval = self.__motor.getValoracionesItem(idUsu)
+        dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
+        lval = m.getValoracionesUsuario(idUsu) # Lista de valoraciones para un usuario
         #Cálculo de la fórmula de la prediccion        
-        if len(lsim) != len(lval):
-            print 'Error!'
-        for i in len(lsim):
-            if lsim[i].idPel != idItem: # Obviamos la casilla del item a predecir
-                sum_num += lsim[i].similitud * lval[i].valoracion
-                sum_den += lsim[i].similitud
+        for val in lval:
+            simil = dsim.get(val.idPel, 0)
+            if simil != 0: # Existe similitud para el item de esa valoracion
+                sum_num += simil.similitud * val.valoracion
+                sum_den += simil.similitud    
+        if sum_den == 0:
+            print 'Error, division por cero!'
+            sys.exit(-1)
         vprediccion = sum_num / sum_den
         prediccion = Valoracion(idUsu, idItem, vprediccion)
         return prediccion
