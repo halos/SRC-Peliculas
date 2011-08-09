@@ -1,9 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
+sys.path.append('..')
+
 import pelicula
 from db import *
 from singleton import *
+from daoValoracion import *
 
 class DAOPelicula(Singleton):
 	""" Class doc """
@@ -47,6 +51,25 @@ class DAOPelicula(Singleton):
 		res=datos.get_fila(consulta)
 		peli=pelicula.Pelicula(res[0],res[2],res[1])
 		return peli
+	
+	def getPeliculasNoPuntuadas(self,idUsu):
+		"""
+		Para un usuario concreto devuelve aquellas películas que no han sido valoradas
+		Params:
+			idUsu: usuario cuyas peliculas no valoradas se van a buscar
+		"""
+		datos=DB()
+		daov=DAOValoracion()
+		vals=daov.getValoracionesUsuario(idUsu)
+		excluidos=""
+		for i in vals:
+			excluidos+=str(i.idPel)+","
+		#eliminamos la última coma, innecesaria
+		excluidos2=excluidos[:-1]
+		consulta="SELECT * FROM peliculas WHERE id NOT IN ("+excluidos2+")"
+		res=datos.get_filas(consulta)
+		pelis=[]
+		for j in res:
+			pelis.append(pelicula.Pelicula(j[0],j[2],j[1]))
+		return pelis
 		
-
-

@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
+sys.path.append('..')
+
 import valoracion
 from db import *
 from singleton import *
@@ -62,3 +65,16 @@ class DAOValoracion(Singleton):
 		for i in res:
 			valoraciones.append(valoracion.Valoracion(i[1],i[0],i[2]))
 		return valoraciones	
+	
+	def actualizaValoracion(self,val):
+		""" Actualiza una valoracion anteriormente insertada
+		Params:
+			val: valoración cuyo rating hay que modificar
+		"""
+		datos=DB()
+		consulta="UPDATE valoraciones SET valoracion ="+\
+		str(val.valoracion)+" WHERE (idPelicula="+str(val.idPel)+\
+		" AND idUsuario="+str(val.idUsu)+")"
+		print consulta
+		datos.ejecutar(consulta)
+		return

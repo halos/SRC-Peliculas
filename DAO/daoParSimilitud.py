@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
+sys.path.append('..')
+
 import parSimilitud
 from db import *
 from singleton import *

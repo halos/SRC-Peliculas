@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import sys
+sys.path.append('..')
+
 import usuario
 from db import *
 from singleton import *
@@ -35,3 +38,16 @@ class DAOUsuario(Singleton):
 		res=datos.get_fila(consulta)
 		usu = usuario.Usuario(res[0],res[1])
 		return usu
+	
+	def insertar(self,usu):
+		"""
+		Introduce un nuevo usuario en el sistema
+		Params:
+			usu: usuario a inserta
+		"""
+		datos=DB()
+		consulta="INSERT INTO usuarios (id,pass) VALUES ("+\
+		str(usu.idUsu)+",'"+str(usu.passw)+"')"
+		datos.ejecutar(consulta)
+		return
+
