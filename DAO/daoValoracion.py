@@ -22,9 +22,14 @@ class DAOValoracion(Singleton):
 		"""
 		datos = DB()
 		res=datos.get_filas("SELECT * FROM valoraciones")
-		valoraciones=[]
+		valoraciones={}
 		for i in res:
-			valoraciones.append(valoracion.Valoracion(i[1],i[0],i[2]))
+			if i[1] not in valoraciones:
+				#si el usuario no está en el diccionario
+				#se introduce con un diccionario vacío
+				valoraciones[i[1]]={}
+			valoraciones[i[1]][i[0]]=\
+			valoracion.Valoracion(i[1],i[0],i[2])
 		return valoraciones
 
 	def inserta(self,v):
@@ -48,9 +53,9 @@ class DAOValoracion(Singleton):
 		datos=DB()
 		consulta="SELECT * FROM valoraciones WHERE idUsuario = "+str(idUsu)
 		res=datos.get_filas(consulta)
-		valoraciones=[]
+		valoraciones={}
 		for i in res:
-			valoraciones.append(valoracion.Valoracion(i[1],i[0],i[2]))
+			valoraciones[i[0]]=valoracion.Valoracion(i[1],i[0],i[2])
 		return valoraciones
 	
 	def getValoracionesItem(self,idPel):
@@ -61,10 +66,10 @@ class DAOValoracion(Singleton):
 		datos=DB()
 		consulta="SELECT * FROM valoraciones WHERE idPelicula = "+str(idPel)
 		res=datos.get_filas(consulta)
-		valoraciones=[]
+		valoraciones={}
 		for i in res:
-			valoraciones.append(valoracion.Valoracion(i[1],i[0],i[2]))
-		return valoraciones	
+			valoraciones[i[1]]=valoracion.Valoracion(i[1],i[0],i[2])
+		return valoraciones
 	
 	def actualizaValoracion(self,val):
 		""" Actualiza una valoracion anteriormente insertada

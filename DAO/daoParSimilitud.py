@@ -21,9 +21,14 @@ class DAOParSimilitud(Singleton):
 		"""
 		datos = DB()
 		res=datos.get_filas("SELECT * FROM similitudes")
-		similitudes=[]
+		similitudes={}
 		for i in res:
-			similitudes.append(parSimilitud.ParSimilitud(i[0],i[1],i[2]))
+			if i[0] not in similitudes:
+				#si el item1 no está en el diccionario
+				#se introduce con un diccionario vacío
+				similitudes[i[0]]={}
+			similitudes[i[0]][i[1]]=\
+			parSimilitud.ParSimilitud(i[0],i[1],i[2])
 		return similitudes
 		
 	def getSimilitudesItem(self,idItem):
@@ -35,9 +40,9 @@ class DAOParSimilitud(Singleton):
 		datos = DB()
 		consulta= "SELECT * FROM similitudes WHERE idPel1 = "+str(idItem)
 		res=datos.get_filas(consulta)
-		similitudes=[]
+		similitudes={}
 		for i in res:
-			similitudes.append(parSimilitud.ParSimilitud(i[0],i[1],i[2]))
+			similitudes[i[0]]=parSimilitud.ParSimilitud(i[0],i[1],i[2])
 		return similitudes
 
 	
