@@ -3,18 +3,21 @@
 
 import sys
 sys.path.append('estrategiasPredicción')
+sys.path.append('DAO')
 
 from valoracion import Valoracion
-import ItemAvgAdj1
+from itemAvgAdj1 import ItemAvgAdj1
+from singleton import Singleton
+from daoParSimilitud import *
+from daoPelicula import *
+from daoValoracion import *
+from daoUsuario import *
 from estrategiaSimilitud import EstrategiaSimilitud
 from estrategiaPrediccion import EstrategiaPrediccion
 
-class Motor (object):
+class Motor (Singleton):
 	
 	""" Class doc """
-	
-	""" Única instancia de la clase """
-	instance = None 
 	
 	"""Identificador del usuario actual"""
 	__user = 0
@@ -28,11 +31,6 @@ class Motor (object):
 	def __init__ (self):
 		""" Class initialiser """
 		pass
-	
-	def __new__(cls, *args, **kargs): 
-		if cls.instance is None:
-			cls.instance = object.__new__(cls, *args, **kargs)
-		return cls.instance
 		
 	def login(self, id, passw):
 		""" Function doc
