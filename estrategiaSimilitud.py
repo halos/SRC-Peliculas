@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import daoValoracion
-from parSimilitud import ParSimilitud
+import motor
+import parSimilitud
 
 class EstrategiaSimilitud:
 	""" Interfaz de la estrategia de similitud """
@@ -30,7 +30,7 @@ class EstrategiaSimilitud:
 	
 		Return:
 	
-			(list): Lista de similitudes entre las películas (ParSimilitud)
+			None #(list): Lista de similitudes entre las películas (ParSimilitud)
 		"""
 		
 		# lista con los ParSimilitud
@@ -64,10 +64,25 @@ class EstrategiaSimilitud:
 			for j in p2:
 				similitud = self.__calcula_similitud(\
 					valoraciones[i], valoraciones[j])
-				ps = ParSimilitud(i, j, similitud)
+				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
 		
-		return paresSimilitud
+		#return paresSimilitud
+		# almacenamiento de similitudes
+		m = motor.Motor()
+		
+		sim_insertar = []
+		sim_actualizar = []
+		sim_anteriores = m.getSimilitudes()
+		
+		for s in paresSimilitud:
+			if s in sim_anteriores:
+				sim_actualizar.append(s)
+			else:
+				sim_insertar.append(s)
+		
+		m.insertaSimilitudes(sim_insertar)
+		m.actualizaSimilitudes(sim_actualizar)
 		
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
 		""" Recalcula las similitudes en base a unas ya existentes y a las
@@ -80,7 +95,7 @@ class EstrategiaSimilitud:
 	
 		Return:
 	
-			(list): Lista de similitudes entre las películas (ParSimilitud)
+			None #(list): Lista de similitudes entre las películas (ParSimilitud)
 		"""
 		
 		# para que no se modifiquen las valoraciones en memoria
@@ -96,4 +111,4 @@ class EstrategiaSimilitud:
 		# almacenar valoraciones actualizadas
 		#daoValoracion.DAOValoracion.guarda(valoraciones)
 		
-		return self.similitud(valoraciones, _nuevasValoraciones)
+		self.similitud(valoraciones, _nuevasValoraciones)

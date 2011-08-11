@@ -70,11 +70,11 @@ def carga_valoraciones(nombre_archivo):
 
 #print "Pearson:"
 #for i in estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud).similitud(vals):
-	#print '%s, %s: --> %f' % (pels[i.idP1][:-1], pels[i.idP2][:-1], i.similitud)
+	#print '%s <-> %s --> %f' % (pels[i.idP1][:-1], pels[i.idP2][:-1], i.similitud)
 
 #print "Coseno:"
 #for i in estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud).similitud(vals):
-	#print '%s, %s: --> %f' % (pels[i.idP1][:-1], pels[i.idP2][:-1], i.similitud)
+	#print '%s <--> %s: --> %f' % (pels[i.idP1][:-1], pels[i.idP2][:-1], i.similitud)
 
 val = valoracion.Valoracion
 
@@ -88,8 +88,12 @@ vals.append(val(2,222,5))
 vals.append(val(3,222,4))
 vals.append(val(3,111,4))
 
-#vals.append(val(8,888,5))
-#vals.append(val(8,999,4))
+vals.append(val(8,888,5))
+vals.append(val(8,999,4))
+vals.append(val(8,333,5))
+
+vals.append(val(9,888,2))
+vals.append(val(9,999,4))
 
 print "Pearson:"
 for i in estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud).similitud(vals):
