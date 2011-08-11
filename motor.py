@@ -119,10 +119,8 @@ class Motor (Singleton):
 		daov = DAOValoracion()
 		valoraciones = daov.getValoraciones()
 		
-		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
-		similitudes = eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
-		
-		#almacenamiento de las similitudes
+		eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
+		eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
 		
 
 	def recomendar(self):
