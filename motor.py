@@ -12,8 +12,8 @@ from daoParSimilitud import *
 from daoPelicula import *
 from daoValoracion import *
 from daoUsuario import *
-from estrategiaSimilitud import EstrategiaSimilitud
-from estrategiaPrediccion import EstrategiaPrediccion
+import estrategiaSimilitud
+import estrategiaPrediccion
 
 class Motor (Singleton):
 	
@@ -116,9 +116,8 @@ class Motor (Singleton):
 		
 		valoraciones = []
 		
-		#obtener valoraciones de todas las películas puntuadas
-		for v in self.__nuevasValoraciones:
-			valoraciones += self.getValoracionesItem(v.idPel)
+		daov = DAOValoracion()
+		valoraciones = daov.getValoraciones()
 		
 		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
 		similitudes = eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
@@ -141,7 +140,7 @@ class Motor (Singleton):
 		m = Motor()
 		it = ItemAvgAdj1(m)
 		# Añadimos función de predicción 
-		ep = EstrategiaPrediccion(ItemAvgAdj1.predice)
+		ep = estrategiaPrediccion.EstrategiaPrediccion(ItemAvgAdj1.predice)
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 		# Creamos una lista de valores predichos
 		lvalpred = []
@@ -232,3 +231,37 @@ class Motor (Singleton):
 		"""
 		daos = DAOParSimilitud()
 		return daos.getSimilitudesItem(idItem)
+
+	def insertaSimilitudes(self, _similitudes):
+		""" Método para insertar nuevas similitudes
+	
+		Params:
+	
+			_similitudes(list): Lista de similitudes
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = DAOParSimilitud()
+		
+		for s in _similitudes:
+			daos.insertaSimilitud(s)
+
+	def actualizaSimilitudes(self, _similitudes):
+		""" Método para actualizar similitudes existentes
+	
+		Params:
+	
+			_similitudes(list): Lista de similitudes
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = DAOParSimilitud()
+		
+		for s in _similitudes:
+			daos.actualizaSimilitud(s)
