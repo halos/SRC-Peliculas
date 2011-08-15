@@ -6,7 +6,6 @@ sys.path.append('estrategiasPredicción')
 sys.path.append('DAO')
 
 from valoracion import Valoracion
-from itemAvgAdj1 import ItemAvgAdj1
 from singleton import Singleton
 from daoParSimilitud import *
 from daoPelicula import *
@@ -138,10 +137,8 @@ class Motor (Singleton):
 			(): DESCRIPTION
 		"""
 		daop = DAOPelicula()
-		m = Motor()
-		it = ItemAvgAdj1(m)
 		# Añadimos función de predicción 
-		ep = EstrategiaPrediccion(ItemAvgAdj1.predice)
+		ep = EstrategiaPrediccion()
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 		# Creamos una lista de valores predichos
 		lvalpred = []
