@@ -5,15 +5,15 @@ import sys
 sys.path.append('DAO')
 
 import valoracion
-from singleton import Singleton
-from daoParSimilitud import *
-from daoPelicula import *
-from daoValoracion import *
-from daoUsuario import *
+import singleton
+import daoValoracion
+import daoUsuario
+import daoPelicula
+import daoParSimilitud
 import estrategiaSimilitud
 import estrategiaPrediccion
 
-class Motor (Singleton):
+class Motor (singleton.Singleton):
 	
 	""" Class doc """
 	
@@ -41,7 +41,7 @@ class Motor (Singleton):
 	
 			(): DESCRIPTION
 		"""
-		daou = DAOUsuario()
+		daou = daoUsuario.DAOUsuario()
 		self.__user = daou.getUsuario(id)
 		if self.__comprobarIdentidad(self.__user, passw):
 			self.__actualizarModelo()
@@ -60,7 +60,7 @@ class Motor (Singleton):
 			(): DESCRIPTION
 		"""
 		valoracion = valoracion.Valoracion(self.__user.idUsu, idPel, val)
-		daov = DAOValoracion()
+		daov = daoValoracion.DAOValoracion()
 		daov.inserta(valoracion) # Si existe, se actualiza
 		self.__nuevasValoraciones.append(valoracion)
 		
@@ -81,7 +81,7 @@ class Motor (Singleton):
 	
 			(): DESCRIPTION
 		"""
-		daop = DAOPelicula()
+		daop = daoPelicula.DAOPelicula()
 		lpel = daop.getPeliculasTitulo(consulta)
 		return lpel
 	
@@ -133,7 +133,7 @@ class Motor (Singleton):
 	
 			(): DESCRIPTION
 		"""
-		daop = DAOPelicula()
+		daop = daoPelicula.DAOPelicula()
 		# Añadimos función de predicción 
 		ep = estrategiaPrediccion.EstrategiaPrediccion(func_pred)
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
@@ -164,7 +164,7 @@ class Motor (Singleton):
 			Diccionario de valoraciones, cuyas claves son el idItem 
 			
 		"""
-		daov = DAOValoracion()
+		daov = daoValoracion.DAOValoracion()
 		return daov.getValoracionesUsuario(idUsu)
 		
 		
@@ -180,7 +180,7 @@ class Motor (Singleton):
 			Diccionario de valoraciones, cuyas claves son el idUsuario
 			
 		"""
-		daov = DAOValoracion()
+		daov = daoValoracion.DAOValoracion()
 		return daov.getValoracionesItem(idItem)
 		
 	def getValoraciones(self):
@@ -195,7 +195,7 @@ class Motor (Singleton):
 			Diccionario de diccionarios, cuyas claves son el idUsu (primero), y despúes el idItem. 
 			
 		"""
-		daov = DAOValoracion()
+		daov = daoValoracion.DAOValoracion()
 		return daov.getValoraciones()
 		
 	def getSimilitudes(self):
@@ -209,7 +209,7 @@ class Motor (Singleton):
 	
 			(): DESCRIPTION
 		"""
-		daos = DAOParSimilitud()
+		daos = daoParSimilitud.DAOParSimilitud()
 		return daos.getSimilitudes()
 		
 	def getSimilitudesItem(self, idItem):
@@ -224,7 +224,7 @@ class Motor (Singleton):
 			Diccionario de similitudes, cuyas claves son el idItem del elemento a comparar.
 			
 		"""
-		daos = DAOParSimilitud()
+		daos = daoParSimilitud.DAOParSimilitud()
 		return daos.getSimilitudesItem(idItem)
 
 	def insertaSimilitudes(self, _similitudes):
@@ -239,7 +239,7 @@ class Motor (Singleton):
 			(Nonetype): None
 		"""
 		
-		daos = DAOParSimilitud()
+		daos = daoParSimilitud.DAOParSimilitud()
 		
 		for s in _similitudes:
 			daos.insertaSimilitud(s)
@@ -256,7 +256,7 @@ class Motor (Singleton):
 			(Nonetype): None
 		"""
 		
-		daos = DAOParSimilitud()
+		daos = daoParSimilitud.DAOParSimilitud()
 		
 		for s in _similitudes:
 			daos.actualizaSimilitud(s)
