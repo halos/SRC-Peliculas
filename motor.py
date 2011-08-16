@@ -118,7 +118,7 @@ class Motor (Singleton):
 		for v in self.__nuevasValoraciones:
 			valoraciones += self.getValoracionesItem(v.idPel)
 		
-		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
+		eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
 		similitudes = eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
 		
 		#almacenamiento de las similitudes
