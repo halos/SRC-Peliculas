@@ -8,7 +8,7 @@ import valoracion
 from singleton import Singleton
 from daoParSimilitud import *
 from daoPelicula import *
-from daoValoracion import *
+import daoValoracion
 from daoUsuario import *
 import estrategiaSimilitud
 import estrategiaPrediccion
@@ -60,7 +60,7 @@ class Motor (Singleton):
 			(): DESCRIPTION
 		"""
 		valoracion = valoracion.Valoracion(self.__user.idUsu, idPel, val)
-		daov = DAOValoracion()
+		daov = daoValoracion.DAOValoracion()
 		daov.inserta(valoracion) # Si existe, se actualiza
 		self.__nuevasValoraciones.append(valoracion)
 		
@@ -164,7 +164,7 @@ class Motor (Singleton):
 			Diccionario de valoraciones, cuyas claves son el idItem 
 			
 		"""
-		daov = DAOValoracion()
+		daov = daoValoracion.DAOValoracion()
 		return daov.getValoracionesUsuario(idUsu)
 		
 		
@@ -180,7 +180,7 @@ class Motor (Singleton):
 			Diccionario de valoraciones, cuyas claves son el idUsuario
 			
 		"""
-		daov = DAOValoracion()
+		daov = daoValoracion.DAOValoracion()
 		return daov.getValoracionesItem(idItem)
 		
 	def getValoraciones(self):
@@ -195,7 +195,7 @@ class Motor (Singleton):
 			Diccionario de diccionarios, cuyas claves son el idUsu (primero), y despúes el idItem. 
 			
 		"""
-		daov = DAOValoracion()
+		daov = daoValoracion.DAOValoracion()
 		return daov.getValoraciones()
 		
 	def getSimilitudes(self):
