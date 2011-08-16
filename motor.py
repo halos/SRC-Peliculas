@@ -11,7 +11,8 @@ from daoParSimilitud import *
 from daoPelicula import *
 from daoValoracion import *
 from daoUsuario import *
-from estrategiaSimilitud import EstrategiaSimilitud
+import estrategiaSimilitud
+
 from estrategiaPrediccion import EstrategiaPrediccion
 
 class Motor (Singleton):
@@ -125,7 +126,7 @@ class Motor (Singleton):
 		#almacenamiento de las similitudes
 		
 
-	def recomendar(self):
+	def recomendar(self, func_pred):
 		""" Function doc
 	
 		Params:
@@ -137,10 +138,8 @@ class Motor (Singleton):
 			(): DESCRIPTION
 		"""
 		daop = DAOPelicula()
-		m = Motor()
-		it = ItemAvgAdj1(m)
 		# Añadimos función de predicción 
-		ep = EstrategiaPrediccion(ItemAvgAdj1.predice)
+		ep = EstrategiaPrediccion(func_pred)
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 		# Creamos una lista de valores predichos
 		lvalpred = []
