@@ -6,14 +6,13 @@ sys.path.append('estrategiasPredicción')
 sys.path.append('DAO')
 
 from valoracion import Valoracion
-from itemAvgAdj1 import ItemAvgAdj1
 from singleton import Singleton
 from daoParSimilitud import *
 from daoPelicula import *
 from daoValoracion import *
 from daoUsuario import *
-import estrategiaSimilitud
-import estrategiaPrediccion
+from estrategiaSimilitud import EstrategiaSimilitud
+from estrategiaPrediccion import EstrategiaPrediccion
 
 class Motor (Singleton):
 	
@@ -116,11 +115,14 @@ class Motor (Singleton):
 		
 		valoraciones = []
 		
-		daov = DAOValoracion()
-		valoraciones = daov.getValoraciones()
+		#obtener valoraciones de todas las películas puntuadas
+		for v in self.__nuevasValoraciones:
+			valoraciones += self.getValoracionesItem(v.idPel)
 		
-		eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
-		eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
+		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
+		similitudes = eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
+		
+		#almacenamiento de las similitudes
 		
 
 	def recomendar(self):
@@ -138,7 +140,7 @@ class Motor (Singleton):
 		m = Motor()
 		it = ItemAvgAdj1(m)
 		# Añadimos función de predicción 
-		ep = estrategiaPrediccion.EstrategiaPrediccion(ItemAvgAdj1.predice)
+		ep = EstrategiaPrediccion(ItemAvgAdj1.predice)
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 		# Creamos una lista de valores predichos
 		lvalpred = []
@@ -229,37 +231,3 @@ class Motor (Singleton):
 		"""
 		daos = DAOParSimilitud()
 		return daos.getSimilitudesItem(idItem)
-
-	def insertaSimilitudes(self, _similitudes):
-		""" Método para insertar nuevas similitudes
-	
-		Params:
-	
-			_similitudes(list): Lista de similitudes
-	
-		Return:
-	
-			(Nonetype): None
-		"""
-		
-		daos = DAOParSimilitud()
-		
-		for s in _similitudes:
-			daos.insertaSimilitud(s)
-
-	def actualizaSimilitudes(self, _similitudes):
-		""" Método para actualizar similitudes existentes
-	
-		Params:
-	
-			_similitudes(list): Lista de similitudes
-	
-		Return:
-	
-			(Nonetype): None
-		"""
-		
-		daos = DAOParSimilitud()
-		
-		for s in _similitudes:
-			daos.actualizaSimilitud(s)
