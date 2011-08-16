@@ -116,7 +116,7 @@ class Motor (singleton.Singleton):
 		
 		#obtener valoraciones de todas las películas puntuadas
 		for v in self.__nuevasValoraciones:
-			valoraciones += self.getValoracionesItem(v.idPel)
+			valoraciones += self.getValoracionesItem(v.idPel).values()
 		
 		eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
 		eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
