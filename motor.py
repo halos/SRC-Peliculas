@@ -115,14 +115,11 @@ class Motor (Singleton):
 		
 		valoraciones = []
 		
-		#obtener valoraciones de todas las películas puntuadas
-		for v in self.__nuevasValoraciones:
-			valoraciones += self.getValoracionesItem(v.idPel)
+		daov = DAOValoracion()
+		valoraciones = daov.getValoraciones()
 		
-		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
-		similitudes = eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
-		
-		#almacenamiento de las similitudes
+		eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
+		eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
 		
 
 	def recomendar(self, func_pred):
@@ -229,3 +226,37 @@ class Motor (Singleton):
 		"""
 		daos = DAOParSimilitud()
 		return daos.getSimilitudesItem(idItem)
+
+	def insertaSimilitudes(self, _similitudes):
+		""" Método para insertar nuevas similitudes
+	
+		Params:
+	
+			_similitudes(list): Lista de similitudes
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = DAOParSimilitud()
+		
+		for s in _similitudes:
+			daos.insertaSimilitud(s)
+
+	def actualizaSimilitudes(self, _similitudes):
+		""" Método para actualizar similitudes existentes
+	
+		Params:
+	
+			_similitudes(list): Lista de similitudes
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = DAOParSimilitud()
+		
+		for s in _similitudes:
+			daos.actualizaSimilitud(s)

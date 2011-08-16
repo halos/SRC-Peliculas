@@ -7,7 +7,7 @@ __date__ ="$07-dic-2010 10:22:31$"
 import sys
 from math import fabs
 from valoracion import Valoracion
-from motor import Motor
+import motor
 
 class ItemAvgAdj1:
 	""" Clase que implementa el método de prediccion
@@ -55,7 +55,7 @@ class ItemAvgAdj1:
 					media_usuario: Media de las valoraciones hechas para un determinado item
 			
 		"""
-		m = Motor() # Clase Singleton
+		m = motor.Motor() # Clase Singleton
 		lval_item = m.getValoracionesItem(idItem).values()
 		nval = 0
 		media_item = 0
@@ -80,7 +80,7 @@ class ItemAvgAdj1:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-		m = Motor()
+		m = motor.Motor()
 		media_item = self.__mediaitem(idItem)
 		media_usu = self.__mediausuario(idUsu)
 		sum_num = 0

@@ -61,7 +61,10 @@ def calcula_similitud(_p1, _p2):
 	
 	den = sqrt(sum1 * sum2)
 	
-	sim = num / den
+	if den == 0:
+		den = 0.00000000001
+	
+	sim = num / den	
 	
 	#normaliza similitud
 	sim = (sim + 1) / 2
