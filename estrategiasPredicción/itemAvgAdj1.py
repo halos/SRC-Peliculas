@@ -9,7 +9,7 @@ sys.path.append('..')
 
 from math import fabs
 from valoracion import Valoracion
-import motor
+from motor import Motor
 
 class ItemAvgAdj1:
 	""" Clase que implementa el método de prediccion
@@ -20,14 +20,13 @@ class ItemAvgAdj1:
 		""" Constructor básico"""
 
 
-	def __mediausuario(self, idUsu, idItem):
+	def __mediausuario(self, idUsu):
 		"""
 			Metodo que calcula la media de las valoraciones
 			hechas por un usuario a todos sus items
 			
 			Params:
 					idUsu (Integer):
-					idItem (Integer):
 					
 			Return:
 					media_usuario (Float): Media de las valoraciones hechas por un usuario a todos sus items
@@ -43,21 +42,20 @@ class ItemAvgAdj1:
 		media_usuario /= nval
 		return media_usuario
 
-	def __mediaitem(self, idUsu, idItem):
+	def __mediaitem(self, idItem):
 
 		"""
 			Metodo que calcula la media de las valoraciones
 			hechas para un determinado item
 			
 			Params:
-					idUsu	(Integer):
 					idItem	(Integer): 
 					
 			Return:
 					media_usuario: Media de las valoraciones hechas para un determinado item
 			
 		"""
-		m = motor.Motor() # Clase Singleton
+		m = Motor() # Clase Singleton
 		lval_item = m.getValoracionesItem(idItem).values()
 		nval = 0
 		media_item = 0
@@ -82,7 +80,7 @@ class ItemAvgAdj1:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-		m = motor.Motor()
+		m = Motor()
 		media_item = self.__mediaitem(idItem)
 		media_usu = self.__mediausuario(idUsu)
 		sum_num = 0
