@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.append('estrategiasPredicción')
 sys.path.append('DAO')
 
 from valoracion import Valoracion
@@ -12,7 +11,6 @@ from daoPelicula import *
 from daoValoracion import *
 from daoUsuario import *
 import estrategiaSimilitud
-
 from estrategiaPrediccion import EstrategiaPrediccion
 
 class Motor (Singleton):

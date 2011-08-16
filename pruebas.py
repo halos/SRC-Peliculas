@@ -1,9 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
-import sys
-sys.path.append("estrategiasSimilitud")
-
+	
 from motor import Motor
 
 def carga_peliculas(nombre_archivo):
@@ -117,7 +114,6 @@ def carga_valoraciones(nombre_archivo):
 #print "Coseno:"
 #for i in estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud).actualizaSimilitud(vals, vals_n):
 #	print '%d, %d: --> %f' % (i.idP1, i.idP2, i.similitud)
-
 m = Motor()
-m.login(1, 'asdf')
-print 'Fin prueba'
+m.login(1,'asdf')
+print 'Fin'
