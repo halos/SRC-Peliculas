@@ -226,3 +226,37 @@ class Motor (Singleton):
 		"""
 		daos = DAOParSimilitud()
 		return daos.getSimilitudesItem(idItem)
+
+	def insertaSimilitudes(self, _similitudes):
+		""" Método para insertar nuevas similitudes
+	
+		Params:
+	
+			_similitudes(list): Lista de similitudes
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = DAOParSimilitud()
+		
+		for s in _similitudes:
+			daos.insertaSimilitud(s)
+
+	def actualizaSimilitudes(self, _similitudes):
+		""" Método para actualizar similitudes existentes
+	
+		Params:
+	
+			_similitudes(list): Lista de similitudes
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = DAOParSimilitud()
+		
+		for s in _similitudes:
+			daos.actualizaSimilitud(s)
