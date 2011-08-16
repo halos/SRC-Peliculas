@@ -55,7 +55,7 @@ class ItemAvgAdj1:
 					media_usuario: Media de las valoraciones hechas para un determinado item
 			
 		"""
-		m = motor.Motor() # Clase Singleton
+		m = Motor() # Clase Singleton
 		lval_item = m.getValoracionesItem(idItem).values()
 		nval = 0
 		media_item = 0
@@ -80,7 +80,7 @@ class ItemAvgAdj1:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-		m = motor.Motor()
+		m = Motor()
 		media_item = self.__mediaitem(idItem)
 		media_usu = self.__mediausuario(idUsu)
 		sum_num = 0
