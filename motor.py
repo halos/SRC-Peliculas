@@ -118,10 +118,8 @@ class Motor (Singleton):
 		for v in self.__nuevasValoraciones:
 			valoraciones += self.getValoracionesItem(v.idPel)
 		
-		eSimilitud = estrategiaSimilitud.estrategiaSimilitud()
-		similitudes = eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
-		
-		#almacenamiento de las similitudes
+		eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
+		eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
 		
 
 	def recomendar(self, func_pred):
