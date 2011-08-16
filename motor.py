@@ -4,14 +4,14 @@
 import sys
 sys.path.append('DAO')
 
-from valoracion import Valoracion
+import valoracion
 from singleton import Singleton
 from daoParSimilitud import *
 from daoPelicula import *
 from daoValoracion import *
 from daoUsuario import *
 import estrategiaSimilitud
-from estrategiaPrediccion import EstrategiaPrediccion
+import estrategiaPrediccion
 
 class Motor (Singleton):
 	
@@ -59,7 +59,7 @@ class Motor (Singleton):
 	
 			(): DESCRIPTION
 		"""
-		valoracion = Valoracion(self.__user.idUsu, idPel, val)
+		valoracion = valoracion.Valoracion(self.__user.idUsu, idPel, val)
 		daov = DAOValoracion()
 		daov.inserta(valoracion) # Si existe, se actualiza
 		self.__nuevasValoraciones.append(valoracion)
@@ -135,13 +135,13 @@ class Motor (Singleton):
 		"""
 		daop = DAOPelicula()
 		# Añadimos función de predicción 
-		ep = EstrategiaPrediccion(func_pred)
+		ep = estrategiaPrediccion.EstrategiaPrediccion(func_pred)
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 		# Creamos una lista de valores predichos
 		lvalpred = []
 		for idPel in lpelnop:
 			prediccion = ep.predice(self.__user, idPel)
-			val = Valoracion(self.__user, idPel, prediccion)
+			val = valoracion.Valoracion(self.__user, idPel, prediccion)
 			lvalpred.append(val)
 		# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
 		lvalpred.sort(reverse=True)
@@ -226,3 +226,37 @@ class Motor (Singleton):
 		"""
 		daos = DAOParSimilitud()
 		return daos.getSimilitudesItem(idItem)
+
+	def insertaSimilitudes(self, _similitudes):
+		""" Método para insertar nuevas similitudes
+	
+		Params:
+	
+			_similitudes(list): Lista de similitudes
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = DAOParSimilitud()
+		
+		for s in _similitudes:
+			daos.insertaSimilitud(s)
+
+	def actualizaSimilitudes(self, _similitudes):
+		""" Método para actualizar similitudes existentes
+	
+		Params:
+	
+			_similitudes(list): Lista de similitudes
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = DAOParSimilitud()
+		
+		for s in _similitudes:
+			daos.actualizaSimilitud(s)
