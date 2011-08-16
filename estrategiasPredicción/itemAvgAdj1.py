@@ -9,7 +9,7 @@ sys.path.append('..')
 
 from math import fabs
 from valoracion import Valoracion
-import motor
+from motor import Motor
 
 class ItemAvgAdj1:
 	""" Clase que implementa el método de prediccion
