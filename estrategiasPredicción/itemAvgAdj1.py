@@ -20,14 +20,13 @@ class ItemAvgAdj1:
 		""" Constructor básico"""
 
 
-	def __mediausuario(self, idUsu, idItem):
+	def __mediausuario(self, idUsu):
 		"""
 			Metodo que calcula la media de las valoraciones
 			hechas por un usuario a todos sus items
 			
 			Params:
 					idUsu (Integer):
-					idItem (Integer):
 					
 			Return:
 					media_usuario (Float): Media de las valoraciones hechas por un usuario a todos sus items
@@ -43,14 +42,13 @@ class ItemAvgAdj1:
 		media_usuario /= nval
 		return media_usuario
 
-	def __mediaitem(self, idUsu, idItem):
+	def __mediaitem(self, idItem):
 
 		"""
 			Metodo que calcula la media de las valoraciones
 			hechas para un determinado item
 			
 			Params:
-					idUsu	(Integer):
 					idItem	(Integer): 
 					
 			Return:
