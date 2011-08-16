@@ -5,6 +5,8 @@ __author__="sramirez"
 __date__ ="$07-dic-2010 10:22:31$"
 
 import sys
+sys.path.append('..')
+
 from math import fabs
 from valoracion import Valoracion
 from motor import Motor
