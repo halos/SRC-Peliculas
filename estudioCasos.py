@@ -115,5 +115,4 @@ print 'Comienzo del estudio de casos para la estrategia de predicción WeithedSu
 for p in tp:
     for k in tk:
         for es in tes:
-            for n in tn:
-                ejecutarPrueba3(p, k, es)
+            ejecutarPrueba3(p, k, es)
