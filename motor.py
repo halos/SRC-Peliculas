@@ -122,7 +122,7 @@ class Motor (singleton.Singleton):
 		eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
 		
 
-	def recomendar(self, func_pred):
+	def recomendar(self, estra_pred):
 		""" Function doc
 	
 		Params:
@@ -133,21 +133,17 @@ class Motor (singleton.Singleton):
 	
 			(): DESCRIPTION
 		"""
-		daop = daoPelicula.DAOPelicula()
-		# Añadimos función de predicción 
-		ep = estrategiaPrediccion.EstrategiaPrediccion(func_pred)
+		daop = daoPelicula.DAOPelicula()		
 		lpelnop = daop.getPeliculasNoPuntuadas(self.__user.idUsu) # devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 		# Creamos una lista de valores predichos
 		lvalpred = []
 		for idPel in lpelnop:
-			prediccion = ep.predice(self.__user, idPel)
+			prediccion = estra_pred.predice(self.__user, idPel)
 			val = valoracion.Valoracion(self.__user, idPel, prediccion)
 			lvalpred.append(val)
 		# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
 		lvalpred.sort(reverse=True)
 		return lvalpred[:5]
-		
-		
 		
 	
 	# Métodos adicionales (getter's)
