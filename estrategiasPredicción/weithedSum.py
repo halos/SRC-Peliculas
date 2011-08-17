@@ -16,17 +16,15 @@ class WeithedSum:
     def __init__(self):
         """ Constructor básico"""
         
-    def predice(self, idUsu, idItem):
+    def predice(self, idUsu, idItem, valoraciones):
         """
 			
 		Metodo que devuelve el valor de prediccion para un item-usuario
 		
 		Params:
-		
-				idItem: Identificador del item cuyo valora deseamos predecir
-				valoraciones(dict): Contiene todos las valoraciones aportadas por todos los usuarios
-				similitudes(dict): Contiene los pares de similitud entre items devueltos por el agrupamiento	
-
+		        idUsu (Integer)
+				idItem (Integer): Identificador del item cuyo valora deseamos predecir
+				valoraciones(dict):
 		Return:
 					
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
@@ -36,9 +34,8 @@ class WeithedSum:
         sum_num = 0
         sum_den = 0
         dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
-        lval = m.getValoracionesUsuario(idUsu) # Lista de valoraciones para un usuario
         #Cálculo de la fórmula de la prediccion        
-        for val in lval:
+        for val in valoraciones:
             simil = dsim.get(val.idPel, 0)
             if simil != 0: # Existe similitud para el item de esa valoracion
                 sum_num += simil.similitud * val.valoracion
