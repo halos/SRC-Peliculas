@@ -55,7 +55,7 @@ class DB(Singleton):
 
     # Métodos adicionales
     
-    def __borrar_DB(self):
+    def borrar_tablas(self):
         """
             Borra todas las tablas de la DB
             Params:
@@ -66,4 +66,10 @@ class DB(Singleton):
         for i in res:
             tables.append(i[0])
         for tname in tables:
-            self.ejecutar('DROP TABLE IF EXISTS ' + tname + ' CASCADE')
+            self.borrar_tabla(tname)
+
+    def borrar_tabla(self, tname):
+        """
+            Borra la tabla indicada de la DB
+        """
+        self.ejecutar('DROP TABLE IF EXISTS ' + tname + ' CASCADE')
