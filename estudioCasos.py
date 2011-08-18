@@ -5,7 +5,9 @@ import sys
 
 sys.path.append("estrategiasSimilitud")
 sys.path.append("estrategiasPredicción")
+sys.path.append("DAO")
 
+import agrupamiento
 import coseno
 import pearson
 import metricas
@@ -60,9 +62,13 @@ def ejecutaPrueba2(p, k, es, ep, n):
     m = motor.Motor()
     m.actualizarModelo()    
     # Realizamos el proceso de testing
-    ep = itemAvgAdjN.ItemAvgAdjN()
+    ep = itemAvgAdjN.ItemAvgAdjN(n, )
     lpredicciones = []
     for valoracion in valtest:
+        # Calculamos los k-vecinos
+        vecinos = agrupamiento.Agrupamiento(valoracion.idUsu).agrupknn(valoracion.idPel, k)
+        
+        ep = itemAvgAdjN.ItemAvgAdjN(n, valo)
         prediccion = ep.predice(valoracion.idUsu, valoracion.idPel)
         lpredicciones.append(prediccion)
     v_mae = metricas.mae(lpredicciones, valtest)
