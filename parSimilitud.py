@@ -20,6 +20,15 @@ class ParSimilitud:
 		self.idP2 = idP2
 		self.similitud = similitud
 		
+	def __cmp__(self, other):
+		""" Class compare """
+		if self.similitud < other.similitud:
+			return -1
+		elif self.similitud > other.similitud:
+			return 1
+		else:
+			return 0
+		
 	def __eq__(self, other):
 		""" == : Comapra si los usuarios son los mismos
 	
