@@ -15,22 +15,27 @@ import itemAvgAdj1
 import itemAvgAdjN
 import weithedSum
 import motor
+import db
 
-
-def ejecutaPrueba1(p, k, es, ep):
+def ejecutaPrueba1(p, k, es):
     print "Datos:\n"
     print "Particionado:", p + "\%\n"
     print "k:", k + "\n"
     print "Estrategia de similitud:", es[1] , "\n"
-    print "Estrategia de prediccion:", ep[1] , "\n"
+    print "Estrategia de prediccion: ItemAvgAdj1 \n"
+    # Comenzamos la medición
     t_inic = metricas.get_clock()
-    
-    lpredicciones = []    
-
-    (valtrain, valtest) = particionamiento.Particionamiento().divTrainTest(vals, p)
-    lsimilitudes = es.similitud(valtrain)
+    # Regeneramos la base de datos, con un porcentaje de particionamiento
+    dbase = db.DB()
+    valtest = dbase.regenerarDB(p)
+    # Actualizamos el modelo
+    m = motor.Motor()
+    m.actualizarModelo()    
+    # Realizamos el proceso de testing
+    ep = itemAvgAdj1.ItemAvgAdj1()
+    lpredicciones = []
     for valoracion in valtest:
-        prediccion = ep.predice(valoracion.idUsu, valoracion.idItem, valtrain,lsimilitudes)
+        prediccion = ep.predice(valoracion.idUsu, valoracion.idPel)
         lpredicciones.append(prediccion)
     v_mae = metricas.mae(lpredicciones, valtest)
     
@@ -46,16 +51,19 @@ def ejecutaPrueba2(p, k, es, ep, n):
     print "k:", k + "\n"
     print "Estrategia de similitud:", es[1] , "\n"
     print "Estrategia de prediccion:", ep[1] , "\n"
+    # Comenzamos la medición
     t_inic = metricas.get_clock()
-    
-    lpredicciones = []    
-
+    # Regeneramos la base de datos, con un porcentaje de particionamiento
+    dbase = db.DB()
+    valtest = dbase.regenerarDB(p)
+    # Actualizamos el modelo
     m = motor.Motor()
-    m.getValoraciones()
-    (valtrain, valtest) = particionamiento.Particionamiento().divTrainTest(vals, p)
-    lsimilitudes = es.similitud(valtrain)
+    m.actualizarModelo()    
+    # Realizamos el proceso de testing
+    ep = itemAvgAdjN.ItemAvgAdjN()
+    lpredicciones = []
     for valoracion in valtest:
-        prediccion = ep.predice(valoracion.idUsu, valoracion.idItem, valtrain,lsimilitudes)
+        prediccion = ep.predice(valoracion.idUsu, valoracion.idPel)
         lpredicciones.append(prediccion)
     v_mae = metricas.mae(lpredicciones, valtest)
     
@@ -100,7 +108,7 @@ print 'Comienzo del estudio de casos para la estrategia de predicción ItemAvgAd
 for p in tp:
     for k in tk:
         for es in tes:
-            ejecutarPrueba1(p, k, es)
+            ejecutaPrueba1(p, k, es)
 
 print 'Comienzo del estudio de casos para la estrategia de predicción ItemAvgAdjN:\n'            
  
@@ -108,11 +116,11 @@ for p in tp:
     for k in tk:
         for es in tes:
             for n in tn:
-                ejecutarPrueba2(p, k, es, n)
+                ejecutaPrueba2(p, k, es, n)
                 
 print 'Comienzo del estudio de casos para la estrategia de predicción WeithedSum:\n'
 
 for p in tp:
     for k in tk:
         for es in tes:
-            ejecutarPrueba3(p, k, es)
+            ejecutaPrueba3(p, k, es)
