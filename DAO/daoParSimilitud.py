@@ -74,3 +74,13 @@ class DAOParSimilitud(Singleton):
 		print consulta
 		datos.ejecutar(consulta)
 		return
+	
+	def reset(self):
+		"""Elimina todos los datos de la tabla de similitudes
+		
+		ADVERTENCIA: usar sólo para pruebas del estudio de casos
+		"""
+		datos=DB()
+		consulta = "DELETE FROM similitud "
+		datos.ejecutar (consulta)
+		return
