@@ -15,14 +15,30 @@ class CrossValidation:
 	
 	""" Clase que implementa el k-fold cross validation, aplicado al espacio del sistema """
 
-	def __init__(self, kfold):
+	def __init__(self, k):
 		""" Constructor Básico """
-		self.__kfold = kfold
+		self.k = k
 		
 	def ejecutar(self):
+		# Cargamos el fichero de Valoraciones para particionar
+		valoraciones = daov.cargarFicheroPrueba("/home/rebellion/Dropbox/Prácticas/Sistemas Informáticos/ratings1.csv")
+		# Particionamos el espacio en k-folds
+		folds = []
+		sizef = (float) (len(valoraciones) / self.k)
+		for i in range(self.k):
+			folds[i] = []
+			for j in range(sizef):
+				pos = random.randint(0, len(valoraciones) - 1)
+				folds[i].append(valoraciones.pop(pos))
+				if not valoraciones: # está vacía
+					break
 		# Borramos el contenido de las tablas similitudes y valoraciones
-		daoValoracion.DAOValoracion()
-
+		daov = daoValoracion.DAOValoracion()
+		daops = daoParSimilitud.DAOParSimilitud()
+		daov.reset()
+		daops.reset()
+		
+		
 	def divTrainTest(self, valoraciones, pct_train):
 		""" Función principal de la clase que divide todas las valoraciones en dos grupos: train y test
 		 
