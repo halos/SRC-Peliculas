@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import csv
 import sys
 sys.path.append('..')
 
@@ -83,3 +84,27 @@ class DAOValoracion(Singleton):
 		print consulta
 		datos.ejecutar(consulta)
 		return
+	
+	def reset(self):
+		"""Elimina todos los datos de la tabla de valoraciones
+		
+		ADVERTENCIA: usar sólo para pruebas del estudio de casos
+		"""
+		datos=DB()
+		consulta = "DELETE FROM valoracion "
+		datos.ejecutar (consulta)
+		return
+	
+	def cargarFicheroPrueba(self,fichero):
+		""" lee de un fichero csv un conjunto de valoraciones con las que poder trabajar
+		Params:
+			fichero: nombre del fichero csv del que se va a leer
+		return:
+			lista de valoraciones leidas del fichero
+		ADVERTENCIA: se espera que los campos del fichero csv estén separados por comas.
+		"""
+		reader=csv.reader(open(fichero, 'rb'))
+		ratings=[]
+		for fila, i in enumerate(reader):
+			ratings.append(valoracion.Valoracion(i[1],i[0],i[2]))
+		return ratings
