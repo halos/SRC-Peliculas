@@ -4,14 +4,24 @@
 __author__="sramirez"
 __date__ ="$13-dic-2010 22:18:13$"
 
+import sys
+sys.path.append("DAO")
+
+import daoValoracion
+import daoParSimilitud
 import random
 
-class Particionamiento:
+class CrossValidation:
 	
-	""" Clase que implementa el particionamiento de los datos en dos grupos: train y test """
+	""" Clase que implementa el k-fold cross validation, aplicado al espacio del sistema """
 
-	def __init__(self):
+	def __init__(self, kfold):
 		""" Constructor Básico """
+		self.__kfold = kfold
+		
+	def ejecutar(self):
+		# Borramos el contenido de las tablas similitudes y valoraciones
+		daoValoracion.DAOValoracion()
 
 	def divTrainTest(self, valoraciones, pct_train):
 		""" Función principal de la clase que divide todas las valoraciones en dos grupos: train y test
