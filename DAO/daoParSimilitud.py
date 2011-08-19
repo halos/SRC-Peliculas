@@ -81,6 +81,6 @@ class DAOParSimilitud(Singleton):
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
 		datos=DB()
-		consulta = "DELETE FROM similitud "
+		consulta = "DELETE FROM similitudes"
 		datos.ejecutar (consulta)
 		return

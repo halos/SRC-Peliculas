@@ -91,7 +91,7 @@ class DAOValoracion(Singleton):
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
 		datos=DB()
-		consulta = "DELETE FROM valoracion "
+		consulta = "DELETE FROM valoraciones"
 		datos.ejecutar (consulta)
 		return
 	
