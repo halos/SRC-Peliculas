@@ -42,7 +42,6 @@ class DAOValoracion(Singleton):
 		datos= DB()
 		consulta= "INSERT INTO `valoraciones` (`idPelicula`, `idUsuario`, `valoracion`) VALUES ("+\
 		str(v.idPel)+","+str(v.idUsu)+","+str(v.valoracion)+")"
-		print consulta
 		datos.ejecutar(consulta)
 		return
 	
@@ -81,7 +80,6 @@ class DAOValoracion(Singleton):
 		consulta="UPDATE valoraciones SET valoracion ="+\
 		str(val.valoracion)+" WHERE (idPelicula="+str(val.idPel)+\
 		" AND idUsuario="+str(val.idUsu)+")"
-		print consulta
 		datos.ejecutar(consulta)
 		return
 	
