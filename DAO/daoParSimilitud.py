@@ -71,7 +71,6 @@ class DAOParSimilitud(Singleton):
 		datos=DB()
 		consulta= "UPDATE similitudes SET similitud="+str(sim.similitud)+\
 		" WHERE (idPel1="+str(sim.idP1)+" AND idPel2="+str(sim.idP2)+")"
-		print consulta
 		datos.ejecutar(consulta)
 		return
 	
