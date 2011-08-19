@@ -15,13 +15,12 @@ class ItemAvgAdjN():
     """ Clase que implementa el método de prediccion Item Average Adjustament (N), 
 	    hereda de ItemAvgAdj1
 	"""    
-    def __init__(self, n, kval_vec):
+    def __init__(self, n):
         """ Constructor básico"""
         if n < 1:
             print 'Error, n debe ser mayor que 0'
             sys.exit(-1)
         self.__n = n
-        self.__lval = kval_vec
         
     def __mediausuario(self, idUsu):
         """
@@ -69,7 +68,7 @@ class ItemAvgAdjN():
         return media_item
         
         
-    def predice(self, idUsu, idItem):
+    def predice(self, idUsu, idItem, kval_vec):
         """
             
         Metodo que devuelve el valor de prediccion para un item-usuario
@@ -77,8 +76,7 @@ class ItemAvgAdjN():
         Params:
                 idUsu    (Integer):
                 idItem    (Integer): Identificador del item cuyo valora deseamos predecir
-                n (Integer): Número de valoraciones a tener en cuenta
-                valoraciones (List)
+                kval_vec
         Return:
                     
                 prediccion(Valoracion): Valoración predicha para un valor desconocido
@@ -92,7 +90,7 @@ class ItemAvgAdjN():
         dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
         #Cálculo de la fórmula de la prediccion
         nveces = 0 # Contador que vigila que no se superen n evaluaciones
-        for val in self.__lval:
+        for val in kval_vec:
             simil = dsim.get(val.idPel, 0)
             if simil != 0: # Existe similitud para el item de esa valoracion
                 sum_num += simil.similitud * (val.valoracion - media_usu)

@@ -66,7 +66,7 @@ class ItemAvgAdj1:
 		return media_item
 
 
-	def predice(self, idUsu, idItem):
+	def predice(self, idUsu, idItem, kval_vec):
 		"""
 			
 		Metodo que devuelve el valor de prediccion para un item-usuario
