@@ -24,20 +24,17 @@ class CrossValidation:
 		# Particionamos el espacio en k-folds
 		self.folds = []
 		sizef = len(valoraciones) / self.k # entero
-		for i in range(self.k):
+		for i in range(self.k - 1): # El último fold será lo que quede en la lista valoraciones
 			lval = []
 			for j in range(sizef):
 				pos = random.randint(0, len(valoraciones) - 1)
 				lval.append(valoraciones.pop(pos))
-				if not valoraciones: # está vacía
-					break
 			# Añadimos la nueva lista de valoraciones a la casilla del fold
 			self.folds.append(lval)
-			
+		self.folds.append(valoraciones) # Añadimos el último fold
 			
 	def ejecutaIter(self, nfold_test):
-		# Utilizar -1 !!
-		if (nfold_test > self.k) | (self.k < 0):
+		if (nfold_test >= self.k) | (self.k < 0):
 			print 'Error!'
 		# Borramos el contenido de las tablas similitudes y valoraciones
 		daov = daoValoracion.DAOValoracion()
@@ -46,10 +43,10 @@ class CrossValidation:
 		daops.reset()
 		# Añadimos al espacio (BD) los folds destinados al entrenamiento
 		for i in range(self.k):
-			if i != nfold_test - 1: # Sino es el fold de validación, se añade
+			if i != nfold_test: # Sino es el fold de validación, se añade
 				lval = self.folds[i]
 				for val in lval: # Añadimos cada valoracion del fold
 					daov.inserta(val)
 		# Devolvemos el fold de validacion
-		return self.folds[nfold_test-1]
+		return self.folds[nfold_test]
 		
