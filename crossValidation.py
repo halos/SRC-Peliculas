@@ -19,21 +19,25 @@ class CrossValidation:
 		""" Constructor Básico """
 		self.k = k
 		# Cargamos el fichero de Valoraciones para particionar
-		valoraciones = daoValoracion.DAOValoracion.cargarFicheroPrueba("/home/rebellion/Dropbox/Prácticas/Sistemas Informáticos/ratings1.csv")
+		daov = daoValoracion.DAOValoracion()
+		valoraciones = daov.cargarFicheroPrueba("/home/rebellion/Dropbox/Prácticas/Sistemas Informáticos/Práctica 5/MiniPFC/ratings1.csv")
 		# Particionamos el espacio en k-folds
 		self.folds = []
-		sizef = (float) (len(valoraciones) / self.k)
+		sizef = len(valoraciones) / self.k # entero
 		for i in range(self.k):
-			self.folds[i] = []
+			lval = []
 			for j in range(sizef):
 				pos = random.randint(0, len(valoraciones) - 1)
-				self.folds[i].append(valoraciones.pop(pos))
+				lval.append(valoraciones.pop(pos))
 				if not valoraciones: # está vacía
 					break
-		
+			# Añadimos la nueva lista de valoraciones a la casilla del fold
+			self.folds.append(lval)
+			
+			
 	def ejecutaIter(self, nfold_test):
 		# Utilizar -1 !!
-		if nfold_test > self.k | self.k < 0:
+		if (nfold_test > self.k) | (self.k < 0):
 			print 'Error!'
 		# Borramos el contenido de las tablas similitudes y valoraciones
 		daov = daoValoracion.DAOValoracion()

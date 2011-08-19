@@ -19,12 +19,12 @@ import motor
 import db
 import crossValidation
 
-def ejecutaPrueba(kfold, p, k, es, ep):
+def ejecutaPrueba(kfold, k, es, ep):
     print "Datos:\n"
-    print "Particionado:", p + "\%\n"
-    print "k:", k + "\n"
-    print "Estrategia de similitud:", es[1] , "\n"
-    print "Estrategia de prediccion:", ep[1] , "\n"
+    print "%d-fold cross validation\n" % kfold
+    print "Valor de k para el agrupamiento: %d\n" % k
+    print "Estrategia de similitud:" , es , "\n"
+    print "Estrategia de prediccion:" , ep , "\n"
     v_mae = 0
     time = 0.0
     # Realizamos el particionamiento
@@ -59,30 +59,26 @@ def ejecutaPrueba(kfold, p, k, es, ep):
 
 #Definimos los distintos parámetros
 kfold = 5
-tp = {80, 70}
 tk = {3, 5, 10}
 tes = {estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud), estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)}
 tn = {2, 4, 8}
 
 print 'Comienzo del estudio de casos para la estrategia de predicción ItemAvgAdj1:\n'
 
-for p in tp:
-    for k in tk:
-        for es in tes:
-            ejecutaPrueba(kfold, p, k, es, itemAvgAdj1.ItemAvgAdj1())
+for k in tk:
+    for es in tes:
+        ejecutaPrueba(kfold, k, es, itemAvgAdj1.ItemAvgAdj1())
 
 print 'Comienzo del estudio de casos para la estrategia de predicción ItemAvgAdjN:\n'            
- 
-for p in tp:
-    for k in tk:
-        for es in tes:
-            for n in tn:
-                print 'N: ', n , "\n"
-                ejecutaPrueba(kfold, p, k, es, itemAvgAdjN.ItemAvgAdjN(n))
+
+for k in tk:
+    for es in tes:
+        for n in tn:
+            print 'N: ', n , "\n"
+            ejecutaPrueba(kfold, k, es, itemAvgAdjN.ItemAvgAdjN(n))
                 
 print 'Comienzo del estudio de casos para la estrategia de predicción WeithedSum:\n'
 
-for p in tp:
-    for k in tk:
-        for es in tes:
-            ejecutaPrueba(kfold, p, k, es, weithedSum.WeithedSum())
+for k in tk:
+    for es in tes:
+        ejecutaPrueba(kfold, k, es, weithedSum.WeithedSum())
