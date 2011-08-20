@@ -35,7 +35,7 @@ def ejecutaPrueba(kfold, k, es, ep):
         t_inic = metricas.get_clock()
         # Particionamos el espacio, siendo el fold 'i' el validador
         valtest = crossval.ejecutaIter(i)
-        # Actualizamos el modelo ????????????
+        # Actualizamos el modelo
         m = motor.Motor()
         m.actualizarModelo()    
         # Realizamos el proceso de testing
