@@ -45,7 +45,7 @@ class CrossValidation:
 		for i in range(self.k):
 			if i != nfold_test: # Sino es el fold de validación, se añade
 				lval = self.folds[i]
-				daov.inserta(lval) # Inserta la lista de valoraciones en la DB
+				daov.insertaValoraciones(lval) # Inserta la lista de valoraciones en la DB
 		# Devolvemos el fold de validacion
 		return self.folds[nfold_test]
 		
