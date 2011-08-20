@@ -44,7 +44,7 @@ class Motor (singleton.Singleton):
 		daou = daoUsuario.DAOUsuario()
 		self.__user = daou.getUsuario(id)
 		if self.__comprobarIdentidad(self.__user, passw):
-			self.__actualizarModelo()
+			self.actualizarModelo()
 			return True
 		return False
 	
@@ -67,7 +67,7 @@ class Motor (singleton.Singleton):
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		self.__nvaloraciones += 1
 		if self.__nvaloraciones == 5:
-			self.__actualizarModelo()
+			self.actualizarModelo()
 			self.__nvaloraciones = 0
 		
 	def buscarPeliculas(self, consulta):
@@ -100,7 +100,7 @@ class Motor (singleton.Singleton):
 			return True
 		return False
 	
-	def __actualizarModelo(self): # Para javi
+	def actualizarModelo(self): # Para javi
 		""" Método para actualizar el modelo tras haber nuevas valoraciones
 	
 		Params:
