@@ -48,7 +48,7 @@ class DAOValoracion(singleton.Singleton):
 		"""
 		datos=DB()
 		consulta = "INSERT INTO `valoraciones` (`idPelicula`, `idUsuario`, `valoracion`) VALUES ("+\
-		str(v.idPel)+","+str(v.idUsu)+","+str(v.valoracion)+")"
+		str(v.idPel) + "," + str(v.idUsu) + "," + str(v.valoracion) + ")"
 		datos.ejecutar(consulta)
 
 	def insertaValoraciones(self, lval):
@@ -57,12 +57,16 @@ class DAOValoracion(singleton.Singleton):
 		params:
 			vals: lista de valoraciones a insertar
 		"""
+
 		datos = DB()
 		consulta = "INSERT INTO `valoraciones` (`idPelicula`, `idUsuario`, `valoracion`) VALUES "
+
 		for i in range(len(lval) - 1): # Obviamos el último elemento
 			consulta += "(" + str(lval[i].idPel) + "," + str(lval[i].idUsu) + "," + str(lval[i].valoracion) + "), "
+
 		consulta += "(" + str(lval[-1].idPel) + "," + str(lval[-1].idUsu) + "," + str(lval[-1].valoracion) + ");"
 		datos.ejecutar(consulta)
+
 		return
 	
 	def getValoracionesUsuario(self,idUsu):
