@@ -13,20 +13,26 @@ class DAOValoracion(singleton.Singleton):
 	""" Class doc """
 	
 	def getValoraciones(self):
-		"""
-		metodo que devuelve todas las valoraciones realizadas
+		""" Método que devuelve todas las valoraciones realizadas
+	
+		Params:
+	
+			None
+	
+		Return:
+	
+			(list): Lista de objetos Valoracion
 		"""
 		
 		datos = db.DB()
 		res = datos.get_filas("SELECT * FROM valoraciones")
-		valoraciones = {}
-		for i in res:
-			if i[1] not in valoraciones:
-				#si el usuario no está en el diccionario
-				#se introduce con un diccionario vacío
-				valoraciones[i[1]] = {}
-			valoraciones[i[1]][i[0]] = \
-			valoracion.Valoracion(i[1], i[0], i[2])
+		valoraciones = []
+		
+		for r in res:
+			
+			v = valoracion.Valoracion(idUsu=r[1], idPel=r[0], valoracion=r[2])
+			valoraciones.append(v)
+		
 		return valoraciones
 	
 	def __init__ (self):
@@ -99,7 +105,7 @@ class DAOValoracion(singleton.Singleton):
 		
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
-		datos=DB()
+		datos=db.DB()
 		consulta = "DELETE FROM valoraciones"
 		datos.ejecutar (consulta)
 		return
