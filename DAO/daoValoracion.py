@@ -6,32 +6,39 @@ import sys
 sys.path.append('..')
 
 import valoracion
-from db import *
-from singleton import *
+import db
+import singleton
 
-class DAOValoracion(Singleton):
+class DAOValoracion(singleton.Singleton):
 	""" Class doc """
 	
-	def __init__ (self):
-		""" Class initialiser """
-		pass
-	
-	
 	def getValoraciones(self):
+		""" Método que devuelve todas las valoraciones realizadas
+	
+		Params:
+	
+			None
+	
+		Return:
+	
+			(list): Lista de objetos Valoracion
 		"""
-		metodo que devuelve todas las valoraciones realizadas
-		"""
-		datos = DB()
-		res=datos.get_filas("SELECT * FROM valoraciones")
-		valoraciones={}
-		for i in res:
-			if i[1] not in valoraciones:
-				#si el usuario no está en el diccionario
-				#se introduce con un diccionario vacío
-				valoraciones[i[1]]={}
-			valoraciones[i[1]][i[0]]=\
-			valoracion.Valoracion(i[1],i[0],i[2])
+		
+		datos = db.DB()
+		res = datos.get_filas("SELECT * FROM valoraciones")
+		valoraciones = []
+		
+		for r in res:
+			
+			v = valoracion.Valoracion(idUsu=r[1], idPel=r[0], valoracion=r[2])
+			valoraciones.append(v)
+		
 		return valoraciones
+	
+	def __init__ (self):
+		""" Class initialisera """
+		
+		pass
 
 	def insertaValoracion(self, v):
 		"""
@@ -41,7 +48,7 @@ class DAOValoracion(Singleton):
 		"""
 		datos=DB()
 		consulta = "INSERT INTO `valoraciones` (`idPelicula`, `idUsuario`, `valoracion`) VALUES ("+\
-		str(v.idPel)+","+str(v.idUsu)+","+str(v.valoracion)+")"
+		str(v.idPel) + "," + str(v.idUsu) + "," + str(v.valoracion) + ")"
 		datos.ejecutar(consulta)
 
 	def insertaValoraciones(self, lval):
@@ -50,12 +57,16 @@ class DAOValoracion(Singleton):
 		params:
 			vals: lista de valoraciones a insertar
 		"""
+
 		datos = DB()
 		consulta = "INSERT INTO `valoraciones` (`idPelicula`, `idUsuario`, `valoracion`) VALUES "
+
 		for i in range(len(lval) - 1): # Obviamos el último elemento
 			consulta += "(" + str(lval[i].idPel) + "," + str(lval[i].idUsu) + "," + str(lval[i].valoracion) + "), "
+
 		consulta += "(" + str(lval[-1].idPel) + "," + str(lval[-1].idUsu) + "," + str(lval[-1].valoracion) + ");"
 		datos.ejecutar(consulta)
+
 		return
 	
 	def getValoracionesUsuario(self,idUsu):
@@ -63,12 +74,15 @@ class DAOValoracion(Singleton):
 		params:
 			idUsu: identificador del usuario
 		"""
-		datos=DB()
+		
+		datos = db.DB()
 		consulta="SELECT * FROM valoraciones WHERE idUsuario = "+str(idUsu)
 		res=datos.get_filas(consulta)
-		valoraciones={}
+		valoraciones = {}
+		
 		for i in res:
-			valoraciones[i[0]]=valoracion.Valoracion(i[1],i[0],i[2])
+			valoraciones[i[0]] = valoracion.Valoracion(i[1], i[0], i[2])
+		
 		return valoraciones
 	
 	def getValoracionesItem(self,idPel):
@@ -76,12 +90,14 @@ class DAOValoracion(Singleton):
 		params:
 			idPel: identificador de la pelicula
 		"""
-		datos=DB()
-		consulta="SELECT * FROM valoraciones WHERE idPelicula = "+str(idPel)
-		res=datos.get_filas(consulta)
-		valoraciones={}
+		datos = db.DB()
+		consulta = "SELECT * FROM valoraciones WHERE idPelicula = "+str(idPel)
+		res = datos.get_filas(consulta)
+		valoraciones = {}
+		
 		for i in res:
-			valoraciones[i[1]]=valoracion.Valoracion(i[1],i[0],i[2])
+			valoraciones[i[1]] = valoracion.Valoracion(i[1], i[0], i[2])
+		
 		return valoraciones
 	
 	def actualizaValoracion(self,val):
@@ -89,11 +105,13 @@ class DAOValoracion(Singleton):
 		Params:
 			val: valoración cuyo rating hay que modificar
 		"""
-		datos=DB()
-		consulta="UPDATE valoraciones SET valoracion ="+\
-		str(val.valoracion)+" WHERE (idPelicula="+str(val.idPel)+\
-		" AND idUsuario="+str(val.idUsu)+")"
+		
+		datos = db.DB()
+		consulta = "UPDATE valoraciones SET valoracion ="+\
+		str(val.valoracion) + " WHERE (idPelicula=" + str(val.idPel) + \
+		" AND idUsuario=" + str(val.idUsu)+")"
 		datos.ejecutar(consulta)
+		
 		return
 	
 	def reset(self):
@@ -101,7 +119,7 @@ class DAOValoracion(Singleton):
 		
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
-		datos=DB()
+		datos=db.DB()
 		consulta = "DELETE FROM valoraciones"
 		datos.ejecutar (consulta)
 		return

@@ -59,10 +59,10 @@ class Motor (singleton.Singleton):
 	
 			(): DESCRIPTION
 		"""
-		valoracion = valoracion.Valoracion(self.__user.idUsu, idPel, val)
+		val_nueva = valoracion.Valoracion(self.__user.idUsu, idPel, val)
 		daov = daoValoracion.DAOValoracion()
-		daov.inserta(valoracion) # Si existe, se actualiza
-		self.__nuevasValoraciones.append(valoracion)
+		daov.inserta(val_nueva) # Si existe, se actualiza
+		self.__nuevasValoraciones.append(val_nueva)
 		
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		self.__nvaloraciones += 1
@@ -180,7 +180,8 @@ class Motor (singleton.Singleton):
 		return daov.getValoracionesItem(idItem)
 		
 	def getValoraciones(self):
-		""" Método que devuelve el conjunto de todas las valoraciones hechas para todos los usuarios.
+		""" Método que devuelve el conjunto de todas las valoraciones hechas
+		para todos los usuarios.
 	
 		Params:
 	
@@ -188,7 +189,7 @@ class Motor (singleton.Singleton):
 	
 		Return:
 	
-			Diccionario de diccionarios, cuyas claves son el idUsu (primero), y despúes el idItem. 
+			(list): Lista de objetos Valoracion
 			
 		"""
 		daov = daoValoracion.DAOValoracion()
