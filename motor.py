@@ -180,7 +180,8 @@ class Motor (singleton.Singleton):
 		return daov.getValoracionesItem(idItem)
 		
 	def getValoraciones(self):
-		""" Método que devuelve el conjunto de todas las valoraciones hechas para todos los usuarios.
+		""" Método que devuelve el conjunto de todas las valoraciones hechas
+		para todos los usuarios.
 	
 		Params:
 	
@@ -188,7 +189,7 @@ class Motor (singleton.Singleton):
 	
 		Return:
 	
-			Diccionario de diccionarios, cuyas claves son el idUsu (primero), y despúes el idItem. 
+			(list): Lista de objetos Valoracion
 			
 		"""
 		daov = daoValoracion.DAOValoracion()
