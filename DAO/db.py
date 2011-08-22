@@ -53,3 +53,23 @@ class DB(Singleton):
         cursor.close()  
         return
 
+    # Métodos adicionales
+    
+    def borrar_tablas(self):
+        """
+            Borra todas las tablas de la DB
+            Params:
+                usu: usuario a inserta
+        """
+        res = self.get_filas("SHOW TABLES")
+        tables = []
+        for i in res:
+            tables.append(i[0])
+        for tname in tables:
+            self.borrar_tabla(tname)
+
+    def borrar_tabla(self, tname):
+        """
+            Borra la tabla indicada de la DB
+        """
+        self.ejecutar('DROP TABLE IF EXISTS ' + tname + ' CASCADE')
