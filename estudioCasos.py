@@ -37,7 +37,7 @@ def ejecutaPrueba(kfold, k, es, ep):
         valtest = crossval.ejecutaIter(i)
         # Actualizamos el modelo
         m = motor.Motor()
-        m.actualizarModelo()    
+        m.actualizarModelo(es)    
         # Realizamos el proceso de testing
         lpredicciones = []
         for valoracion in valtest:
