@@ -7,7 +7,7 @@ class ValoracionesInline(admin.StackedInline):
 
 class PeliculaAdmin(admin.ModelAdmin):
 	fields = ['titulo', 'idPel', 'anio']
-	list_display = ('idPel', 'titulo', 'anio')
+	list_display = ('titulo', 'idPel', 'anio')
 	
 class UsuarioAdmin(admin.ModelAdmin):
 	list_display = ('idUsu', )

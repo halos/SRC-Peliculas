@@ -13,6 +13,7 @@ class Pelicula(models.Model):
 	
 class Usuario(models.Model):
 	idUsu = models.PositiveIntegerField(primary_key=True)
+	clave = models.CharField(max_length=32) # md5
 	
 	def __unicode__(self):
 		return str(self.idUsu)

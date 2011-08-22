@@ -1,53 +1,58 @@
 from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect #, HttpResponse
 from django.core.urlresolvers import reverse
-from django.template import RequestContext
+#from django.template import RequestContext
+
 from srcp.models import Pelicula, Usuario, Valoracion, Similitud
 
 
 def login(request):
-	pass
+	
+	u = Usuario.objects.get(username__exact=request.POST['nombre'])
+	context = {}
+	
+	if u.clave == request.POST['clave']:
+		
+		request.session['idUsu'] = m.idUsu
+		
+		return render_to_response('srcp/indice.html', context)
+	
+	else:
+		
+		context['error'] = 'Login incorrecto'
+		
+		return render_to_response('srcp/login.html', context)
+
+def logout(request):
+	
+	context = {}
+	
+	try:
+		
+		del request.session['idUsu']
+		
+		return render_to_response('srcp/login.html', context)
+		
+	except KeyError:
+		
+		pass
+	
+	return HttpResponse("You're logged out.")
 
 def indice(request):
-	
-	latest_poll_list = Poll.objects.all().order_by('-pub_date')[:5]
-	
-	context = {
-		'latest_poll_list': latest_poll_list,
-		'title': 'indice de encuestas',
-		'body': 'Aqui encontrara el indice de encuestas',
-	}
-	
-	return render_to_response('learn/index.html', context)
-	
-def detail(request, poll_id):
-	
-	poll = get_object_or_404(Poll, pk=poll_id)
-	
-	context = {
-		'title': 'Detalle de encuesta',
-		'body': 'Aqui encontrara el indice de encuestas',
-		'poll': poll,
-	}
-	
-	return render_to_response('learn/detail.html', context,
-							   context_instance=RequestContext(request))
 
-def results(request, poll_id):
+	estra_pred = None
+	recomendaciones = self.recomendar(estra_pred)
 	
 	context = {
-		'title': 'Resultados de la encuesta %s' % (poll_id, ),
-		'body': 'Resultados de la encuesta %s' % (poll_id, ),
+		'recomendaciones': recomendaciones
 	}
 	
-	return render_to_response('learn/index.html', context)
-	
+	return render_to_response('srcp/index.html', context)
+
 def valorar(request, idPel):
 	
-	context = {
-		'title': 'Votar',
-		'body': 'Vote en la encuesta %s' % (poll_id, ),
-	}
+	context = {}
 
 	try:
 	
@@ -59,11 +64,9 @@ def valorar(request, idPel):
 	
 		# Redisplay the poll voting form.
 		#context['pelicula'] = p
-		context['error_message'] = "Error al seleccionar pelicula."
+		context['error'] = "Error al seleccionar pelicula."
 		
-		return render_to_response('srcp/indice.html', context,
-									context_instance=RequestContext(request)
-		)
+		return render_to_response('srcp/indice.html', context)
 	
 	else:
 	
@@ -72,7 +75,7 @@ def valorar(request, idPel):
 		# Always return an HttpResponseRedirect after successfully dealing
 		# with POST data. This prevents data from being posted twice if a
 		# user hits the Back button.
-		return HttpResponseRedirect(reverse('learn.views.results', args=(p.id,)))
+		return HttpResponseRedirect(reverse('srcp.views.results', args=(p.id,)))
 
 def buscar(request):
 	
