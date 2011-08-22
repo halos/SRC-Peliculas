@@ -39,7 +39,7 @@ class DAOUsuario(Singleton):
 		usu = usuario.Usuario(res[0],res[1])
 		return usu
 	
-	def insertar(self,usu):
+	def inserta(self,usu):
 		"""
 		Introduce un nuevo usuario en el sistema
 		Params:
