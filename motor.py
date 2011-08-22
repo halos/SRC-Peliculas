@@ -100,7 +100,7 @@ class Motor (singleton.Singleton):
 			return True
 		return False
 	
-	def actualizarModelo(self): # Para javi
+	def actualizarModelo(self, estrat_sim): # Para javi
 		""" Método para actualizar el modelo tras haber nuevas valoraciones
 	
 		Params:
@@ -112,14 +112,14 @@ class Motor (singleton.Singleton):
 			None
 		"""
 		
-		valoraciones = []
+		# Obtenemos todas las valoraciones de la BD
+		valoraciones = self.getValoraciones()
 		
-		#obtener valoraciones de todas las películas puntuadas
+		# Obtenemos las valoraciones de todas las películas puntuadas
 		for v in self.__nuevasValoraciones:
 			valoraciones += self.getValoracionesItem(v.idPel).values()
 		
-		eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
-		eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
+		estrat_sim.actualizaSimilitud(valoraciones, self.__nuevasValoraciones) 
 		
 
 	def recomendar(self, estra_pred):
