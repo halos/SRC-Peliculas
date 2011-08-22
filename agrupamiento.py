@@ -4,6 +4,7 @@
 __author__="sramirez"
 __date__ ="$07-dic-2010 10:25:53$"
 
+import motor
 
 class Agrupamiento:
 
@@ -18,38 +19,38 @@ class Agrupamiento:
 			
 		"""
 		
-		self.idUsu = idUsu
+		self.__idUsu = idUsu
 
 		
-	def agrupknn(self, idItem, k, similitudes, valoraciones):
+	def agrupknn(self, idItem, k):
 	
 		""" Funcion que implementa el algoritmo de agrupamiento k-nn
 	
 			Params: 
 			
 			idItem: Identificador del item sobre el que agrupar
-			k: nº de elementos similiares a idItem que devolvera el metodo
-			similitudes(dict): contiene la tabla de similitud entre items del sistema
-			valoraciones(dict): contiene la tabla de valoraciones user-item del sistema
+			k: numero de elementos similiares a idItem que devolvera el metodo
 			
 			Return:
 				
 			similares(list): contiene <=k paresSimilitud similares a idItem
 
 		"""
-		
-		i = 0;
-		lsimil_usu = similitudes.get(idItem).values()
-		similares = []
-
-		"Ordenamos de mayor a menor, segun similitud"
-		lsimil_usu.sort(cmp=None, key=None, reverse=True)
-
-		while i < k | i < lsimil_usu.len():
-			pelicula = lsimil_usu[i]
-			if pelicula.idPel not in valoraciones.get(self.idUsu).keys():
-				similares.append(pelicula)
-			i += 1;
-			
-		return similares
-            
+		m = motor.Motor()
+		lsimil = m.getSimilitudesItem(idItem).values()
+		dval_usu = m.getValoracionesUsuario(self.__idUsu)
+		#Ordenamos de mayor a menor, segun similitud
+		lsimil.sort(reverse=True)
+		#Calculamos los k-vecinos al Ã­tem
+		i = 0
+		vecinos = []
+		while i < k | i < lsimil.len():
+			if lsimil[i].idP1 == idItem:
+				idPel = lsimil[i].idP2
+			else:
+				idPel = lsimil[i].idP1
+			val = dval_usu.get(idPel, 0)
+			if val != 0:
+				vecinos.append(val)
+				i += 1;
+		return vecinos

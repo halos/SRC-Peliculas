@@ -14,9 +14,14 @@ from motor import Motor
 class ItemAvgAdjN():
     """ Clase que implementa el método de prediccion Item Average Adjustament (N), 
 	    hereda de ItemAvgAdj1
-	"""
-    def __init__(self):
+	"""    
+    def __init__(self, n, kval_vec):
         """ Constructor básico"""
+        if n < 1:
+            print 'Error, n debe ser mayor que 0'
+            sys.exit(-1)
+        self.__n = n
+        self.__lval = kval_vec
         
     def __mediausuario(self, idUsu):
         """
@@ -64,7 +69,7 @@ class ItemAvgAdjN():
         return media_item
         
         
-    def predice(self, idUsu, idItem, n):
+    def predice(self, idUsu, idItem):
         """
             
         Metodo que devuelve el valor de prediccion para un item-usuario
@@ -73,6 +78,7 @@ class ItemAvgAdjN():
                 idUsu    (Integer):
                 idItem    (Integer): Identificador del item cuyo valora deseamos predecir
                 n (Integer): Número de valoraciones a tener en cuenta
+                valoraciones (List)
         Return:
                     
                 prediccion(Valoracion): Valoración predicha para un valor desconocido
@@ -84,17 +90,14 @@ class ItemAvgAdjN():
         sum_num = 0
         sum_den = 0
         dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
-        lval = m.getValoracionesUsuario(idUsu) # Lista de valoraciones para un usuario
-        if n % 2 != 0 or n > len(lval):
-            print 'Error!'
         #Cálculo de la fórmula de la prediccion
         nveces = 0 # Contador que vigila que no se superen n evaluaciones
-        for val in lval:
+        for val in self.__lval:
             simil = dsim.get(val.idPel, 0)
             if simil != 0: # Existe similitud para el item de esa valoracion
                 sum_num += simil.similitud * (val.valoracion - media_usu)
                 sum_den += fabs(simil.similitud)    
-                if nveces >= n:
+                if nveces >= self.__n:
                     break
                 else:
                     nveces += 1  
