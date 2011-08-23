@@ -58,15 +58,17 @@ class EstrategiaSimilitud:
 			p2 = p1[:] # copia
 			
 		# obtención de las valoraciones de cada usuario
+		print 'Comienza el cálculo de similtudes'
 		for i in p1:
-			if i in p2:
-				p2.remove(i)
+			print 'IdPel: %d' % i
+			p2.remove(i) # Eliminas de el id indicado de la lista a calcular
+			# Esto sucede porque la similitud es conmutativa
 			for j in p2:
 				similitud = self.__calcula_similitud(\
 					valoraciones[i], valoraciones[j])
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
-		
+		print 'Fin del cálculo\n'
 		#return paresSimilitud
 		# almacenamiento de similitudes
 		m = motor.Motor()
