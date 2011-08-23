@@ -39,13 +39,16 @@ class CrossValidation:
 		# Borramos el contenido de las tablas similitudes y valoraciones
 		daov = daoValoracion.DAOValoracion()
 		daops = daoParSimilitud.DAOParSimilitud()
+		print 'Reseteamos...'
 		daov.reset()
 		daops.reset()
 		# Añadimos al espacio (BD) los folds destinados al entrenamiento
+		print 'Insertamos valoraciones...'
 		for i in range(self.k):
 			if i != nfold_test: # Sino es el fold de validación, se añade
 				lval = self.folds[i]
 				daov.insertaValoraciones(lval) # Inserta la lista de valoraciones en la DB
 		# Devolvemos el fold de validacion
+		print 'Fin de la inserción de valoraciones...'
 		return self.folds[nfold_test]
 		

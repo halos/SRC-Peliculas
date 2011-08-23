@@ -62,7 +62,7 @@ kfold = 5
 tk = {3, 5, 10}
 tes = {estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud), estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)}
 tn = {2, 4, 8}
-print 'Realizamos el particionamiento para k-fcv'
+print 'Realizamos el particionamiento para k-cfv'
 # Realizamos el particionamiento
 crossval = crossValidation.CrossValidation(kfold)
 
