@@ -27,15 +27,15 @@ def ejecutaPrueba(kfold, k, es, ep):
     print "Estrategia de prediccion:" , ep , "\n"
     v_mae = 0
     time = 0.0
-    # Realizamos el particionamiento
-    crossval = crossValidation.CrossValidation(kfold)
     # Realizamos k iteraciones y luego realizamos la media aritmética
     for i in range(kfold):
         # Comenzamos la medición
         t_inic = metricas.get_clock()
         # Particionamos el espacio, siendo el fold 'i' el validador
+        print 'Particionamos, siendo el fold de test el nº: %d' % i
         valtest = crossval.ejecutaIter(i)
         # Actualizamos el modelo
+        print 'Actualizamos el modelo'
         m = motor.Motor()
         m.actualizarModelo(es)    
         # Realizamos el proceso de testing
@@ -62,23 +62,23 @@ kfold = 5
 tk = {3, 5, 10}
 tes = {estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud), estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)}
 tn = {2, 4, 8}
+print 'Realizamos el particionamiento para k-fcv'
+# Realizamos el particionamiento
+crossval = crossValidation.CrossValidation(kfold)
 
-print 'Comienzo del estudio de casos para la estrategia de predicción ItemAvgAdj1:\n'
-
+print 'Comienzo del estudio de casos para la estrategia de predicción ItemAvgAdj1:'
 for k in tk:
     for es in tes:
         ejecutaPrueba(kfold, k, es, itemAvgAdj1.ItemAvgAdj1())
 
-print 'Comienzo del estudio de casos para la estrategia de predicción ItemAvgAdjN:\n'            
-
+print 'Comienzo del estudio de casos para la estrategia de predicción ItemAvgAdjN:'            
 for k in tk:
     for es in tes:
         for n in tn:
             print 'N: ', n , "\n"
             ejecutaPrueba(kfold, k, es, itemAvgAdjN.ItemAvgAdjN(n))
                 
-print 'Comienzo del estudio de casos para la estrategia de predicción WeithedSum:\n'
-
+print 'Comienzo del estudio de casos para la estrategia de predicción WeithedSum:'
 for k in tk:
     for es in tes:
         ejecutaPrueba(kfold, k, es, weithedSum.WeithedSum())
