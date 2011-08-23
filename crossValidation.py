@@ -43,10 +43,11 @@ class CrossValidation:
 		daov.reset()
 		daops.reset()
 		# Añadimos al espacio (BD) los folds destinados al entrenamiento
-		print 'Insertamos valoraciones...'
+		print 'Insertamos folds de valoraciones...'
 		for i in range(self.k):
 			if i != nfold_test: # Sino es el fold de validación, se añade
 				lval = self.folds[i]
+				print 'Insertamos fold %d' % i
 				daov.insertaValoraciones(lval) # Inserta la lista de valoraciones en la DB
 		# Devolvemos el fold de validacion
 		print 'Fin de la inserción de valoraciones...'
