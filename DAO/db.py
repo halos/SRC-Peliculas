@@ -7,6 +7,7 @@ from singleton import *
 
 class DB(Singleton):
     """ clase generica encargada de la conexion con la base de datos """
+    conexion=MySQLdb.Connection
     def __init__(self):
         """Inicializa la conexión a la base de datos"""
         self._conectar()
@@ -20,6 +21,11 @@ class DB(Singleton):
                                         db="ssii", \
                                         port=3306)
         return
+    
+    def desconectar(self):
+        self.conexion.close()
+        return
+    
     
     def _get_cursor(self):
         """hace ping a la conexión y devuelve el cursor"""
