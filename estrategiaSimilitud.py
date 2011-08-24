@@ -60,9 +60,8 @@ class EstrategiaSimilitud:
 		# obtención de las valoraciones de cada usuario
 		print 'Comienza el cálculo de similtudes'
 		for i in p1:
-			print 'IdPel: %d' % i
-			p2.remove(i) # Eliminas de el id indicado de la lista a calcular
-			# Esto sucede porque la similitud es conmutativa
+			if i in p2:
+				p2.remove(i)
 			for j in p2:
 				similitud = self.__calcula_similitud(\
 					valoraciones[i], valoraciones[j])
