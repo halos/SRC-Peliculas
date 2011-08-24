@@ -19,23 +19,23 @@ def calcula_similitud(_p1, _p2):
 	p1 = dict(_p1)
 	p2 = dict(_p2)
 	
-	# obtener la lista de todos los usuarios que han valorado la película
-	usus = []
+	## obtener la lista de todos los usuarios que han valorado la película
+	#usus = []
 	
-	for i in p1.keys():
-		if i not in usus:
-			usus.append(i)
+	#for i in p1.keys():
+		#if i not in usus:
+			#usus.append(i)
 			
-	for i in p2.keys():
-		if i not in usus:
-			usus.append(i)
+	#for i in p2.keys():
+		#if i not in usus:
+			#usus.append(i)
 	
-	# Los usuarios que no la hayan visto tendrán la valoración a 0
-	for i in usus:
-		if i not in p1.keys():
-			p1[i] = 0
-		if i not in p2.keys():
-			p2[i] = 0
+	## Los usuarios que no la hayan visto tendrán la valoración a 0
+	#for i in usus:
+		#if i not in p1.keys():
+			#p1[i] = 0
+		#if i not in p2.keys():
+			#p2[i] = 0
 	
 	# numerador
 	num = 0
@@ -45,13 +45,13 @@ def calcula_similitud(_p1, _p2):
 	sum2 = 0
 	
 	for i in usus:
-		
-		# numerador
-		num += p1[i] * p2[i]
-		
-		#denominador
-		sum1 += p1[i]**2
-		sum2 += p2[i]**2
+		if i in p2:
+			# numerador
+			num += p1[i] * p2[i]
+			
+			#denominador
+			sum1 += p1[i]**2
+			sum2 += p2[i]**2
 		
 	sum1 = sqrt(sum1)
 	sum2 = sqrt(sum2)
