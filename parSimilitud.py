@@ -73,3 +73,63 @@ class ParSimilitud:
 		"""
 		
 		self.similitud = similitud
+
+	def __lt__(self, other):
+		""" Operador < para el grado de similitud
+	
+		Params:
+	
+			other(ParSimilitud): El otro ParSimilitud con el que va ser
+			comparado
+	
+		Return:
+	
+			(bool): Boobleano indicando si el objeto es menor que el segundo 
+		"""
+		
+		return self.similitud < other.similitud
+		
+	def __gt__(self, other):
+		""" Operador > para el grado de similitud
+	
+		Params:
+	
+			other(ParSimilitud): El otro ParSimilitud con el que va ser
+			comparado
+	
+		Return:
+	
+			(bool): Boobleano indicando si el objeto es mayor que el segundo 
+		"""
+		
+		return self.similitud > other.similitud
+
+	def __le__(self, other):
+		""" Operador <= para el grado de similitud
+	
+		Params:
+	
+			other(ParSimilitud): El otro ParSimilitud con el que va ser
+			comparado
+	
+		Return:
+	
+			(bool): Boobleano indicando si el objeto es menor o igual que el segundo 
+		"""
+		
+		return self.similitud <= other.similitud
+		
+	def __ge__(self, other):
+		""" Operador >= para el grado de similitud
+	
+		Params:
+	
+			other(ParSimilitud): El otro ParSimilitud con el que va ser
+			comparado
+	
+		Return:
+	
+			(bool): Boobleano indicando si el objeto es mayor o igual que el segundo 
+		"""
+		
+		return self.similitud >= other.similitud
