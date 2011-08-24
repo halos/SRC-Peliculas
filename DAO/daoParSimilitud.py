@@ -68,11 +68,13 @@ class DAOParSimilitud(Singleton):
 		Params:
 			lsim: Lista de pares a insertar
 		"""
-		datos = DB()
 		consulta = "INSERT INTO similitudes (idPel1, idPel2, similitud) VALUES "
+		
 		for i in range(len(lsim) - 1): # Obviamos el último elemento
 			consulta += "(" + str(lsim[i].idP1) + "," + str(lsim[i].idP2) + "," + str(lsim[i].similitud) + "), "
 		consulta += "(" + str(lsim[-1].idP1) + "," + str(lsim[-1].idP2) + "," + str(lsim[-1].similitud) + ");"
+		
+		datos = DB()
 		datos.ejecutar(consulta)
 		return
 		
