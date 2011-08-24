@@ -33,7 +33,7 @@ class Agrupamiento:
 			
 			Return:
 				
-			similares(list): contiene <=k paresSimilitud similares a idItem
+			vecinos(list): contiene <=k valoraciones elementos vecinos a idItem
 
 		"""
 		m = motor.Motor()

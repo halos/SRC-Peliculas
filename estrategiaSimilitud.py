@@ -58,7 +58,7 @@ class EstrategiaSimilitud:
 			p2 = p1[:] # copia
 			
 		# obtención de las valoraciones de cada usuario
-		print 'Comienza el cálculo de similtudes'
+		print 'Comienza el cálculo de similitudes'
 		for i in p1:
 			if i in p2:
 				p2.remove(i)

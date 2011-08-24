@@ -29,11 +29,11 @@ def ejecutaPrueba(kfold, k, es, ep):
     time = 0.0
     # Realizamos k iteraciones y luego realizamos la media aritmética
     for i in range(kfold):
-        # Comenzamos la medición
-        t_inic = metricas.get_clock()
         # Particionamos el espacio, siendo el fold 'i' el validador
         print 'Particionamos, siendo el fold de test el nº: %d' % i
         valtest = crossval.ejecutaIter(i)
+        # Comenzamos la medición
+        t_inic = metricas.get_clock()
         # Actualizamos el modelo
         print 'Actualizamos el modelo'
         m = motor.Motor()
