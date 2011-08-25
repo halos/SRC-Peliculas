@@ -16,9 +16,6 @@ def calcula_similitud(_p1, _p2):
 		(float): Similitud entre dos películas (0,1)
 	"""
 	
-	p1 = dict(_p1)
-	p2 = dict(_p2)
-	
 	## obtener la lista de todos los usuarios que han valorado la película
 	#usus = []
 	
@@ -44,19 +41,22 @@ def calcula_similitud(_p1, _p2):
 	sum1 = 0
 	sum2 = 0
 	
-	for i in p1:
-		if i in p2:
+	for i in _p1:
+		if i in _p2:
 			# numerador
-			num += p1[i] * p2[i]
+			num += _p1[i] * _p2[i]
 			
 			#denominador
-			sum1 += p1[i]**2
-			sum2 += p2[i]**2
+			sum1 += _p1[i]**2
+			sum2 += _p2[i]**2
 		
 	sum1 = sqrt(sum1)
 	sum2 = sqrt(sum2)
 	
 	den = sum1 * sum2
+	
+	if den == 0:
+		den = 0.00000000001
 	
 	sim = num / den
 	
