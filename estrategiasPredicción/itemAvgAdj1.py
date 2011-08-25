@@ -66,7 +66,7 @@ class ItemAvgAdj1:
 		return media_item
 
 
-	def predice(self, idUsu, idItem):
+	def predice(self, idUsu, idItem, kval_vec):
 		"""
 			
 		Metodo que devuelve el valor de prediccion para un item-usuario
@@ -86,9 +86,8 @@ class ItemAvgAdj1:
 		sum_num = 0
 		sum_den = 0
 		dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
-		lval = m.getValoracionesUsuario(idUsu) # Lista de valoraciones para un usuario
 		#Cálculo de la fórmula de la prediccion		
-		for val in lval:
+		for val in kval_vec:
 			simil = dsim.get(val.idPel, 0)
 			if simil != 0: # Existe similitud para el item de esa valoracion
 				sum_num += simil.similitud * (val.valoracion - media_usu)
