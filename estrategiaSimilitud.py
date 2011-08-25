@@ -59,7 +59,10 @@ class EstrategiaSimilitud:
 			
 		# obtención de las valoraciones de cada usuario
 		print 'Comienza el cálculo de similitudes'
+		cont = 1
 		for i in p1:
+			if cont % 1000000 == 0:
+				print 'Llevamos %d iteraciones..' % cont
 			if i in p2:
 				p2.remove(i)
 			for j in p2:
@@ -67,6 +70,7 @@ class EstrategiaSimilitud:
 					valoraciones[i], valoraciones[j])
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
+			cont += 1
 		print 'Fin del cálculo\n'
 		#return paresSimilitud
 		# almacenamiento de similitudes
