@@ -94,7 +94,7 @@ def resultados(kfold, tk, tep, vgmae, vgtemp):
 #Definimos los distintos parámetros
 kfold = 5
 tk = (10, 20, 30)
-tes = (estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud), estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud))
+tes = (estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud), estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud))
 tn = (2, 4, 8)
 tep = [itemAvgAdj1.ItemAvgAdj1]
 for n in tn:
