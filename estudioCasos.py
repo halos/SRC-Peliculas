@@ -34,9 +34,10 @@ def ejecutaPrueba(kfold, tk, tes, tep):
             # Comenzamos la medición tiempo modelo
             t_inic = metricas.get_clock()
             # Actualizamos el modelo
-            print 'Actualizamos el modelo'
+            print 'Creamos el mo0delo...'
             m = motor.Motor()
             m.actualizarModelo(es)
+            print 'Fin del cálculo del modelo'
             # Fin de la medición de tiempo del modelo
             t_fin = metricas.get_clock()
             time_mod = t_fin - t_inic

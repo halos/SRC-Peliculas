@@ -59,10 +59,8 @@ class EstrategiaSimilitud:
 			
 		# obtención de las valoraciones de cada usuario
 		print 'Comienza el cálculo de similitudes'
-		cont = 1
+		cont = 0
 		for i in p1:
-			if cont % 1000000 == 0:
-				print 'Llevamos %d iteraciones..' % cont
 			if i in p2:
 				p2.remove(i)
 			for j in p2:
@@ -70,24 +68,18 @@ class EstrategiaSimilitud:
 					valoraciones[i], valoraciones[j])
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
+			# Descargamos similitudes en la BD
+			if len(paresSimilitud) >= 500000:
+				print 'Descargando similitudes...'
+				self.almacenaSimilitudes(paresSimilitud)
+				paresSimilitud = [] # Vaciamos la lista, ya descargada en la BD
+				print 'Fin de la descarga'
 			cont += 1
+			if cont % 100 == 0:
+				print 'Llevamos %d item calculados de %d...' % (cont, len(p1))
 		print 'Fin del cálculo\n'
 		#return paresSimilitud
-		# almacenamiento de similitudes
-		m = motor.Motor()
-		
-		sim_insertar = []
-		sim_actualizar = []
-		sim_anteriores = m.getSimilitudes()
-		
-		for s in paresSimilitud:
-			if s in sim_anteriores:
-				sim_actualizar.append(s)
-			else:
-				sim_insertar.append(s)
-		
-		m.insertaSimilitudes(sim_insertar)
-		m.actualizaSimilitudes(sim_actualizar)
+
 		
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
 		""" Recalcula las similitudes en base a unas ya existentes y a las
@@ -117,3 +109,21 @@ class EstrategiaSimilitud:
 		#daoValoracion.DAOValoracion.guarda(valoraciones)
 		
 		self.similitud(valoraciones, _nuevasValoraciones)
+
+
+	def almacenaSimilitudes(self, vParesSimilitud):
+		# almacenamiento de similitudes
+		m = motor.Motor()
+		
+		sim_insertar = []
+		sim_actualizar = []
+		sim_anteriores = m.getSimilitudes()
+		
+		for s in vParesSimilitud:
+			if s in sim_anteriores:
+				sim_actualizar.append(s)
+			else:
+				sim_insertar.append(s)
+		
+		m.insertaSimilitudes(sim_insertar)
+		m.actualizaSimilitudes(sim_actualizar)
