@@ -237,9 +237,7 @@ class Motor (singleton.Singleton):
 		"""
 		
 		daos = daoParSimilitud.DAOParSimilitud()
-		
-		for s in _similitudes:
-			daos.insertaSimilitud(s)
+		daos.insertaSimilitudes(_similitudes)
 
 	def actualizaSimilitudes(self, _similitudes):
 		""" Método para actualizar similitudes existentes
