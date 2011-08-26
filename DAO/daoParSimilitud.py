@@ -20,15 +20,11 @@ class DAOParSimilitud(Singleton):
 		Obtiene todas las similitudes entre items generadas
 		"""
 		datos = DB()
-		res=datos.get_filas("SELECT * FROM similitudes")
-		similitudes={}
+		res = datos.get_filas("SELECT * FROM similitudes")
+		similitudes = []
 		for i in res:
-			if i[0] not in similitudes:
-				#si el item1 no está en el diccionario
-				#se introduce con un diccionario vacío
-				similitudes[i[0]]={}
-			similitudes[i[0]][i[1]]=\
-			parSimilitud.ParSimilitud(i[0],i[1],i[2])
+			ps = parSimilitud.ParSimilitud(i[0],i[1],i[2])
+			similitudes.append(ps)
 		return similitudes
 		
 	def getSimilitudesItem(self,idItem):
