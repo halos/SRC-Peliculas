@@ -10,7 +10,7 @@ import valoracion
 import srcp.models as djModels
 
 
-class DAOValoracion(singleton.Singleton):
+class DAOValoracion(Singleton):
 	""" Class doc """
 	
 	def __init__ (self):
@@ -36,7 +36,7 @@ class DAOValoracion(singleton.Singleton):
 		
 		for djv in djVals:
 			
-			v = valoracion.Valoracion(idUsu=djv.idUsu, idPel=djv.idPel, \
+			v = valoracion.Valoracion(idUsu=djv.Usu.idUsu, idPel=djv.Pel.idPel, \
 													valoracion=djv.puntuacion)
 			valoraciones.append(v)
 		
@@ -49,8 +49,10 @@ class DAOValoracion(singleton.Singleton):
 			v: valoración a insertar
 		"""
 		
-		djv = djModels.Valoracion(idUsu=v.idUsu, idPel=v.idPel, \
-													puntaucion=djv.valoracion)
+		pel = djModels.Pelicula.objects.get(pk=v.idPel)
+		usu = djModels.Usuario.objects.get(pk=v.idUsu)
+		
+		djv = djModels.Valoracion(Usu=usu, Pel=pel, puntuacion=v.valoracion)
 		djv.save()
 	
 	def getValoracionesUsuario(self,idUsu):
@@ -59,13 +61,13 @@ class DAOValoracion(singleton.Singleton):
 			idUsu: identificador del usuario
 		"""
 		
-		djVals = djModels.Valoracion.objects.filter(idUsu=idUsu)
+		djVals = djModels.Valoracion.objects.filter(Usu=idUsu)
 		
 		valoraciones = []
 		
 		for djv in djVals:
 			
-			v = valoracion.Valoracion(idUsu=djv.idUsu, idPel=djv.idPel, \
+			v = valoracion.Valoracion(idUsu=djv.Usu.idUsu, idPel=djv.Pel.idPel, \
 													valoracion=djv.puntuacion)
 			valoraciones.append(v)
 		
@@ -76,13 +78,13 @@ class DAOValoracion(singleton.Singleton):
 		params:
 			idPel: identificador de la pelicula
 		"""
-		djVals = djModels.Valoracion.objects.filter(idPel=idPel)
+		djVals = djModels.Valoracion.objects.filter(Pel=idPel)
 		
 		valoraciones = []
 		
 		for djv in djVals:
 			
-			v = valoracion.Valoracion(idUsu=djv.idUsu, idPel=djv.idPel, \
+			v = valoracion.Valoracion(idUsu=djv.Usu.idUsu, idPel=djv.Pel.idPel, \
 													valoracion=djv.puntuacion)
 			valoraciones.append(v)
 		
@@ -94,7 +96,10 @@ class DAOValoracion(singleton.Singleton):
 			val: valoración cuyo rating hay que modificar
 		"""
 		
-		self.inserta(val)
+		djv = djModels.Valoracion.objects.get(Pel=val.idPel, Usu=val.idUsu)
+		djv.puntuacion = val.valoracion
+		
+		djv.save()
 	
 	#def reset(self):
 		#"""Elimina todos los datos de la tabla de valoraciones
