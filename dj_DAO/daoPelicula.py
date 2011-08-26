@@ -6,8 +6,9 @@ from singleton import *
 
 sys.path.append('..')
 
-import parSimilitud
-import valoracion
+#import parSimilitud
+#import valoracion
+import pelicula
 import daoValoracion
 import srcp.models as djModels
 
@@ -88,6 +89,8 @@ class DAOPelicula(Singleton):
 		Params:
 			idUsu: usuario cuyas peliculas no valoradas se van a buscar
 		"""
+		
+		daov = daoValoracion.DAOValoracion()
 		
 		vals = daov.getValoracionesUsuario(idUsu)
 		
