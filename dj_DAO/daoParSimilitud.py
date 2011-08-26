@@ -34,21 +34,21 @@ class DAOParSimilitud(Singleton):
 		
 		for djs in djSimilitudes:
 			
-			if djs.idPel1 not in similitudes:
+			if djs.Pel1.idPel not in similitudes:
 				#si el item1 no está en el diccionario
 				#se introduce con un diccionario vacío
-				similitudes[djs.idPel1] = {}
+				similitudes[djs.Pel1.idPel] = {}
 				
-			if djs.idPel2 not in similitudes:
+			if djs.Pel2.idPel not in similitudes:
 				#si el item1 no está en el diccionario
 				#se introduce con un diccionario vacío
-				similitudes[djs.idPel2] = {}
+				similitudes[djs.Pel2.idPel] = {}
 
 			
-			ps = parSimilitud.ParSimilitud(djs.idPel1, djs.idPel2, djs.valoracion)
+			ps = parSimilitud.ParSimilitud(djs.Pel1.idPel, djs.Pel2.idPel, djs.similitud)
 			
-			similitudes[djs.idPel1][djs.idPel2] = ps
-			similitudes[djs.idPel2][djs.idPel1] = ps
+			similitudes[djs.Pel1.idPel][djs.Pel2.idPel] = ps
+			similitudes[djs.Pel2.idPel][djs.Pel1.idPel] = ps
 			
 		return similitudes
 		
@@ -65,20 +65,20 @@ class DAOParSimilitud(Singleton):
 		"""
 		
 		djSimilitudes = []
-		djSimilitudes += djModels.Similitud.objects.filter(idPel1=idPel)
-		djSimilitudes += djModels.Similitud.objects.filter(idPel2=idPel)
+		djSimilitudes += djModels.Similitud.objects.filter(Pel1=idPel)
+		djSimilitudes += djModels.Similitud.objects.filter(Pel2=idPel)
 
 		similitudes={}
 		
 		for djs in djSimilitudes:
 			
-			ps = parSimilitud.ParSimilitud(djs.idPel1, djs.idPel2, djs.valoracion)
+			ps = parSimilitud.ParSimilitud(djs.Pel1.idPel, djs.Pel2.idPel, djs.similitud)
 		
-			if s.idPel1 != idPel:
-				similitudes[s.idPel1] = ps
+			if djs.Pel1.idPel != idPel:
+				similitudes[djs.Pel1.idPel] = ps
 		
 			else:
-				similitudes[s.idPel2] = ps
+				similitudes[djs.Pel2.idPel] = ps
 
 		return similitudes
 
@@ -89,8 +89,12 @@ class DAOParSimilitud(Singleton):
 		Params:
 			sim: Similitud a insertar
 		"""
-		djs = djModels.Similitud(idPel1=sim.idP1, idPel2=sim.idP2, \
-													valoracion=sim.similitud)
+		
+		pel1 = djModels.Pelicula.objects.get(pk=sim.idP1)
+		pel2 = djModels.Pelicula.objects.get(pk=sim.idP2)
+		
+		djs = djModels.Similitud(Pel1=pel1, Pel2=pel2, \
+											similitud=sim.similitud)
 		
 		djs.save()
 		
