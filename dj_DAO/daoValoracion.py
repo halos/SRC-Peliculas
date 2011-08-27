@@ -42,18 +42,6 @@ class DAOValoracion(Singleton):
 		
 		return valoraciones
 
-	def inserta(self,v):
-		"""
-		introduce una nueva valoración a tener en cuenta
-		params:
-			v: valoración a insertar
-		"""
-		
-		pel = djModels.Pelicula.objects.get(pk=v.idPel)
-		usu = djModels.Usuario.objects.get(pk=v.idUsu)
-		
-		djv = djModels.Valoracion(Usu=usu, Pel=pel, puntuacion=v.valoracion)
-		djv.save()
 	
 	def getValoracionesUsuario(self,idUsu):
 		""" obtiene las valoraciones para todas las peliculas de un usuario concreto
@@ -89,17 +77,34 @@ class DAOValoracion(Singleton):
 			valoraciones.append(v)
 		
 		return valoraciones
-	
-	def actualizaValoracion(self,val):
-		""" Actualiza una valoracion anteriormente insertada
+
+	def inserta(self,v):
+		"""
+		Introduce una valoración, si no existe, se crea, si existe, 
+		se actualiza
+		
 		Params:
-			val: valoración cuyo rating hay que modificar
+		
+			v: valoración a insertar
 		"""
 		
-		djv = djModels.Valoracion.objects.get(Pel=val.idPel, Usu=val.idUsu)
-		djv.puntuacion = val.valoracion
+		try:
+			
+			djv = djModels.Valoracion.objects.get(Pel=val.idPel, Usu=val.idUsu)
+
+			djv.puntuacion = val.valoracion
+			
+		# La valoración no existía y se añade
+		except djModels.Valoracion.DoesNotExist:
 		
-		djv.save()
+			pel = djModels.Pelicula.objects.get(pk=v.idPel)
+			usu = djModels.Usuario.objects.get(pk=v.idUsu)
+
+			djv = djModels.Valoracion(Usu=usu, Pel=pel, puntuacion=v.valoracion)
+		
+		finally:
+			
+			djv.save()
 	
 	#def reset(self):
 		#"""Elimina todos los datos de la tabla de valoraciones
