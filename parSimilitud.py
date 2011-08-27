@@ -43,7 +43,7 @@ class ParSimilitud:
 			mismo usuario.
 		"""
 		
-		return (self.idP1,self.idP2) == (other.idP1,other.idP2) | \
+		return (self.idP1,self.idP2) == (other.idP1,other.idP2) or \
 		(self.idP1,self.idP2) == (other.idP2,other.idP1)
 
 	def __ne__(self, other):
@@ -60,7 +60,7 @@ class ParSimilitud:
 			al mismo usuario.
 		"""
 		
-		return (self.idP1,self.idP2) != (other.idP1,other.idP2) & \
+		return (self.idP1,self.idP2) != (other.idP1,other.idP2) and \
 		(self.idP1,self.idP2) != (other.idP2,other.idP1)
 		
 	def setsimilitud(self, similitud):

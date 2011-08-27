@@ -69,7 +69,7 @@ class EstrategiaSimilitud:
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
 			# Descargamos similitudes en la BD
-			if len(paresSimilitud) >= 500000:
+			if len(paresSimilitud) >= 1000000:
 				print 'Descargando similitudes...'
 				self.almacenaSimilitudes(paresSimilitud)
 				paresSimilitud = [] # Vaciamos la lista, ya descargada en la BD
@@ -111,19 +111,19 @@ class EstrategiaSimilitud:
 		self.similitud(valoraciones, _nuevasValoraciones)
 
 
-	def almacenaSimilitudes(self, vParesSimilitud):
+	def almacenaSimilitudes(self, sim_alm):
 		# almacenamiento de similitudes
 		m = motor.Motor()
 		
-		sim_insertar = []
 		sim_actualizar = []
 		sim_anteriores = m.getSimilitudes()
-		
-		for s in vParesSimilitud:
-			if s in sim_anteriores:
-				sim_actualizar.append(s)
-			else:
-				sim_insertar.append(s)
-		
-		m.insertaSimilitudes(sim_insertar)
+		print 'Empiezo a comparar...'
+		for i in range(len(sim_alm)):
+			if sim_alm[i] in sim_anteriores:
+				sim_actualizar.append(sim_alm.pop(i))
+			if i % 10000 == 0:
+				print '%d items comparados...' % i
+				
+		print 'Termino de comparar...'
+		m.insertaSimilitudes(sim_alm)
 		m.actualizaSimilitudes(sim_actualizar)
