@@ -90,17 +90,18 @@ class DAOValoracion(Singleton):
 		
 		try:
 			
-			djv = djModels.Valoracion.objects.get(Pel=val.idPel, Usu=val.idUsu)
-
-			djv.puntuacion = val.valoracion
+			djv = djModels.Valoracion.objects.get(Pel=v.idPel, Usu=v.idUsu)
+			
+			djv.puntuacion = v.valoracion
 			
 		# La valoración no existía y se añade
 		except djModels.Valoracion.DoesNotExist:
-		
+			
 			pel = djModels.Pelicula.objects.get(pk=v.idPel)
 			usu = djModels.Usuario.objects.get(pk=v.idUsu)
 
 			djv = djModels.Valoracion(Usu=usu, Pel=pel, puntuacion=v.valoracion)
+			
 		
 		finally:
 			

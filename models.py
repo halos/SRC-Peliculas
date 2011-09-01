@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 
 # Modelos de SRC PeliculasCreate
@@ -7,6 +9,30 @@ class Pelicula(models.Model):
 	titulo = models.CharField(max_length=255)
 	anio = models.PositiveIntegerField()
 	
+	def get_valoracion_usu(self, usu):
+		""" Obtiene la valoración del usuario dado a esta película
+	
+		Params:
+	
+			usu(Usuario): Usuario que ha valorado esta película
+	
+		Return:
+	
+			(int): Valoración (int) 0 si no se ha valorado
+		"""
+		
+		try:
+			
+			valoracion = p.valoracion_set.all().get(Usu=usu).puntuacion
+			
+		except Valoracion.DoesNotExist:
+			
+			valoracion = 0
+		
+		finally:
+			
+			return valoracion
+		
 	def __unicode__(self):
 		
 		return self.titulo	
