@@ -77,7 +77,15 @@ class DAOValoracion(Singleton):
 			valoraciones.append(v)
 		
 		return valoraciones
-
+		
+	def actualizaValoracion(self,val):
+		""" Actualiza una valoracion anteriormente insertada
+		Params:
+			val: valoración cuyo rating hay que modificar
+		"""
+		
+		self.inserta(val)
+		
 	def inserta(self,v):
 		"""
 		Introduce una valoración, si no existe, se crea, si existe, 
