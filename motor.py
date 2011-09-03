@@ -100,7 +100,22 @@ class Motor (singleton.Singleton):
 			return True
 		return False
 	
-	def actualizarModelo(self, estrat_sim): # Para javi
+	def crearModelo(self, estrat_sim):
+		""" Método para crear el modelo desde cero, borrando similitudes anteriores
+			Params:
+			
+				None
+			
+			Return:
+		
+				None		
+		"""		
+		# Obtenemos todas las valoraciones de la BD
+		valoraciones = self.getValoraciones()
+		
+		estrat_sim.insertaSimilitud(valoraciones)
+	
+	def actualizarModelo(self, estrat_sim):
 		""" Método para actualizar el modelo tras haber nuevas valoraciones
 	
 		Params:
@@ -111,9 +126,7 @@ class Motor (singleton.Singleton):
 	
 			None
 		"""
-		
-		# Obtenemos todas las valoraciones de la BD
-		valoraciones = self.getValoraciones()
+		valoraciones = []
 		
 		# Obtenemos las valoraciones de todas las películas puntuadas
 		for v in self.__nuevasValoraciones:
@@ -255,3 +268,18 @@ class Motor (singleton.Singleton):
 		
 		for s in _similitudes:
 			daos.actualizaSimilitud(s)
+			
+	def borraSimilitudes(self):
+		""" Método para borrar todaas las similitudes existentes (Cuidado!)
+	
+		Params:
+	
+			None
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		daos = daoParSimilitud.DAOParSimilitud()
+		daos.reset()
