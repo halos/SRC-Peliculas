@@ -41,7 +41,8 @@ class CrossValidation:
 		daops = daoParSimilitud.DAOParSimilitud()
 		print 'Reseteamos...'
 		daov.reset()
-		daops.reset()
+		#daops.reset() 
+		#No hace falta lo hace Motor.crearModelo
 		# Añadimos al espacio (BD) los folds destinados al entrenamiento
 		print 'Insertamos folds de valoraciones...'
 		for i in range(self.k):
