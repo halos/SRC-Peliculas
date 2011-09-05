@@ -1,7 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
+import sys
+sys.path.append('estrategiasPredicción')
 	
-from motor import Motor
+import itemAvgAdj1
+import itemAvgAdjN
+import weithedSum
+import agrupamiento
 
 def carga_peliculas(nombre_archivo):
 	""" Carga las películas
@@ -114,6 +120,8 @@ def carga_valoraciones(nombre_archivo):
 #print "Coseno:"
 #for i in estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud).actualizaSimilitud(vals, vals_n):
 #	print '%d, %d: --> %f' % (i.idP1, i.idP2, i.similitud)
-m = Motor()
-m.login(1,'asdf')
-print 'Fin'
+kval_vec = agrupamiento.Agrupamiento(1333).agrupknn(8593, 5)
+# Creamos la estrategia de predicción
+# Predecimos...
+ep = itemAvgAdj1.ItemAvgAdj1()
+prediccion = ep.predice(1333, 8593, kval_vec)
