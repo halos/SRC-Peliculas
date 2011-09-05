@@ -42,6 +42,7 @@ class EstrategiaSimilitud:
 		valoraciones = _valoraciones[:]
 		
 		#Borramos todas las similitudes de la BD (OJo!)
+		print 'Borrando similitudes anteriores...'
 		m.borraSimilitudes()
 		
 		# Todas las películas
@@ -77,7 +78,10 @@ class EstrategiaSimilitud:
 			cont += 1
 			if cont % 100 == 0:
 				print 'Llevamos %d item calculados de %d...' % (cont, len(p1))
-		print 'Fin del cálculo\n'
+		# Descargamos el resto
+		if len(paresSimilitud) > 0:
+			m.insertaSimilitudes(paresSimilitud)	
+		print 'Fin del cálculo\n'	 
 		#return paresSimilitud
 		
 	
@@ -148,6 +152,9 @@ class EstrategiaSimilitud:
 			cont += 1
 			if cont % 100 == 0:
 				print 'Llevamos %d item calculados de %d...' % (cont, len(p1))
+				# Descargamos el resto
+		if len(paresSimilitud) > 0:
+			self.almacenaSimilitudes(paresSimilitud)
 		print 'Fin del cálculo\n'
 		
 		

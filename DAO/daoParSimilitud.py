@@ -34,9 +34,8 @@ class DAOParSimilitud(Singleton):
 			idItem: Identificador del item cuyas similitudes se buscan
 		"""
 		datos = DB()
-		
-		consulta= "SELECT * FROM similitudes WHERE (idPel1 = "+str(idItem) + \
-		"OR idPel2 = " + str(idItem) + ")"
+		consulta = "SELECT * FROM similitudes WHERE (idPel1 = " + str(idItem) +\
+		" OR idPel2 = " + str(idItem) + ")"
 		res = datos.get_filas(consulta)
 		
 		similitudes = {}
@@ -84,8 +83,8 @@ class DAOParSimilitud(Singleton):
 			sim: similitud a actualizar
 		"""
 		datos = DB()
-		consulta = " UPDATE similitudes SET similitud = " + str(sim.similitud) + \
-		" WHERE (idPel1 = " + str(sim.idP1) + " AND idPel2 = " + str(sim.idP2) + ") OR " + \
+		consulta = " UPDATE similitudes SET similitud = " + str(sim.similitud) +\
+		" WHERE (idPel1 = " + str(sim.idP1) + " AND idPel2 = " + str(sim.idP2) + ") OR " +\
 		" (idPel1 = " + str(sim.idP2) + "AND idPel2 = " + str(sim.idP1) + ")"
 		datos.ejecutar(consulta)
 		return

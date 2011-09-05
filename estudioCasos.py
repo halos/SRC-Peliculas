@@ -23,7 +23,7 @@ def ejecutaPrueba(kfold, tk, tes, tep):
     for es in tes:
         print "DATOS PARTE OFF-LINE:"
         print "* %d-fold cross validation" % kfold
-        print "* Estrategia de similitud:" , es
+        print "* Estrategia de similitud:" , es[0]
         vgmae = []
         vgtemp = []        
         # Realizamos k iteraciones y luego realizamos la media aritmética
@@ -36,7 +36,7 @@ def ejecutaPrueba(kfold, tk, tes, tep):
             # Actualizamos el modelo
             print 'Creamos el modelo...'
             m = motor.Motor()
-            m.crearModelo(es)
+            m.crearModelo(es[1])
             print 'Fin del cálculo del modelo'
             # Fin de la medición de tiempo del modelo
             t_fin = metricas.get_clock()
@@ -95,7 +95,7 @@ def resultados(kfold, tk, tep, vgmae, vgtemp):
 #Definimos los distintos parámetros
 kfold = 5
 tk = (10, 20, 30)
-tes = (estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud), estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud))
+tes = (('coseno', estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud)), ('pearson', estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)))
 tn = (2, 4, 8)
 tep = [itemAvgAdj1.ItemAvgAdj1]
 for n in tn:
