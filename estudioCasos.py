@@ -67,6 +67,7 @@ def ejecutaPrediccion(tk, tep, valtest, time_mod):
             t_inic = metricas.get_clock()
             # Realizamos el proceso de testing (predicción)
             lpredicciones = []
+            
             for valoracion in valtest:
                 # Calculamos los k-vecinos
                 kval_vec = agrupamiento.Agrupamiento(valoracion.idUsu).agrupknn(valoracion.idPel, k)
@@ -74,11 +75,12 @@ def ejecutaPrediccion(tk, tep, valtest, time_mod):
                 # Predecimos...
                 prediccion = ep.predice(valoracion.idUsu, valoracion.idPel, kval_vec)
                 lpredicciones.append(prediccion)
-            t_inic = metricas.get_clock()
             # Fin de la medición de tiempo del modelo
             t_fin = metricas.get_clock()
-            vtemp.append(time_mod + t_fin - t_inic)
+            
+            vtemp.append(time_mod + (t_fin - t_inic))
             vmae.append(metricas.mae(lpredicciones, valtest))
+            
     return (vmae, vtemp)
 
 def resultados(kfold, tk, tep, vgmae, vgtemp):

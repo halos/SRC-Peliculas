@@ -31,8 +31,8 @@ class WeithedSum:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-        sum_num = 0
-        sum_den = 0
+        sum_num = 0.0
+        sum_den = 0.0
         m = motor.Motor()
         dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
         

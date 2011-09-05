@@ -83,8 +83,8 @@ class ItemAvgAdj1:
 					
 		"""
 		m = motor.Motor()
-		sum_num = 0
-		sum_den = 0
+		sum_num = 0.0
+		sum_den = 0.0
 		media_item = self.__mediaitem(idItem)
 		media_usu = self.__mediausuario(idUsu)
 		dsim = m.getSimilitudesItem(idItem) # Diccionario de similitudes, clave idItem
