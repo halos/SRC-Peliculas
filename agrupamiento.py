@@ -42,15 +42,14 @@ class Agrupamiento:
 		#Ordenamos de mayor a menor, segun similitud
 		lsimil.sort(reverse=True)
 		#Calculamos los k-vecinos al ítem
-		i = 0
-		vecinos = []
-		while i < k | i < lsimil.len():
-			if lsimil[i].idP1 == idItem:
-				idPel = lsimil[i].idP2
+		vecinos = []		
+		for sim in lsimil:
+			if sim.idP1 == idItem:
+				idPel = sim.idP2
 			else:
-				idPel = lsimil[i].idP1
-			val = dval_usu.get(idPel, 0)
-			if val != 0:
-				vecinos.append(val)
-				i += 1;
+				idPel = sim.idP1
+			if idPel in dval_usu:
+				vecinos.append(dval_usu.get(idPel))
+			if k <= len(vecinos): # SI ya tenemos los k vecinos
+				break
 		return vecinos
