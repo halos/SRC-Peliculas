@@ -31,21 +31,24 @@ class WeithedSum:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-        m = Motor()
         sum_num = 0
         sum_den = 0
+        m = Motor()
         dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
+        
         #Cálculo de la fórmula de la prediccion        
         for val in kval_vec:
-            simil = dsim.get(val.idPel, 0)
-            if simil != 0: # Existe similitud para el item de esa valoracion
+            if val.idPel in dsim:
+                simil = dsim.get(val.idPel)
                 sum_num += simil.similitud * val.valoracion
                 sum_den += simil.similitud    
+        
         if sum_den == 0:
-            print 'Error, division por cero!'
-            sys.exit(-1)
+            sum_den = 0.00000000001
+        
         vprediccion = sum_num / sum_den
         prediccion = Valoracion(idUsu, idItem, vprediccion)
+        
         return prediccion
         
 
