@@ -61,13 +61,17 @@ def ejecutaPrueba(kfold, tk, tes, tep):
 def ejecutaPrediccion(tk, tep, valtest, time_mod):
     vtemp = []
     vmae = []
+    print 'Comenzamos la fase de predicción...'
     for k in tk:
         for ep in tep:
             # Medimos el tiempo para la predicción
+            print "PREDICCION PARA:"
+            print "* Valor de k en K-nn: %d" % k
+            print "* Estrategia de predicción: " , ep
             t_inic = metricas.get_clock()
             # Realizamos el proceso de testing (predicción)
             lpredicciones = []
-            
+            print 'Calculo para %d valoraciones a testear' % len(valtest)
             for valoracion in valtest:
                 # Calculamos los k-vecinos
                 kval_vec = agrupamiento.Agrupamiento(valoracion.idUsu).agrupknn(valoracion.idPel, k)
@@ -75,9 +79,10 @@ def ejecutaPrediccion(tk, tep, valtest, time_mod):
                 # Predecimos...
                 prediccion = ep.predice(valoracion.idUsu, valoracion.idPel, kval_vec)
                 lpredicciones.append(prediccion)
+                print 'Llevamos %d item predichos de %d...' % (len(lpredicciones), len(valtest))
             # Fin de la medición de tiempo del modelo
             t_fin = metricas.get_clock()
-            
+            print 'Tiempo de proceso de esta prediccion: %f' % (time_mod + (t_fin - t_inic))
             vtemp.append(time_mod + (t_fin - t_inic))
             vmae.append(metricas.mae(lpredicciones, valtest))
             
