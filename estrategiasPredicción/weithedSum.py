@@ -7,8 +7,8 @@ __date__ ="$07-dic-2010 10:22:31$"
 import sys
 sys.path.append("..")
 
-from valoracion import Valoracion
-from motor import Motor
+import valoracion
+import motor
 
 class WeithedSum:
     """ Clase que implementa el método de prediccion WeithedSum """
@@ -33,7 +33,7 @@ class WeithedSum:
 		"""
         sum_num = 0
         sum_den = 0
-        m = Motor()
+        m = motor.Motor()
         dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
         
         #Cálculo de la fórmula de la prediccion        
@@ -47,7 +47,7 @@ class WeithedSum:
             sum_den = 0.00000000001
         
         vprediccion = sum_num / sum_den
-        prediccion = Valoracion(idUsu, idItem, vprediccion)
+        prediccion = valoracion.Valoracion(idUsu, idItem, vprediccion)
         
         return prediccion
         
