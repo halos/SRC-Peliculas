@@ -33,9 +33,12 @@ class ItemAvgAdj1:
 			
 		"""
 		m = motor.Motor() # Clase Singleton
+		media_usuario = 0.0
 		lval_usuario = m.getValoracionesUsuario(idUsu).values()
 		
-		media_usuario = (float)(sum(lval_usuario))
+		for valoracion in lval_usuario:
+			media_usuario += valoracion.valoracion
+			
 		media_usuario /= len(lval_usuario)
 		
 		return media_usuario
@@ -54,9 +57,12 @@ class ItemAvgAdj1:
 			
 		"""
 		m = motor.Motor() # Clase Singleton
+		media_item = 0.0
 		lval_item = m.getValoracionesItem(idItem).values()
 		
-		media_item = (float)(sum(lval_item))
+		for valoracion in lval_item:
+			media_item += valoracion.valoracion
+		
 		media_item /= len(lval_item)
 		
 		return media_item
