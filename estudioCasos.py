@@ -99,7 +99,7 @@ kfold = 5
 tk = (10, 20, 30)
 tes = (('coseno', estrategiaSimilitud.EstrategiaSimilitud(coseno.calcula_similitud)), ('pearson', estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)))
 tn = (2, 4, 8)
-tep = [itemAvgAdj1.ItemAvgAdj1]
+tep = [itemAvgAdj1.ItemAvgAdj1()]
 for n in tn:
     tep.append(itemAvgAdjN.ItemAvgAdjN(n))
 tep.append(weithedSum.WeithedSum())

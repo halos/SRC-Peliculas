@@ -18,6 +18,7 @@ class ItemAvgAdj1:
 
 	def __init__(self):
 		""" Constructor básico"""
+		pass
 
 
 	def __mediausuario(self, idUsu):
