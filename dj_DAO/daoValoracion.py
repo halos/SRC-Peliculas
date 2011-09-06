@@ -61,9 +61,13 @@ class DAOValoracion(Singleton):
 		return valoraciones
 	
 	def getValoracionesItem(self,idPel):
-		""" obtiene las valoraciones que todos los usuarios han realizado sobre una pelicula concreta
-		params:
+		""" Obtiene las valoraciones que todos los usuarios han realizado sobre una pelicula concreta
+		
+		Params:
 			idPel: identificador de la pelicula
+			
+		Return:
+			lista con las valoraciones
 		"""
 		djVals = djModels.Valoracion.objects.filter(Pel=idPel)
 		
@@ -108,7 +112,6 @@ class DAOValoracion(Singleton):
 			usu = djModels.Usuario.objects.get(pk=v.idUsu)
 
 			djv = djModels.Valoracion(Usu=usu, Pel=pel, puntuacion=v.valoracion)
-			
 		
 		finally:
 			

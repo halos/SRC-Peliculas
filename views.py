@@ -8,11 +8,14 @@ from django.template import RequestContext
 import sys
 
 sys.path.append('srcp')
+sys.path.append('srcp/estrategiasSimilitud')
 sys.path.append('srcp/dj_DAO')
 
+import pearson
 import valoracion
 import daoValoracion
 import daoPelicula
+import estrategiaSimilitud
 from srcp.models import Pelicula, Usuario, Valoracion, Similitud
 
 class CSRPError(Exception):
@@ -199,7 +202,7 @@ def valorar(request, idPel):
 									#context_instance=RequestContext(request))
 									
 		redirected_view = 'srcp.views.login'
-	
+		
 	else:
 		
 		v = valoracion.Valoracion(idUsu=usu.idUsu, idPel=pel.idPel, \
@@ -208,14 +211,14 @@ def valorar(request, idPel):
 		daov.inserta(v)
 		
 		request.session['nuevasValoraciones'].append(v)
-		print "Se ha valorado"
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		request.session['nvaloraciones'] += 1
+		print "--> Se ha valorado, %d valoraciones sin insertar." % (request.session['nvaloraciones'], )
 		
-		if request.session['nvaloraciones'] == 5:
-			print "Se han hecho 5 valoraciones, es momento de actualizar"
-			self.__actualizarModelo()
-			print "Modelo actualizado"
+		if request.session['nvaloraciones'] >= 5:
+			print "--> Se han hecho >=5 valoraciones, es momento de actualizar"
+			__actualizarModelo(request)
+			print "--> Modelo actualizado"
 			request.session['nvaloraciones'] = 0
 			
 		redirected_view = 'srcp.views.buscar'
@@ -327,7 +330,7 @@ def get_recomendaciones(idUsu):
 	
 	return dj_pels
 
-def __crearModelo(estrat_sim):
+def __crearModelo(estrat_sim=None):
 	""" 
 
 	Params:
@@ -339,13 +342,16 @@ def __crearModelo(estrat_sim):
 		(): DESCRIPTION
 	"""
 	
+	if not estrat_sim:
+		estrat_sim = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
+	
 	daov = daoValoracion.DAOValoracion()
 	
 	vals = daov.getValoraciones()
 	
 	estrat_sim.similitud(vals)
 	
-def __actualizarModelo(): # Para javi
+def __actualizarModelo(request): # Para javi
 	""" Método para actualizar el modelo tras haber nuevas valoraciones
 
 	Params:
@@ -357,14 +363,15 @@ def __actualizarModelo(): # Para javi
 		None
 	"""
 	
-	valoraciones = []
+	daov = daoValoracion.DAOValoracion()
 	
-	#obtener valoraciones de todas las películas puntuadas
-	for v in request.session['nuevasValoraciones']:
-		valoraciones += self.getValoracionesItem(v.idPel).values()#----------------------------------------DAO----------
-	
-	eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
-	eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
+	eSimilitud = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
+	print 666666666666666666666
+	eSimilitud.actualizaSimilitud(daov.getValoraciones(), request.session['nuevasValoraciones'])
+	print 7
+
+	del(request.session['nuevasValoraciones'])
+	request.session['nuevasValoraciones'] = []
 
 def __checkIsLogged(request):
 	

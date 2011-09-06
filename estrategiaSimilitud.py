@@ -44,9 +44,8 @@ class EstrategiaSimilitud: #(singleton):
 		# lista con los ParSimilitud
 		paresSimilitud = []
 		valoraciones = {}
-		
 		# borrar base de datos
-		if _nuevasValoraciones:
+		if not _nuevasValoraciones:
 			daops.borraDB()
 		
 		# Todas las películas
@@ -81,6 +80,7 @@ class EstrategiaSimilitud: #(singleton):
 				paresSimilitud.append(ps)
 				
 				if len(paresSimilitud) == 1000000:
+					
 					if not _nuevasValoraciones:
 						daops.insertaSimilitudes(paresSimilitud)
 					else:
@@ -93,6 +93,7 @@ class EstrategiaSimilitud: #(singleton):
 		else:
 			daops.actualizaSimilitudes(paresSimilitud)
 		
+		print 'Similitudes insertadas'
 		paresSimilitud = []
 		
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
@@ -110,7 +111,7 @@ class EstrategiaSimilitud: #(singleton):
 		"""
 		
 		# para que no se modifiquen las valoraciones en memoria
-		valoraciones = _valoraciones[:]
+		#valoraciones = _valoraciones[:]
 		
 		# actualizar las valoraciones
 		#for nv in _nuevasValoraciones:
@@ -122,4 +123,5 @@ class EstrategiaSimilitud: #(singleton):
 				
 		# almacenar valoraciones actualizadas
 		#daoValoracion.DAOValoracion.guarda(valoraciones)
-		self.similitud(valoraciones, _nuevasValoraciones)
+		print 0
+		self.similitud(_valoraciones, _nuevasValoraciones)

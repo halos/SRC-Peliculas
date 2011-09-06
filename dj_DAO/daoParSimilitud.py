@@ -115,19 +115,28 @@ class DAOParSimilitud(Singleton):
 			sim: similitud a actualizar
 		"""
 		
-		sim_list = djModels.Similitud.objects.filter(Pel1=sim.idPel1, Pel2=sim.idPel2)
+		sim_list = djModels.Similitud.objects.filter(Pel1=sim.idP1, Pel2=sim.idP2)
 		
 		if not sim_list:
 			
-			sim_list = djModels.Similitud.objects.filter(Pel1=sim.idPel2, Pel2=sim.idPel1)
+			sim_list = djModels.Similitud.objects.filter(Pel1=sim.idP2, Pel2=sim.idP1)
 		
 			if not sim_list:
 			
-			self.insertaSimilitud(sim)
-		
-		sim_upd = sim_list[0]
-		sim_upd.similitud = sim.similitud
-		sim_upd.save()
+				self.insertaSimilitud(sim)
+				
+			else:
+				
+				sim_upd = sim_list[0]
+				sim_upd.similitud = sim.similitud
+				sim_upd.save()
+				
+		else:
+			
+			sim_upd = sim_list[0]
+			sim_upd.similitud = sim.similitud
+			sim_upd.save()
+			
 	
 	def actualizaSimilitudes(self,sims):
 		"""
