@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from singleton import *
-
 sys.path.append('..')
+from singleton import *
 
 #import parSimilitud
 #import valoracion
