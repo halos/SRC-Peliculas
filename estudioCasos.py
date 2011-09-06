@@ -79,7 +79,6 @@ def ejecutaPrediccion(tk, tep, valtest, time_mod):
                 # Predecimos...
                 prediccion = ep.predice(valoracion.idUsu, valoracion.idPel, kval_vec)
                 lpredicciones.append(prediccion)
-                print 'Llevamos %d item predichos de %d...' % (len(lpredicciones), len(valtest))
             # Fin de la medición de tiempo del modelo
             t_fin = metricas.get_clock()
             print 'Tiempo de proceso de esta prediccion: %f' % (time_mod + (t_fin - t_inic))
