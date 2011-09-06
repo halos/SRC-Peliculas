@@ -34,17 +34,25 @@ class DAOParSimilitud(Singleton):
 			idItem: Identificador del item cuyas similitudes se buscan
 		"""
 		datos = DB()
-		consulta = "SELECT * FROM similitudes WHERE (idPel1 = " + str(idItem) +\
-		" OR idPel2 = " + str(idItem) + ")"
-		res = datos.get_filas(consulta)
+		# El método se ha implementado así por razones de eficiencia, una consulta OR en el WHERE es ineficiente en BD
+		consulta1 = "SELECT * FROM similitudes WHERE idPel1 = " + str(idItem)
+		consulta2 = "SELECT * FROM similitudes WHERE idPel2 = " + str(idItem)
+		
+		res1 = datos.get_filas(consulta1)
+		res2 = datos.get_filas(consulta2)
 		
 		similitudes = {}
-		for i in res:
+		for i in res1:
 			if i[0] != idItem:
 				similitudes[i[0]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
 			else:
 				similitudes[i[1]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
-		
+		for i in res2:
+			if i[0] != idItem:
+				similitudes[i[0]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
+			else:
+				similitudes[i[1]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
+	
 		return similitudes
 
 	
