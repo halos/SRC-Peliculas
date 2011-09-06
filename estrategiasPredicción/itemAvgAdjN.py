@@ -89,7 +89,7 @@ class ItemAvgAdjN():
         media_usu = self.__mediausuario(idUsu)
         sum_num = 0.0
         sum_den = 0.0
-        dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
+        dsim = m.getSimilitudesItem(idItem) # Diccionario de similitudes, clave idItem
         
         #Cálculo de la fórmula de la prediccion
         nveces = 0 # Contador que vigila que no se superen n evaluaciones

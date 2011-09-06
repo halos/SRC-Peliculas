@@ -34,7 +34,7 @@ class WeithedSum:
         sum_num = 0.0
         sum_den = 0.0
         m = motor.Motor()
-        dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
+        dsim = m.getSimilitudesItem(idItem) # Diccionario de similitudes, clave idItem
         
         #Cálculo de la fórmula de la prediccion        
         for val in kval_vec:

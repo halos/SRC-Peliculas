@@ -5,6 +5,7 @@ __author__="sramirez"
 __date__ ="$07-dic-2010 10:25:53$"
 
 import motor
+import metricas #Eliminar luego
 
 class Agrupamiento:
 
@@ -39,9 +40,7 @@ class Agrupamiento:
 		m = motor.Motor()
 		lsimil = m.getSimilitudesItem(idItem).values()
 		dval_usu = m.getValoracionesUsuario(self.__idUsu)
-		#Ordenamos de mayor a menor, segun similitud
-		lsimil.sort(reverse=True)
-		#Calculamos los k-vecinos al ítem
+		#Agrupamos como posibles vecinos aquellos que estén valorados por el usuario (idUsu)
 		vecinos = []		
 		for sim in lsimil:
 			if sim.idP1 == idItem:
@@ -50,6 +49,7 @@ class Agrupamiento:
 				idPel = sim.idP1
 			if idPel in dval_usu:
 				vecinos.append(dval_usu.get(idPel))
-			if k <= len(vecinos): # SI ya tenemos los k vecinos
-				break
-		return vecinos
+		#Ordenamos de mayor a menor, segun similitud
+		vecinos.sort(reverse=True)
+		# Y devovemos los k primeros
+		return vecinos[:k]
