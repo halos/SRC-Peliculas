@@ -1,11 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import motor
-import parSimilitud
-from dj_DAO import daoParSimilitud
+import sys
 
-class EstrategiaSimilitud:
+sys.path.append('dj_DAO')
+
+import motor
+import singleton
+import parSimilitud
+import daoParSimilitud
+
+class EstrategiaSimilitud: #(singleton):
 	""" Interfaz de la estrategia de similitud """
 	
 	def __init__(self,  sim_func = None):
@@ -108,12 +113,12 @@ class EstrategiaSimilitud:
 		valoraciones = _valoraciones[:]
 		
 		# actualizar las valoraciones
-		for nv in _nuevasValoraciones:
-			if nv in valoraciones:
-				indice = valoraciones.index(nv)
-				valoraciones[indice].valoracion = nv.valoracion
-			else:
-				valoraciones.append(nv)
+		#for nv in _nuevasValoraciones:
+			#if nv in valoraciones:
+				#indice = valoraciones.index(nv)
+				#valoraciones[indice].valoracion = nv.valoracion
+			#else:
+				#valoraciones.append(nv)
 				
 		# almacenar valoraciones actualizadas
 		#daoValoracion.DAOValoracion.guarda(valoraciones)
