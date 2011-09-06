@@ -3,6 +3,7 @@
 
 import motor
 import parSimilitud
+from dj_DAO import daoParSimilitud
 
 class EstrategiaSimilitud:
 	""" Interfaz de la estrategia de similitud """
@@ -32,10 +33,16 @@ class EstrategiaSimilitud:
 	
 			None #(list): Lista de similitudes entre las películas (ParSimilitud)
 		"""
+
+		daops = daoParSimilitud.DAOParSimilitud()
 		
 		# lista con los ParSimilitud
 		paresSimilitud = []
 		valoraciones = {}
+		
+		# borrar base de datos
+		if _nuevasValoraciones:
+			daops.borraDB()
 		
 		# Todas las películas
 		# creación de la estructura de datos		
@@ -49,7 +56,6 @@ class EstrategiaSimilitud:
 		# obtención de los id de las películas
 		p1 = valoraciones.keys()
 		
-		
 		# Si se actualiza el modelo solo será para unas pocas peliculas
 		if _nuevasValoraciones: # Se actualiza el modelo
 			p2 = list(set([v.idPel for v in _nuevasValoraciones]))
@@ -59,30 +65,30 @@ class EstrategiaSimilitud:
 			
 		# obtención de las valoraciones de cada usuario
 		for i in p1:
+			
 			if i in p2:
 				p2.remove(i)
+
 			for j in p2:
 				similitud = self.__calcula_similitud(\
 					valoraciones[i], valoraciones[j])
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
+				
+				if len(paresSimilitud) == 1000000:
+					if not _nuevasValoraciones:
+						daops.insertaSimilitudes(paresSimilitud)
+					else:
+						daops.actualizaSimilitudes(paresSimilitud)
+					
+					paresSimilitud = []
 		
-		#return paresSimilitud
-		# almacenamiento de similitudes
-		m = motor.Motor()
+		if not _nuevasValoraciones:
+			daops.insertaSimilitudes(paresSimilitud)
+		else:
+			daops.actualizaSimilitudes(paresSimilitud)
 		
-		sim_insertar = []
-		sim_actualizar = []
-		sim_anteriores = m.getSimilitudes()
-		
-		for s in paresSimilitud:
-			if s in sim_anteriores:
-				sim_actualizar.append(s)
-			else:
-				sim_insertar.append(s)
-		
-		m.insertaSimilitudes(sim_insertar)
-		m.actualizaSimilitudes(sim_actualizar)
+		paresSimilitud = []
 		
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
 		""" Recalcula las similitudes en base a unas ya existentes y a las
@@ -108,7 +114,7 @@ class EstrategiaSimilitud:
 				valoraciones[indice].valoracion = nv.valoracion
 			else:
 				valoraciones.append(nv)
+				
 		# almacenar valoraciones actualizadas
 		#daoValoracion.DAOValoracion.guarda(valoraciones)
-		
 		self.similitud(valoraciones, _nuevasValoraciones)

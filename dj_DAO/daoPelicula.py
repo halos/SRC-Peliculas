@@ -49,7 +49,7 @@ class DAOPelicula(Singleton):
 			tit: titulo de la pelicula a buscar
 		"""		
 		
-		djPeliculas = djModels.Pelicula.objects.filter(titulo__contains=tit)
+		djPeliculas = djModels.Pelicula.objects.filter(titulo__icontains=tit)
 		
 		pelis=[]
 		

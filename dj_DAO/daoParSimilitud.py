@@ -82,7 +82,6 @@ class DAOParSimilitud(Singleton):
 
 		return similitudes
 
-	
 	def insertaSimilitud(self,sim):
 		"""
 		Inserta un nuevo par de similitud
@@ -99,7 +98,17 @@ class DAOParSimilitud(Singleton):
 		djs.save()
 		
 		return
+	
+	def insertaSimilitudes(self,sims):
+		"""
+		Inserta pares de similitud
+		Params:
+			sims: Similitudes a insertar
+		"""
 		
+		for s in sims:
+			self.insertaSimilitud(s)
+	
 	def actualizaSimilitud(self,sim):
 		"""
 		Actualiza el valor de similitud para una tupla ya existente
@@ -107,7 +116,44 @@ class DAOParSimilitud(Singleton):
 			sim: similitud a actualizar
 		"""
 		
-		self.insertaSimilitud(sim)
+		sim_list = djModels.Similitud.objects.filter(Pel1=sim.idPel1, Pel2=sim.idPel2)
+		
+		if not sim_list:
+			
+			sim_list = djModels.Similitud.objects.filter(Pel1=sim.idPel2, Pel2=sim.idPel1)
+		
+			if not sim_list:
+			
+			self.insertaSimilitud(sim)
+		
+		sim_upd = sim_list[0]
+		sim_upd.similitud = sim.similitud
+		sim_upd.save()
+	
+	def actualizaSimilitudes(self,sims):
+		"""
+		Actualiza el valor de similitud para una tupla ya existente
+		Params:
+			sim: similitud a actualizar
+		"""
+		
+		for s in sims:
+			self.actualizaSimilitud(s)
+
+	def borraDB(self):
+		""" Function doc
+	
+		Params:
+	
+			PARAM(): DESCRIPTION
+	
+		Return:
+	
+			(): DESCRIPTION
+		"""
+		
+		Similitud.objects.all().delete()
+		
 	
 	#def reset(self):
 		#"""Elimina todos los datos de la tabla de similitudes

@@ -208,14 +208,14 @@ def valorar(request, idPel):
 		daov.inserta(v)
 		
 		request.session['nuevasValoraciones'].append(v)
-		
+		print "Se ha valorado"
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		request.session['nvaloraciones'] += 1
 		
 		if request.session['nvaloraciones'] == 5:
-			
+			print "Se han hecho 5 valoraciones, es momento de actualizar"
 			self.__actualizarModelo()
-			
+			print "Modelo actualizado"
 			request.session['nvaloraciones'] = 0
 			
 		redirected_view = 'srcp.views.buscar'
@@ -266,7 +266,7 @@ def buscar(request):
 		
 		vals = Valoracion.objects.filter( Usu=request.session['idUsu'])
 		
-		for p in Pelicula.objects.filter( titulo__contains=busqueda):
+		for p in Pelicula.objects.filter( titulo__icontains=busqueda):
 			
 			try:
 				
@@ -292,39 +292,60 @@ def buscar(request):
 		return render_to_response(response_page, context, \
 									context_instance=RequestContext(request))
 	
-def get_recomendaciones(request):
+def get_recomendaciones(idUsu):
 	""" Función para obtener las recomendaciones
 
 	Params:
 
-		request():
-		idPel: id de la película valorada
+		idUsu: idUsu del usuario al que se le recomienda
 
 	Return:
 
-		(Nonetype): None
+		(list): peliculas recomendadas (Pelicula, clase django)
 	"""
 	
 	daop = daoPelicula.DAOPelicula()
 	
 	# devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
-	lpelnop = daop.getPeliculasNoPuntuadas(request.session['idUsu'])
+	lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
 	
 	# Creamos una lista de valores predichos
 	lvalpred = []
 	
 	for idPel in lpelnop:
-		prediccion = estra_pred.predice(request.session['idUsu'], idPel)
-		val = valoracion.Valoracion(request.session['idUsu'], idPel, prediccion)
+		prediccion = estra_pred.predice(idUsu, idPel)
+		val = valoracion.Valoracion(idUsu, idPel, prediccion)
 		lvalpred.append(val)
 	
 	# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
 	lvalpred.sort(reverse=True)
+	dj_pels = []
 	
-	return lvalpred[:5]
+	for v in lvalpred[:5]:
+		dj_p = Pelicula.objects.get(pk=v.idPel)
+		dj_pels.append(dj_p) 
 	
+	return dj_pels
 
-def __actualizarModelo(self): # Para javi
+def __crearModelo(estrat_sim):
+	""" 
+
+	Params:
+
+		PARAM(): DESCRIPTION
+
+	Return:
+
+		(): DESCRIPTION
+	"""
+	
+	daov = daoValoracion.DAOValoracion()
+	
+	vals = daov.getValoraciones()
+	
+	estrat_sim.similitud(vals)
+	
+def __actualizarModelo(): # Para javi
 	""" Método para actualizar el modelo tras haber nuevas valoraciones
 
 	Params:
@@ -345,7 +366,6 @@ def __actualizarModelo(self): # Para javi
 	eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
 	eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
 
-	
 def __checkIsLogged(request):
 	
 	if 'idUsu' not in request.session:
