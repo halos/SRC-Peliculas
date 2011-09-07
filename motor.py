@@ -173,8 +173,8 @@ class Motor (singleton.Singleton):
 			Diccionario de valoraciones, cuyas claves son el idItem 
 			
 		"""
-		daov = daoValoracion.DAOValoracion()
-		return daov.getValoracionesUsuario(idUsu)
+		
+		return daoValoracion.DAOValoracion().getValoracionesUsuario(idUsu)
 		
 		
 	def getValoracionesItem(self, idItem):
@@ -189,8 +189,8 @@ class Motor (singleton.Singleton):
 			Diccionario de valoraciones, cuyas claves son el idUsuario
 			
 		"""
-		daov = daoValoracion.DAOValoracion()
-		return daov.getValoracionesItem(idItem)
+		
+		return daoValoracion.DAOValoracion().getValoracionesItem(idItem)
 		
 	def getValoraciones(self):
 		""" Método que devuelve el conjunto de todas las valoraciones hechas
@@ -205,8 +205,8 @@ class Motor (singleton.Singleton):
 			(list): Lista de objetos Valoracion
 			
 		"""
-		daov = daoValoracion.DAOValoracion()
-		return daov.getValoraciones()
+		
+		return daoValoracion.DAOValoracion().getValoraciones()
 		
 	def getSimilitudes(self):
 		""" Function doc
@@ -219,8 +219,8 @@ class Motor (singleton.Singleton):
 	
 			(): DESCRIPTION
 		"""
-		daos = daoParSimilitud.DAOParSimilitud()
-		return daos.getSimilitudes()
+		
+		return daoParSimilitud.DAOParSimilitud().getSimilitudes()
 		
 	def getSimilitudesItem(self, idItem):
 		""" Método que devuelve el conjunto de las similitudes entre el item seleccionado y el resto.
@@ -234,8 +234,8 @@ class Motor (singleton.Singleton):
 			Diccionario de similitudes, cuyas claves son el idItem del elemento a comparar.
 			
 		"""
-		daos = daoParSimilitud.DAOParSimilitud()
-		return daos.getSimilitudesItem(idItem)
+		
+		return daoParSimilitud.DAOParSimilitud().getSimilitudesItem(idItem)
 
 	def insertaSimilitudes(self, _similitudes):
 		""" Método para insertar nuevas similitudes
@@ -249,8 +249,7 @@ class Motor (singleton.Singleton):
 			(Nonetype): None
 		"""
 		
-		daos = daoParSimilitud.DAOParSimilitud()
-		daos.insertaSimilitudes(_similitudes)
+		daoParSimilitud.DAOParSimilitud().insertaSimilitudes(_similitudes)
 
 	def actualizaSimilitudes(self, _similitudes):
 		""" Método para actualizar similitudes existentes
@@ -281,5 +280,4 @@ class Motor (singleton.Singleton):
 			(Nonetype): None
 		"""
 		
-		daos = daoParSimilitud.DAOParSimilitud()
-		daos.reset()
+		daoParSimilitud.DAOParSimilitud().reset()
