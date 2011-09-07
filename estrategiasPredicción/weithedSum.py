@@ -8,7 +8,7 @@ import sys
 sys.path.append("..")
 
 import valoracion
-import motor
+#import motor
 
 class WeithedSum:
     """ Clase que implementa el método de prediccion WeithedSum """
@@ -17,7 +17,7 @@ class WeithedSum:
         """ Constructor básico"""
         pass
         
-    def predice(self, idUsu, idItem, kval_vec):
+    def predice(self, simsItem ,idUsu, idItem, kval_vec):
         """
 			
 		Metodo que devuelve el valor de prediccion para un item-usuario
@@ -31,15 +31,15 @@ class WeithedSum:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-        sum_num = 0.0
-        sum_den = 0.0
-        m = motor.Motor()
-        dsim = m.getSimilitudesItem(idItem) # Diccionario de similitudes, clave idItem
+        sum_num = 0
+        sum_den = 0
+#        m = motor.Motor()
+#        dsim = m.getSimilitudesItem(idItem).values() # Diccionario de similitudes, clave idItem
         
         #Cálculo de la fórmula de la prediccion        
         for val in kval_vec:
-            if val.idPel in dsim:
-                simil = dsim.get(val.idPel)
+            if val.idPel in simsItem:
+                simil = simsItem.get(val.idPel)
                 sum_num += simil.similitud * val.valoracion
                 sum_den += simil.similitud    
         

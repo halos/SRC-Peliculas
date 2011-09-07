@@ -9,7 +9,7 @@ sys.path.append('..')
 
 from math import fabs
 import valoracion
-import motor
+#import motor
 
 class ItemAvgAdj1:
 	""" Clase que implementa el método de prediccion
@@ -18,7 +18,14 @@ class ItemAvgAdj1:
 
 	def __init__(self):
 		""" Constructor básico"""
-		pass
+		self.__lvalsUsu = []
+		self.__lvalsItem = []
+		
+	def setValoracionesUsuario(self, valsUsu):
+		self.__lvalsUsu = valsUsu.values()
+		
+	def setValoracionesItem(self, valsItem):
+		self.__lvalsItem = valsItem.values()
 
 
 	def __mediausuario(self, idUsu):
@@ -33,14 +40,14 @@ class ItemAvgAdj1:
 					media_usuario (Float): Media de las valoraciones hechas por un usuario a todos sus items
 			
 		"""
-		m = motor.Motor() # Clase Singleton
+#		m = motor.Motor() # Clase Singleton
+#		lval_usuario = m.getValoracionesUsuario(idUsu).values()
 		media_usuario = 0.0
-		lval_usuario = m.getValoracionesUsuario(idUsu).values()
 		
-		for valoracion in lval_usuario:
+		for valoracion in self.__lvalsUsu:
 			media_usuario += valoracion.valoracion
 			
-		media_usuario /= len(lval_usuario)
+		media_usuario /= len(self.__lvalsUsu)
 		
 		return media_usuario
 
@@ -57,19 +64,19 @@ class ItemAvgAdj1:
 					media_usuario: Media de las valoraciones hechas para un determinado item
 			
 		"""
-		m = motor.Motor() # Clase Singleton
+#		m = motor.Motor() # Clase Singleton
+#		lval_item = m.getValoracionesItem(idItem).values()
 		media_item = 0.0
-		lval_item = m.getValoracionesItem(idItem).values()
 		
-		for valoracion in lval_item:
+		for valoracion in self.__lvalsItem:
 			media_item += valoracion.valoracion
 		
-		media_item /= len(lval_item)
+		media_item /= len(self.__lvalsItem)
 		
 		return media_item
 
 
-	def predice(self, idUsu, idItem, kval_vec):
+	def predice(self, simsItem, idUsu, idItem, kval_vec):
 		"""
 			
 		Metodo que devuelve el valor de prediccion para un item-usuario
@@ -83,17 +90,18 @@ class ItemAvgAdj1:
 				prediccion(Valoracion): Valoración predicha para un valor desconocido
 					
 		"""
-		m = motor.Motor()
-		sum_num = 0.0
-		sum_den = 0.0
+#		m = motor.Motor()
+#		dsim = m.getSimilitudesItem(idItem) # Diccionario de similitudes, clave idItem
+		
+		sum_num = 0
+		sum_den = 0
 		media_item = self.__mediaitem(idItem)
 		media_usu = self.__mediausuario(idUsu)
-		dsim = m.getSimilitudesItem(idItem) # Diccionario de similitudes, clave idItem
 		
 		#Cálculo de la fórmula de la prediccion		
 		for val in kval_vec:
-			if val.idPel in dsim:
-				simil = dsim.get(val.idPel)
+			if val.idPel in simsItem:
+				simil = simsItem.get(val.idPel)
 				sum_num += simil.similitud * (val.valoracion - media_usu)
 				sum_den += fabs(simil.similitud)	
 		
