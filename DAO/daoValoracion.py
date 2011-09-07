@@ -127,15 +127,23 @@ class DAOValoracion(singleton.Singleton):
 		return
 	
 	def cargarFicheroPrueba(self,fichero):
-		""" lee de un fichero csv un conjunto de valoraciones con las que poder trabajar
+		""" Lee de un fichero csv un conjunto de valoraciones con las que poder trabajar
+		
 		Params:
+			
 			fichero: nombre del fichero csv del que se va a leer
+		
 		return:
+		
 			lista de valoraciones leidas del fichero
-		ADVERTENCIA: se espera que los campos del fichero csv estén separados por comas.
+			ADVERTENCIA: se espera que los campos del fichero csv estén separados por comas.
+		
 		"""
 		reader=csv.reader(open(fichero, 'rb'))
+		
 		ratings=[]
-		for fila, i in enumerate(reader):
-			ratings.append(valoracion.Valoracion(i[1],i[0],int(i[2])))
+		
+		for i in enumerate(reader):
+			ratings.append(valoracion.Valoracion( str(i[1]), str(i[0]), int(i[2])) )
+		
 		return ratings
