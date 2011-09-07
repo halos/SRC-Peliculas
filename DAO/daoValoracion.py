@@ -143,7 +143,7 @@ class DAOValoracion(singleton.Singleton):
 		
 		ratings=[]
 		
-		for i in enumerate(reader):
+		for fila, i in enumerate(reader):
 			ratings.append(valoracion.Valoracion( str(i[1]), str(i[0]), int(i[2])) )
 		
 		return ratings
