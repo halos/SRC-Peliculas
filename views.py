@@ -9,13 +9,16 @@ import sys
 
 sys.path.append('srcp')
 sys.path.append('srcp/estrategiasSimilitud')
+sys.path.append('srcp/estrategiasPredicción')
 sys.path.append('srcp/dj_DAO')
 
 import pearson
+import itemAvgAdjN
 import valoracion
 import daoValoracion
 import daoPelicula
 import estrategiaSimilitud
+import estrategiaPrediccion
 from srcp.models import Pelicula, Usuario, Valoracion, Similitud
 
 class CSRPError(Exception):
@@ -55,7 +58,8 @@ def login(request):
 			request.session['nvaloraciones'] = 0
 			request.session['nuevasValoraciones'] = []
 			
-			response_page = 'srcp/index.html'
+			#response_page = 'srcp/index.html'
+			redirected_view = 'srcp.views.indice'
 		
 		else:
 			
@@ -66,10 +70,12 @@ def login(request):
 		context['error'] = "Login incorrecto"
 		response_page = 'srcp/login.html'
 	
-	finally:
-	
 		return render_to_response(response_page, context, \
 									context_instance=RequestContext(request))
+									
+	else:
+		
+		return HttpResponseRedirect(reverse(redirected_view))
 
 def logout(request):
 	""" Función para cerrar sesión
@@ -136,6 +142,7 @@ def indice(request):
 		__checkIsLogged(request)
 		
 		context['titulo'] = 'Índice'
+		#context['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
 		response_page = 'srcp/index.html'
 		
 		#estra_pred = None
@@ -247,8 +254,10 @@ def buscar(request):
 	
 		__checkIsLogged(request)
 		
+		#context['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
 		response_page = 'srcp/index.html'
-
+		
+		# Si no se ha hecho ninguna búsqueda, se hace la anterior
 		if 'busqueda' in request.POST:
 			busqueda = request.POST['busqueda']
 			request.session['ult_busq'] = busqueda
@@ -290,7 +299,7 @@ def buscar(request):
 		context['titulo'] = 'Login'
 		response_page = 'srcp/login.html'
 	
-	finally:
+	else:
 	
 		return render_to_response(response_page, context, \
 									context_instance=RequestContext(request))
@@ -308,6 +317,7 @@ def get_recomendaciones(idUsu):
 	"""
 	
 	daop = daoPelicula.DAOPelicula()
+	estra_pred = estrategiaPrediccion.EstrategiaPrediccion(itemAvgAdjN.predice)
 	
 	# devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
 	lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
@@ -366,9 +376,8 @@ def __actualizarModelo(request): # Para javi
 	daov = daoValoracion.DAOValoracion()
 	
 	eSimilitud = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
-	print 666666666666666666666
+	
 	eSimilitud.actualizaSimilitud(daov.getValoraciones(), request.session['nuevasValoraciones'])
-	print 7
 
 	del(request.session['nuevasValoraciones'])
 	request.session['nuevasValoraciones'] = []
