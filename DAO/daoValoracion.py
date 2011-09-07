@@ -7,6 +7,7 @@ sys.path.append('..')
 
 import valoracion
 import db
+import metricas
 import singleton
 
 class DAOValoracion(singleton.Singleton):
@@ -75,15 +76,15 @@ class DAOValoracion(singleton.Singleton):
 		params:
 			idUsu: identificador del usuario
 		"""
-		
 		datos = db.DB()
-		consulta="SELECT * FROM valoraciones WHERE idUsuario = "+str(idUsu)
-		res=datos.get_filas(consulta)
-		valoraciones = {}
 		
+		consulta = "SELECT * FROM valoraciones WHERE idUsuario = " + str(idUsu)
+		res = datos.get_filas(consulta)
+
+		valoraciones = {}
 		for i in res:
 			valoraciones[i[0]] = valoracion.Valoracion(i[1], i[0], i[2])
-		
+			
 		return valoraciones
 	
 	def getValoracionesItem(self,idPel):
