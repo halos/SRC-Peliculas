@@ -22,7 +22,7 @@ def mae(predicciones, reales):
 		exit()
 
 	tam = len(predicciones)
-	_mae = 0
+	_mae = 0.0
 
 	for i in xrange(tam):
 		_mae += abs(predicciones[i] - reales[i])
@@ -30,7 +30,6 @@ def mae(predicciones, reales):
 	_mae /= tam
 	
 	return _mae
-	
 	
 def get_clock():
 	""" Function doc
