@@ -9,17 +9,11 @@ class Agrupamiento:
 	""" Clase que implementa el agrupamiento basado en k-nn """
 
 	def __init__(self):
-		""" Constructor
-	
-			Params:
-	
-			None
-			
-		"""
+		""" Constructor básico"""
 		pass
 
 		
-	def agrupknn(self, simItem, valUsu, idItem, k):
+	def agrupknn(self, simsItem, valsUsu, idItem, k):
 	
 		""" Funcion que implementa el algoritmo de agrupamiento k-nn
 	
@@ -35,13 +29,13 @@ class Agrupamiento:
 		
 		#Agrupamos como posibles vecinos aquellos que estén valorados por el usuario (idUsu)
 		vecinos = []		
-		for sim in simItem.values():
+		for sim in simsItem.values():
 			if sim.idP1 == idItem:
 				idPel = sim.idP2
 			else:
 				idPel = sim.idP1
-			if idPel in valUsu:
-				vecinos.append(valUsu.get(idPel))
+			if idPel in valsUsu:
+				vecinos.append(valsUsu.get(idPel))
 				
 		#Ordenamos de mayor a menor, segun similitud
 		vecinos.sort(reverse=True)
