@@ -83,17 +83,24 @@ def ejecutaPrediccion(tk, tep, valtest):
     lk.sort(reverse=True)
     
     for valoracion in valtest:
-        cont = 0
-        
+
+        t_ig = metricas.get_clock()
         # Obtenemos la información necesaria de la BD
+        t_inic = metricas.get_clock()
         m = motor.Motor()
         valsItem = m.getValoracionesItem(valoracion.idPel)
         valsUsu = m.getValoracionesUsuario(valoracion.idUsu)
         simsItem = m.getSimilitudesItem(valoracion.idPel)
+        t_fin = metricas.get_clock()
+        print 'Tiempo de procesamiento de BD: %f' % (t_fin - t_inic)
         
         # Calculamos los k-vecinos más cercanos a ese elemento (con máximo "k")
+        t_inic = metricas.get_clock()
         kmaxValVec = agrupamiento.Agrupamiento().agrupknn(simsItem, valsUsu, valoracion.idPel, lk[0])
+        t_fin = metricas.get_clock()
+        print 'Tiempo de procesamiento del agrupamiento: %f' % (t_fin - t_inic)
         
+        t_inic = metricas.get_clock()
         indice = 0
         for k in tk:
             
@@ -115,12 +122,13 @@ def ejecutaPrediccion(tk, tep, valtest):
                 vtemp[indice] += (t_fin - t_inic)
                 vmae[indice] += abs(prediccion.valoracion - valoracion.valoracion)
                 indice += 1
+                
+        t_fin = metricas.get_clock()
+        print 'Tiempo de procesamiento de la predicción: %f' % (t_fin - t_inic) 
+                
+        t_fg = metricas.get_clock()
+        print 'Tiempo para la valoracion: %f' % (t_fg - t_ig)
         
-        
-        cont += 1
-        if cont % 100 == 0:
-            print 'Llevamos %d items calculados de %d' % (cont, len(valtest))
-    
     # Obtenemos el valor medio para cada configuracion
     for i in range(len(tep) *  len(tk)):
         vmae[i] /= len(valtest)
