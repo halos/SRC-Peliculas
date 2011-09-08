@@ -33,8 +33,15 @@ print 'Comenzamos la fase de predicción...'
 lk = list(tk)
 lk.sort(reverse=True)
 
-valoracion = valoracion.Valoracion(1333, 8593, 3)
-for i in range(10):
+# Serie de valoraciones
+lval = []
+lval.append(valoracion.Valoracion(1333, 8593, 3))
+lval.append(valoracion.Valoracion(4, 303948, 2))
+lval.append(valoracion.Valoracion(7, 2089379, 2))
+lval.append(valoracion.Valoracion(9, 504440, 1))
+lval.append(valoracion.Valoracion(11, 2299436, 4))
+
+for valoracion in lval:
     t_ig = metricas.get_clock()
     t_inic = metricas.get_clock()
     
