@@ -49,7 +49,10 @@ class ItemAvgAdjN():
         for valoracion in self.__lvalsUsu:
             media_usuario += valoracion.valoracion
             
-        media_usuario /= len(self.__lvalsUsu)
+        if len(self.__lvalsUsu) == 0:
+            media_usuario /= 0.00000000001
+        else:
+            media_usuario /= len(self.__lvalsUsu)
         
         return media_usuario
 
@@ -73,8 +76,11 @@ class ItemAvgAdjN():
         for valoracion in self.__lvalsItem:
             media_item += valoracion.valoracion
         
-        media_item /= len(self.__lvalsItem)
-        
+        if len(self.__lvalsItem) == 0:
+            media_item /= 0.00000000001
+        else:
+            media_item /= len(self.__lvalsItem)
+            
         return media_item
         
         

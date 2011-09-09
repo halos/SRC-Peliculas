@@ -18,6 +18,7 @@ import weithedSum
 import motor
 import db
 import crossValidation
+import daoParSimilitud
 
 
 
@@ -41,7 +42,8 @@ def ejecutaPrueba(kfold, tk, es, tep):
         # Actualizamos el modelo
         print 'Creamos el modelo...'
         m = motor.Motor()
-        m.crearModelo(es[1])
+        m.crearModelo(es[1])        
+        # Creamos el índice
         print 'Fin del cálculo del modelo'
         # Fin de la medición de tiempo del modelo
         t_fin = metricas.get_clock()
@@ -83,17 +85,30 @@ def ejecutaPrediccion(tk, tep, valtest):
     lk.sort(reverse=True)
     
     for valoracion in valtest:
-        cont = 0
-        
+
+        t_ig = metricas.get_clock()
         # Obtenemos la información necesaria de la BD
         m = motor.Motor()
-        valsItem = m.getValoracionesItem(valoracion.idPel)
+        t_inic = metricas.get_clock()
         valsUsu = m.getValoracionesUsuario(valoracion.idUsu)
+        t_fin = metricas.get_clock()
+        print 'Tiempo de procesamiento de valsUsu: %f' % (t_fin - t_inic)
+        t_inic = metricas.get_clock()
         simsItem = m.getSimilitudesItem(valoracion.idPel)
+        t_fin = metricas.get_clock()
+        print 'Tiempo de procesamiento de simsItem: %f' % (t_fin - t_inic)
+        t_inic = metricas.get_clock()
+        valsItem = m.getValoracionesItem(valoracion.idPel)
+        t_fin = metricas.get_clock()
+        print 'Tiempo de procesamiento de valsItem: %f' % (t_fin - t_inic)
         
         # Calculamos los k-vecinos más cercanos a ese elemento (con máximo "k")
+        t_inic = metricas.get_clock()
         kmaxValVec = agrupamiento.Agrupamiento().agrupknn(simsItem, valsUsu, valoracion.idPel, lk[0])
+        t_fin = metricas.get_clock()
+        print 'Tiempo de procesamiento del agrupamiento: %f' % (t_fin - t_inic)
         
+        t_inic = metricas.get_clock()
         indice = 0
         for k in tk:
             
@@ -115,12 +130,13 @@ def ejecutaPrediccion(tk, tep, valtest):
                 vtemp[indice] += (t_fin - t_inic)
                 vmae[indice] += abs(prediccion.valoracion - valoracion.valoracion)
                 indice += 1
+                
+        t_fin = metricas.get_clock()
+        print 'Tiempo de procesamiento de la predicción: %f' % (t_fin - t_inic) 
+                
+        t_fg = metricas.get_clock()
+        print 'Tiempo para la valoracion: %f' % (t_fg - t_ig)
         
-        
-        cont += 1
-        if cont % 100 == 0:
-            print 'Llevamos %d items calculados de %d' % (cont, len(valtest))
-    
     # Obtenemos el valor medio para cada configuracion
     for i in range(len(tep) *  len(tk)):
         vmae[i] /= len(valtest)
