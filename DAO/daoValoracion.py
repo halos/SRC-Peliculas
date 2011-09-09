@@ -7,11 +7,14 @@ sys.path.append('..')
 
 import valoracion
 import db
-import metricas
 import singleton
 
 class DAOValoracion(singleton.Singleton):
 	""" Class doc """
+	
+	def __init__ (self):
+		""" Class initializer """
+		pass
 	
 	def getValoraciones(self):
 		""" Método que devuelve todas las valoraciones realizadas
@@ -35,11 +38,6 @@ class DAOValoracion(singleton.Singleton):
 			valoraciones.append(v)
 		
 		return valoraciones
-	
-	def __init__ (self):
-		""" Class initialisera """
-		
-		pass
 
 	def insertaValoracion(self, v):
 		"""
@@ -122,7 +120,7 @@ class DAOValoracion(singleton.Singleton):
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
 		datos=db.DB()
-		consulta = "DELETE FROM valoraciones"
+		consulta = "TRUNCATE valoraciones" # Para así resetear también el índice, y ser más rapido
 		datos.ejecutar (consulta)
 		return
 	
@@ -144,6 +142,6 @@ class DAOValoracion(singleton.Singleton):
 		ratings=[]
 		
 		for fila, i in enumerate(reader):
-			ratings.append(valoracion.Valoracion( str(i[1]), str(i[0]), int(i[2])) )
+			ratings.append(valoracion.Valoracion( idUsu = str(i[1]), idPel = str(i[0]), valoracion = int(i[2])) )
 		
 		return ratings

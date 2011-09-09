@@ -1,11 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
-sys.path.append('..')
-
 import parSimilitud
-from db import *
+import db
 from singleton import *
 
 class DAOParSimilitud(Singleton):
@@ -19,7 +16,7 @@ class DAOParSimilitud(Singleton):
 		"""
 		Obtiene todas las similitudes entre items generadas
 		"""
-		datos = DB()
+		datos = db.DB()
 		res = datos.get_filas("SELECT * FROM similitudes")
 		similitudes = []
 		for i in res:
@@ -33,21 +30,27 @@ class DAOParSimilitud(Singleton):
 		params:
 			idItem: Identificador del item cuyas similitudes se buscan
 		"""
-		datos = DB()
+		datos = db.DB()
 		# El método se ha implementado así por razones de eficiencia, una consulta OR en el WHERE es ineficiente en BD
-		consulta1 = "SELECT * FROM similitudes WHERE idPel1 = " + str(idItem)
-		consulta2 = "SELECT * FROM similitudes WHERE idPel2 = " + str(idItem)
-		
-		res1 = datos.get_filas(consulta1)
-		res2 = datos.get_filas(consulta2)
+		consulta = "SELECT * FROM similitudes WHERE idPel1 = " + str(idItem)
+		res = datos.get_filas(consulta)
+		datos.desconectar()
 		
 		similitudes = {}
-		for i in res1:
+		
+		for i in res:
 			if i[0] != idItem:
 				similitudes[i[0]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
 			else:
 				similitudes[i[1]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
-		for i in res2:
+		
+		datos = db.DB()
+		consulta = "SELECT * FROM similitudes WHERE (idPel1 <> " + str(idItem) +\
+		" AND idPel2 = " + str(idItem) + ")"
+		res = datos.get_filas(consulta)
+		datos.desconectar()
+		
+		for i in res:
 			if i[0] != idItem:
 				similitudes[i[0]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
 			else:
@@ -62,9 +65,10 @@ class DAOParSimilitud(Singleton):
 		Params:
 			sim: Similitud a insertar
 		"""
-		datos=DB()
+		datos = db.DB()
 		consulta = "INSERT INTO similitudes (idPel1, idPel2, similitud) VALUES ("+\
 		str(sim.idP1)+","+str(sim.idP2)+","+str(sim.similitud)+")"
+
 		datos.ejecutar(consulta)
 		return
 	
@@ -80,7 +84,7 @@ class DAOParSimilitud(Singleton):
 			consulta += "(" + str(lsim[i].idP1) + "," + str(lsim[i].idP2) + "," + str(lsim[i].similitud) + "), "
 		consulta += "(" + str(lsim[-1].idP1) + "," + str(lsim[-1].idP2) + "," + str(lsim[-1].similitud) + ");"
 		
-		datos = DB()
+		datos = db.DB()
 		datos.ejecutar(consulta)
 		return
 		
@@ -90,7 +94,7 @@ class DAOParSimilitud(Singleton):
 		Params:
 			sim: similitud a actualizar
 		"""
-		datos = DB()
+		datos = db.DB()
 		consulta = " UPDATE similitudes SET similitud = " + str(sim.similitud) +\
 		" WHERE (idPel1 = " + str(sim.idP1) + " AND idPel2 = " + str(sim.idP2) + ") OR " +\
 		" (idPel1 = " + str(sim.idP2) + "AND idPel2 = " + str(sim.idP1) + ")"
@@ -102,7 +106,8 @@ class DAOParSimilitud(Singleton):
 		
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
-		datos=DB()
-		consulta = "DELETE FROM similitudes"
+		datos = db.DB()
+		consulta = "TRUNCATE similitudes" # Para así resetear también el índice, y ser más rapido
+		
 		datos.ejecutar (consulta)
 		return
