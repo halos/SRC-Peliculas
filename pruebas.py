@@ -35,11 +35,11 @@ lk.sort(reverse=True)
 
 # Serie de valoraciones
 lval = []
-lval.append(valoracion.Valoracion(1333, 8593, 3))
-lval.append(valoracion.Valoracion(4, 303948, 2))
-lval.append(valoracion.Valoracion(7, 2089379, 2))
-lval.append(valoracion.Valoracion(9, 504440, 1))
-lval.append(valoracion.Valoracion(11, 2299436, 4))
+lval.append(valoracion.Valoracion(1333, 8593, 5))
+lval.append(valoracion.Valoracion(303948, 4, 2))
+lval.append(valoracion.Valoracion(2089379, 7, 2))
+lval.append(valoracion.Valoracion(504440, 9, 1))
+lval.append(valoracion.Valoracion(2299436, 11, 4))
 
 for valoracion in lval:
     t_ig = metricas.get_clock()
@@ -48,18 +48,19 @@ for valoracion in lval:
     # Obtenemos la información necesaria de la BD
     m = motor.Motor()
     t_inic = metricas.get_clock()
-    valsItem = m.getValoracionesItem(valoracion.idPel)
-    t_fin = metricas.get_clock()
-    print 'Tiempo de procesamiento de valsItem: %f' % (t_fin - t_inic)
-    t_inic = metricas.get_clock()
     valsUsu = m.getValoracionesUsuario(valoracion.idUsu)
     t_fin = metricas.get_clock()
     print 'Tiempo de procesamiento de valsUser: %f' % (t_fin - t_inic)
     t_inic = metricas.get_clock()
+    valsItem = m.getValoracionesItem(valoracion.idPel)
+    t_fin = metricas.get_clock()
+    print 'Tiempo de procesamiento de valsItem: %f' % (t_fin - t_inic)
+    t_inic = metricas.get_clock()
     simsItem = m.getSimilitudesItem(valoracion.idPel)
     t_fin = metricas.get_clock()
     print 'Tiempo de procesamiento de simsItem: %f' % (t_fin - t_inic)
-    
+
+
     # Calculamos los k-vecinos más cercanos a ese elemento (con máximo "k")
     t_inic = metricas.get_clock()
     kmaxValVec = agrupamiento.Agrupamiento().agrupknn(simsItem, valsUsu, valoracion.idPel, lk[0])
