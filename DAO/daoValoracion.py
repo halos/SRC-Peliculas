@@ -119,9 +119,11 @@ class DAOValoracion(singleton.Singleton):
 		
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
-		datos=db.DB()
+		datos = db.DB()
+		
 		consulta = "TRUNCATE valoraciones" # Para así resetear también el índice, y ser más rapido
 		datos.ejecutar (consulta)
+		
 		return
 	
 	def cargarFicheroPrueba(self,fichero):
@@ -137,10 +139,10 @@ class DAOValoracion(singleton.Singleton):
 			ADVERTENCIA: se espera que los campos del fichero csv estén separados por comas.
 		
 		"""
-		reader=csv.reader(open(fichero, 'rb'))
+		reader = csv.reader(open(fichero, 'rb'))
 		
-		ratings=[]
-		
+		ratings = []
+
 		for fila, i in enumerate(reader):
 			ratings.append(valoracion.Valoracion( idUsu = str(i[1]), idPel = str(i[0]), valoracion = int(i[2])) )
 		
