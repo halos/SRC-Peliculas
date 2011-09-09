@@ -12,6 +12,10 @@ import singleton
 class DAOValoracion(singleton.Singleton):
 	""" Class doc """
 	
+	def __init__ (self):
+		""" Class initializer """
+		pass
+	
 	def getValoraciones(self):
 		""" Método que devuelve todas las valoraciones realizadas
 	
@@ -34,11 +38,6 @@ class DAOValoracion(singleton.Singleton):
 			valoraciones.append(v)
 		
 		return valoraciones
-	
-	def __init__ (self):
-		""" Class initialisera """
-		
-		pass
 
 	def insertaValoracion(self, v):
 		"""
@@ -75,15 +74,15 @@ class DAOValoracion(singleton.Singleton):
 		params:
 			idUsu: identificador del usuario
 		"""
-		
 		datos = db.DB()
-		consulta="SELECT * FROM valoraciones WHERE idUsuario = "+str(idUsu)
-		res=datos.get_filas(consulta)
-		valoraciones = {}
 		
+		consulta = "SELECT * FROM valoraciones WHERE idUsuario = " + str(idUsu)
+		res = datos.get_filas(consulta)
+
+		valoraciones = {}
 		for i in res:
 			valoraciones[i[0]] = valoracion.Valoracion(i[1], i[0], i[2])
-		
+			
 		return valoraciones
 	
 	def getValoracionesItem(self,idPel):
@@ -120,21 +119,31 @@ class DAOValoracion(singleton.Singleton):
 		
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
-		datos=db.DB()
-		consulta = "DELETE FROM valoraciones"
+		datos = db.DB()
+		
+		consulta = "TRUNCATE valoraciones" # Para así resetear también el índice, y ser más rapido
 		datos.ejecutar (consulta)
+		
 		return
 	
 	def cargarFicheroPrueba(self,fichero):
-		""" lee de un fichero csv un conjunto de valoraciones con las que poder trabajar
+		""" Lee de un fichero csv un conjunto de valoraciones con las que poder trabajar
+		
 		Params:
+			
 			fichero: nombre del fichero csv del que se va a leer
+		
 		return:
+		
 			lista de valoraciones leidas del fichero
-		ADVERTENCIA: se espera que los campos del fichero csv estén separados por comas.
+			ADVERTENCIA: se espera que los campos del fichero csv estén separados por comas.
+		
 		"""
-		reader=csv.reader(open(fichero, 'rb'))
-		ratings=[]
+		reader = csv.reader(open(fichero, 'rb'))
+		
+		ratings = []
+
 		for fila, i in enumerate(reader):
-			ratings.append(valoracion.Valoracion(i[1],i[0],i[2]))
+			ratings.append(valoracion.Valoracion( idUsu = str(i[1]), idPel = str(i[0]), valoracion = int(i[2])) )
+		
 		return ratings

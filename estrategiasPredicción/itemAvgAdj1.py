@@ -26,7 +26,7 @@ class ItemAvgAdj1:
 		
 	def setValoracionesItem(self, valsItem):
 		self.__lvalsItem = valsItem.values()
-		
+
 
 	def __mediausuario(self, idUsu):
 		"""
