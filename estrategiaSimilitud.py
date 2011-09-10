@@ -1,8 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import sys
+sys.path.append("DAO")
 
 import motor
 import parSimilitud
+import metricas
+import daoParSimilitud
 
 
 class EstrategiaSimilitud:
@@ -44,6 +48,8 @@ class EstrategiaSimilitud:
 		#Borramos todas las similitudes de la BD (OJo!)
 		print 'Borrando similitudes anteriores...'
 		m.borraSimilitudes()
+		# Desactivamos los índices para una inserción masiva, mucho más rápida
+		daoParSimilitud.DAOParSimilitud().disableKeys()
 		
 		# Todas las películas
 		# creación de la estructura de datos		
@@ -60,7 +66,6 @@ class EstrategiaSimilitud:
 		
 		# Se crea por primera vez el modelo de similitudes
 		print 'Comienza el cálculo de similitudes'
-		cont = 0
 		for i in p1:
 			if i in p2:
 				p2.remove(i)
@@ -69,20 +74,24 @@ class EstrategiaSimilitud:
 					valDict[i], valDict[j])
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
+				
 			# Descargamos similitudes en la BD
 			if len(paresSimilitud) >= 1000000:
-				print 'Descargando similitudes...'
 				m.insertaSimilitudes(paresSimilitud)
 				paresSimilitud = [] # Vaciamos la lista, ya descargada en la BD
-				print 'Fin de la descarga'
-			cont += 1
-			if cont % 100 == 0:
-				print 'Llevamos %d item calculados de %d...' % (cont, len(p1))
+				
 		# Descargamos el resto
 		if len(paresSimilitud) > 0:
-			m.insertaSimilitudes(paresSimilitud)	
-		print 'Fin del cálculo\n'	 
+			m.insertaSimilitudes(paresSimilitud)
+				
+		print 'Fin del cálculo de similitudes\n'	 
 		#return paresSimilitud
+		
+		print 'Regeneramos índices...'
+		t_inic = metricas.get_clock()
+		daoParSimilitud.DAOParSimilitud().enableKeys()
+		t_fin = metricas.get_clock()
+		print 'Tiempo utilizado para generar índices: %f' % (t_fin - t_inic) 
 		
 	
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
@@ -134,7 +143,6 @@ class EstrategiaSimilitud:
 			
 		# obtención de las valoraciones de cada usuario
 		print 'Comienza el cálculo de similitudes'
-		cont = 0
 		for i in p1:
 			if i in p2:
 				p2.remove(i)
@@ -143,16 +151,14 @@ class EstrategiaSimilitud:
 					valDict[i], valDict[j])
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
+				
 			# Descargamos similitudes en la BD
 			if len(paresSimilitud) >= 1000000:
-				print 'Descargando similitudes...'
 				self.almacenaSimilitudes(paresSimilitud)
 				paresSimilitud = [] # Vaciamos la lista, ya descargada en la BD
-				print 'Fin de la descarga'
-			cont += 1
-			if cont % 100 == 0:
-				print 'Llevamos %d item calculados de %d...' % (cont, len(p1))
-				# Descargamos el resto
+				
+
+		# Descargamos el resto
 		if len(paresSimilitud) > 0:
 			self.almacenaSimilitudes(paresSimilitud)
 		print 'Fin del cálculo\n'
