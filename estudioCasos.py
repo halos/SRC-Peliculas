@@ -59,7 +59,7 @@ def ejecutaPrueba(kfold, tk, es, tep):
         gtempMod += tempMod
         for i in range(len(tep) * len(tk)):
             vgmae[i] += vmae[i]
-            vgtempPred += vtempPred[i]
+            vgtempPred[i] += vtempPred[i]
         
     # Finalmente, realizamos los cálculos de las medias y mostramos 
     gtempMod /= kfold
@@ -87,7 +87,8 @@ def ejecutaPrediccion(tk, tep, valtest):
     lk.sort(reverse=True)
     
     for valoracion in valtest:
-
+        cont = 0
+        
         # Obtenemos la información necesaria de la BD
         m = motor.Motor()
         valsUsu = m.getValoracionesUsuario(valoracion.idUsu)
@@ -120,6 +121,10 @@ def ejecutaPrediccion(tk, tep, valtest):
                 vmae[indice] += abs(prediccion.valoracion - valoracion.valoracion)
                 indice += 1
         
+        cont += 1
+        if cont % 10000 == 0:
+            print 'Llevamos %d valoraciones predichas...' % cont
+        
     # Obtenemos el valor medio para cada configuracion
     for i in range(len(tep) *  len(tk)):
         vmae[i] /= len(valtest)
@@ -132,13 +137,13 @@ def ejecutaPrediccion(tk, tep, valtest):
 
 def resultadosFold(nfold, es, tk, tep, vmae, tempMod, vtempPred):
     ind = 0
+    print "*** ESTADISTICAS PARA EL FOLD: %d ***\n" % nfold
+    print "PARTE OFF-LINE: "
+    print "* Estrategia de similitud:" , es[0]
+    print "* Tiempo medio del modelo: %f" % tempMod  
+    print "PARTE ON-LINE: "
     for k in tk:
         for ep in tep:
-            print "*** ESTADISTICAS PARA EL FOLD: %d ***" % nfold
-            print "PARTE OFF-LINE: "
-            print "* Estrategia de similitud:" , es[0]
-            print "* Tiempo medio del modelo: %f" % tempMod  
-            print "PARTE ON-LINE: "
             print "* Valor de k en K-nn: %d" % k
             print "* Estrategia de predicción: " , ep[0]
             print "* Tiempo medio predicción: %f" % vtempPred[ind]
@@ -147,13 +152,13 @@ def resultadosFold(nfold, es, tk, tep, vmae, tempMod, vtempPred):
 
 def resultadosGlobales(es, tk, tep, vgmae, gtempMod, vgtempPred):
     ind = 0
+    print "*** ESTADISTICAS FINALES ***\n"
+    print "PARTE OFF-LINE: "
+    print "* Estrategia de similitud:" , es[0]
+    print "* Tiempo medio del modelo: %f" % gtempMod  
+    print "PARTE ON-LINE: "
     for k in tk:
         for ep in tep:
-            print "*** ESTADISTICAS FINALES ***"
-            print "PARTE OFF-LINE: "
-            print "* Estrategia de similitud:" , es[0]
-            print "* Tiempo medio del modelo: %f" % gtempMod  
-            print "PARTE ON-LINE: "
             print "* Valor de k en K-nn: %d" % k
             print "* Estrategia de predicción: " , ep[0]
             print "* Tiempo medio predicción: %f" % vgtempPred[ind]
