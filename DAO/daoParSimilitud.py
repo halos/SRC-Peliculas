@@ -12,6 +12,18 @@ class DAOParSimilitud(Singleton):
 		""" Class initialiser """
 		pass
 	
+	def enableKeys(self):
+		datos = db.DB()
+		
+		consulta = "ALTER TABLE similitudes ENABLE KEYS"
+		datos.ejecutar (consulta)
+		
+	def disableKeys(self):
+		datos = db.DB()
+		
+		consulta = "ALTER TABLE similitudes DISABLE KEYS"
+		datos.ejecutar (consulta)
+	
 	def getSimilitudes(self):
 		"""
 		Obtiene todas las similitudes entre items generadas
@@ -33,7 +45,6 @@ class DAOParSimilitud(Singleton):
 			idItem: Identificador del item cuyas similitudes se buscan
 		"""
 		datos = db.DB()
-		# El método se ha implementado así por razones de eficiencia, una consulta OR en el WHERE es ineficiente en BD
 		consulta = "SELECT * FROM similitudes WHERE idPel1 = " + str(idItem)
 		res = datos.get_filas(consulta)
 		
@@ -44,6 +55,17 @@ class DAOParSimilitud(Singleton):
 				similitudes[i[0]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
 			else:
 				similitudes[i[1]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
+				
+		consulta = "SELECT * FROM similitudes WHERE idPel2 = " + str(idItem)
+		res = datos.get_filas(consulta)
+
+		for i in res:
+			if i[0] != idItem:
+				similitudes[i[0]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
+			else:
+				similitudes[i[1]] = parSimilitud.ParSimilitud(i[0],i[1],i[2])
+		
+		return similitudes
 
 	
 	def insertaSimilitud(self,sim):
@@ -55,12 +77,11 @@ class DAOParSimilitud(Singleton):
 		# Insertamos el parSimilitud doblemente, con el orden de id's alternado
 		datos = db.DB()
 		consulta = "INSERT INTO similitudes (idPel1, idPel2, similitud) VALUES (" + \
-		str(sim.idP1) + "," + str(sim.idP2) + "," + str(sim.similitud) + "), (" + \
-		str(sim.idP2) + "," + str(sim.idP1) + ";" + str(sim.similitud) + ")"
+		str(sim.idP1) + "," + str(sim.idP2) + "," + str(sim.similitud) + ")"
 
 		datos.ejecutar(consulta)
 		return
-	
+
 	def insertaSimilitudes(self, lsim):
 		"""
 		Inserta una lista de pares-similitud
@@ -68,15 +89,13 @@ class DAOParSimilitud(Singleton):
 			lsim: Lista de pares a insertar
 		"""
 		consulta = "INSERT INTO similitudes (idPel1, idPel2, similitud) VALUES "
-		
+
 		# Insertamos el parSimilitud doblemente, con el orden de id's alternado
 		for i in range(len(lsim) - 1): # Obviamos el último elemento
 			consulta += "(" + str(lsim[i].idP1) + "," + str(lsim[i].idP2) + "," + str(lsim[i].similitud) + "), "
-			consulta += "(" + str(lsim[i].idP2) + "," + str(lsim[i].idP1) + "," + str(lsim[i].similitud) + "), "
-		
-		consulta += "(" + str(lsim[-1].idP1) + "," + str(lsim[-1].idP2) + "," + str(lsim[-1].similitud) + "),"
-		consulta += "(" + str(lsim[-1].idP2) + "," + str(lsim[-1].idP1) + "," + str(lsim[-1].similitud) + ");"
-		
+
+		consulta += "(" + str(lsim[-1].idP1) + "," + str(lsim[-1].idP2) + "," + str(lsim[-1].similitud) + ")"
+
 		datos = db.DB()
 		datos.ejecutar(consulta)
 		return
@@ -88,8 +107,8 @@ class DAOParSimilitud(Singleton):
 			sim: similitud a actualizar
 		"""
 		datos = db.DB()
-		consulta = " UPDATE similitudes SET similitud = " + str(sim.similitud) +\
-		" WHERE (idPel1 = " + str(sim.idP1) + " AND idPel2 = " + str(sim.idP2) + ") AND " +\
+		consulta = "UPDATE similitudes SET similitud = " + str(sim.similitud) +\
+		" WHERE (idPel1 = " + str(sim.idP1) + " AND idPel2 = " + str(sim.idP2) + ") OR" +\
 		" (idPel1 = " + str(sim.idP2) + "AND idPel2 = " + str(sim.idP1) + ")"
 		
 		datos.ejecutar(consulta)
@@ -101,7 +120,8 @@ class DAOParSimilitud(Singleton):
 		ADVERTENCIA: usar sólo para pruebas del estudio de casos
 		"""
 		datos = db.DB()
-		consulta = "TRUNCATE similitudes" # Más rapido (también para índices)
 		
+		consulta = "TRUNCATE similitudes" # Más rapido (también para índices)
 		datos.ejecutar (consulta)
+		
 		return
