@@ -75,6 +75,8 @@ def ejecutaPrediccion(tk, tep, valtest):
     vtemp = []
     vmae = []
     print 'Comenzamos la fase de predicción...'
+    # Medimos el tiempo para esta fase
+    t_ig = metricas.get_clock()
     # Inicializamos vectores
     for i in range(len(tep) * len(tk)):
         vmae.append(0.0)
@@ -86,29 +88,16 @@ def ejecutaPrediccion(tk, tep, valtest):
     
     for valoracion in valtest:
 
-        t_ig = metricas.get_clock()
         # Obtenemos la información necesaria de la BD
         m = motor.Motor()
-        t_inic = metricas.get_clock()
         valsUsu = m.getValoracionesUsuario(valoracion.idUsu)
-        t_fin = metricas.get_clock()
-        print 'Tiempo de procesamiento de valsUsu: %f' % (t_fin - t_inic)
-        t_inic = metricas.get_clock()
         simsItem = m.getSimilitudesItem(valoracion.idPel)
-        t_fin = metricas.get_clock()
-        print 'Tiempo de procesamiento de simsItem: %f' % (t_fin - t_inic)
-        t_inic = metricas.get_clock()
         valsItem = m.getValoracionesItem(valoracion.idPel)
-        t_fin = metricas.get_clock()
-        print 'Tiempo de procesamiento de valsItem: %f' % (t_fin - t_inic)
         
         # Calculamos los k-vecinos más cercanos a ese elemento (con máximo "k")
-        t_inic = metricas.get_clock()
+
         kmaxValVec = agrupamiento.Agrupamiento().agrupknn(simsItem, valsUsu, valoracion.idPel, lk[0])
-        t_fin = metricas.get_clock()
-        print 'Tiempo de procesamiento del agrupamiento: %f' % (t_fin - t_inic)
         
-        t_inic = metricas.get_clock()
         indice = 0
         for k in tk:
             
@@ -130,18 +119,14 @@ def ejecutaPrediccion(tk, tep, valtest):
                 vtemp[indice] += (t_fin - t_inic)
                 vmae[indice] += abs(prediccion.valoracion - valoracion.valoracion)
                 indice += 1
-                
-        t_fin = metricas.get_clock()
-        print 'Tiempo de procesamiento de la predicción: %f' % (t_fin - t_inic) 
-                
-        t_fg = metricas.get_clock()
-        print 'Tiempo para la valoracion: %f' % (t_fg - t_ig)
         
     # Obtenemos el valor medio para cada configuracion
     for i in range(len(tep) *  len(tk)):
         vmae[i] /= len(valtest)
         vtemp[i] /= len(valtest)
     
+    t_fg = metricas.get_clock()
+    print 'Tiempo para la predicción: %f' % (t_fg - t_ig)
     print 'Fin de la fase de predicción.'
     return (vmae, vtemp)
 
@@ -180,7 +165,7 @@ def resultadosGlobales(es, tk, tep, vgmae, gtempMod, vgtempPred):
 if len(sys.argv) == 2 and (sys.argv[1] == '0' or sys.argv[1] == '1'):
     nes = int(sys.argv[1])
 else:
-    print 'Parámetros incorrectos: usa 0 para coseno y 1 para pearson'
+    print 'Parámetros incorrectos: usa 0 para coseno y 1 para pearson.\n Saliendo...'
     sys.exit(-1) 
 
 #Definimos los distintos parámetros
