@@ -85,9 +85,11 @@ def ejecutaPrediccion(tk, tep, valtest):
     # Ordenamos la lista de valores para K (mayor a menor)
     lk = list(tk)
     lk.sort(reverse=True)
+
+    cont = 0
     
     for valoracion in valtest:
-        cont = 0
+
         
         # Obtenemos la información necesaria de la BD
         m = motor.Motor()
