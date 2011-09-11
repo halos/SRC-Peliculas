@@ -2,13 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import sys
+#import os
 
+#sys.path.append('..')
 sys.path.append('dj_DAO')
 
 import motor
+#import settings
 import singleton
 import parSimilitud
 import daoParSimilitud
+
+#os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
+from srcp.models import Valoracion
 
 class EstrategiaSimilitud: #(singleton):
 	""" Interfaz de la estrategia de similitud """
@@ -26,7 +32,7 @@ class EstrategiaSimilitud: #(singleton):
 		if sim_func:
 			self.__calcula_similitud = sim_func
 
-	def similitud(self, _valoraciones, _nuevasValoraciones=[]):
+	def similitud(self, _nuevasValoraciones=[]):
 		""" Método para calcular la similitud entre películas
 	
 		Params:
@@ -51,15 +57,18 @@ class EstrategiaSimilitud: #(singleton):
 			print "--> Borra similitudes"
 			daops.borraDB()
 		
+		print "Obteniendo todas las valoraciones"
+		_valoraciones = Valoracion.objects.all()
+		
 		# Todas las películas
 		# creación de la estructura de datos		
 		#	dict{idPel:dict{idUsu:valoracion}}
 		print "Se va a crear la estructura de datos"
-		for i in _valoraciones:
-			if i.idPel not in valoraciones:
-				valoraciones[i.idPel] = {}
+		for v in _valoraciones:
+			if v.Pel.idPel not in valoraciones:
+				valoraciones[v.Pel.idPel] = {}
 				
-			valoraciones[i.idPel][i.idUsu] = i.valoracion
+			valoraciones[v.Pel.idPel][v.Usu.idUsu] = v.puntuacion
 		
 		# obtención de los id de las películas
 		print "Se obtienen las claves"

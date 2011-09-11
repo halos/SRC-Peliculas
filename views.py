@@ -369,12 +369,8 @@ def __crearModelo(estrat_sim=None):
 	print "Se entra en __crearModelo"
 	if not estrat_sim:
 		estrat_sim = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
-	print "Se pide el DAO"
-	daov = daoValoracion.DAOValoracion()
-	print "Se piden todas las valoraciones"
-	vals = daov.getValoraciones()
 	print "Se llama a la estrategia de similitud"
-	estrat_sim.similitud(vals)
+	estrat_sim.similitud()
 	
 def __actualizarModelo(request): # Para javi
 	""" Método para actualizar el modelo tras haber nuevas valoraciones
@@ -388,11 +384,9 @@ def __actualizarModelo(request): # Para javi
 		None
 	"""
 	
-	daov = daoValoracion.DAOValoracion()
-	
 	eSimilitud = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
 	
-	eSimilitud.actualizaSimilitud(daov.getValoraciones(), request.session['nuevasValoraciones'])
+	eSimilitud.actualizaSimilitud(request.session['nuevasValoraciones'])
 
 	del(request.session['nuevasValoraciones'])
 	request.session['nuevasValoraciones'] = []
