@@ -142,7 +142,7 @@ def indice(request):
 		__checkIsLogged(request)
 		
 		context['titulo'] = 'Índice'
-		#context['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
+		context['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
 		response_page = 'srcp/index.html'
 		
 		#estra_pred = None
@@ -179,14 +179,17 @@ def valorar(request, idPel):
 	try:
 		
 		__checkIsLogged(request)
-	
+
 		idUsu = request.session['idUsu']
-		
-		#print idUsu, '-->', idPel, '-->', int(request.POST['puntuacion'])
-		
+
 		pel = get_object_or_404(Pelicula, pk=idPel)
 		usu = get_object_or_404(Usuario, pk=idUsu)
-		punt = int(request.POST['puntuacion'])
+
+		for k in request.POST.keys():
+			if 'estrella' in k:
+				punt = k[9:10]
+				punt = int(punt)
+				break
 		
 		#redirected_view = 'srcp.views.buscar'
 		
@@ -220,7 +223,6 @@ def valorar(request, idPel):
 		request.session['nuevasValoraciones'].append(v)
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		request.session['nvaloraciones'] += 1
-		print "--> Se ha valorado, %d valoraciones sin insertar." % (request.session['nvaloraciones'], )
 		
 		if request.session['nvaloraciones'] >= 5:
 			print "--> Se han hecho >=5 valoraciones, es momento de actualizar"
@@ -254,7 +256,7 @@ def buscar(request):
 	
 		__checkIsLogged(request)
 		
-		#context['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
+		context['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
 		response_page = 'srcp/index.html'
 		
 		# Si no se ha hecho ninguna búsqueda, se hace la anterior
@@ -316,29 +318,42 @@ def get_recomendaciones(idUsu):
 		(list): peliculas recomendadas (Pelicula, clase django)
 	"""
 	
-	daop = daoPelicula.DAOPelicula()
-	estra_pred = estrategiaPrediccion.EstrategiaPrediccion(itemAvgAdjN.predice)
+	#daop = daoPelicula.DAOPelicula()
+	#estra_pred = estrategiaPrediccion.EstrategiaPrediccion(itemAvgAdjN.predice)
 	
 	# devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
-	lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
+	#lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
 	
 	# Creamos una lista de valores predichos
-	lvalpred = []
+	#lvalpred = []
 	
-	for idPel in lpelnop:
-		prediccion = estra_pred.predice(idUsu, idPel)
-		val = valoracion.Valoracion(idUsu, idPel, prediccion)
-		lvalpred.append(val)
+	#for idPel in lpelnop:
+		#prediccion = estra_pred.predice(idUsu, idPel)
+		#val = valoracion.Valoracion(idUsu, idPel, prediccion)
+		#lvalpred.append(val)
 	
-	# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
-	lvalpred.sort(reverse=True)
-	dj_pels = []
+	## Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
+	#lvalpred.sort(reverse=True)
+	#dj_pels = []
 	
-	for v in lvalpred[:5]:
-		dj_p = Pelicula.objects.get(pk=v.idPel)
-		dj_pels.append(dj_p) 
+	#for v in lvalpred[:5]:
+		#dj_p = Pelicula.objects.get(pk=v.idPel)
+		#dj_pels.append(dj_p) 
 	
-	return dj_pels
+	#return dj_pels
+	
+	daov = daoValoracion.DAOValoracion()
+		
+	vals = daov.getValoracionesUsuario(idUsu)
+	
+	djPels = Pelicula.objects.all()
+
+	for v in vals:
+		djPels = djPels.exclude(idPel=v.idPel)
+	
+	
+	return djPels[:5]
+	
 
 def __crearModelo(estrat_sim=None):
 	""" 
@@ -351,14 +366,14 @@ def __crearModelo(estrat_sim=None):
 
 		(): DESCRIPTION
 	"""
-	
+	print "Se entra en __crearModelo"
 	if not estrat_sim:
 		estrat_sim = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
-	
+	print "Se pide el DAO"
 	daov = daoValoracion.DAOValoracion()
-	
+	print "Se piden todas las valoraciones"
 	vals = daov.getValoraciones()
-	
+	print "Se llama a la estrategia de similitud"
 	estrat_sim.similitud(vals)
 	
 def __actualizarModelo(request): # Para javi

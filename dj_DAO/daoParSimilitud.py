@@ -48,7 +48,9 @@ class DAOParSimilitud(Singleton):
 			
 			similitudes[djs.Pel1.idPel][djs.Pel2.idPel] = ps
 			similitudes[djs.Pel2.idPel][djs.Pel1.idPel] = ps
-			
+		
+		del(djSimilitudes)
+		
 		return similitudes
 		
 	def getSimilitudesItem(self,idPel):
@@ -78,6 +80,8 @@ class DAOParSimilitud(Singleton):
 		
 			else:
 				similitudes[djs.Pel2.idPel] = ps
+				
+		del(djSimilitudes)
 
 		return similitudes
 
@@ -160,7 +164,7 @@ class DAOParSimilitud(Singleton):
 			(): DESCRIPTION
 		"""
 		
-		Similitud.objects.all().delete()
+		djModels.Similitud.objects.all().delete()
 		
 	
 	#def reset(self):

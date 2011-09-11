@@ -38,19 +38,23 @@ class EstrategiaSimilitud: #(singleton):
 	
 			None #(list): Lista de similitudes entre las películas (ParSimilitud)
 		"""
-
+		
+		print "--> Entra en función similitud"
 		daops = daoParSimilitud.DAOParSimilitud()
 		
 		# lista con los ParSimilitud
 		paresSimilitud = []
 		valoraciones = {}
-		# borrar base de datos
+		
+		# borrar similitudes
 		if not _nuevasValoraciones:
+			print "--> Borra similitudes"
 			daops.borraDB()
 		
 		# Todas las películas
 		# creación de la estructura de datos		
 		#	dict{idPel:dict{idUsu:valoracion}}
+		print "Se va a crear la estructura de datos"
 		for i in _valoraciones:
 			if i.idPel not in valoraciones:
 				valoraciones[i.idPel] = {}
@@ -58,16 +62,27 @@ class EstrategiaSimilitud: #(singleton):
 			valoraciones[i.idPel][i.idUsu] = i.valoracion
 		
 		# obtención de los id de las películas
+		print "Se obtienen las claves"
 		p1 = valoraciones.keys()
 		
 		# Si se actualiza el modelo solo será para unas pocas peliculas
 		if _nuevasValoraciones: # Se actualiza el modelo
+			print "Se actualiza el modelo"
 			p2 = list(set([v.idPel for v in _nuevasValoraciones]))
+			print "Son", len(p2), "peliculas"
 			
 		else: # Se crea por primera vez el modelo de similitudes
+			print "No se actualiza el modelo, se copian las claves"
 			p2 = p1[:] # copia
-			
+		
+		# Libera memoria
+		del _valoraciones
+		if _nuevasValoraciones:
+			del _nuevasValoraciones
+			_nuevasValoraciones = True
+		
 		# obtención de las valoraciones de cada usuario
+		print "Se va a empezar a calcular las similitudes"
 		for i in p1:
 			
 			if i in p2:
@@ -79,22 +94,24 @@ class EstrategiaSimilitud: #(singleton):
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
 				
-				if len(paresSimilitud) == 1000000:
-					
+				if len(paresSimilitud) == 10000:
+					print "Se guardan 10000 de similitudes"
 					if not _nuevasValoraciones:
 						daops.insertaSimilitudes(paresSimilitud)
 					else:
 						daops.actualizaSimilitudes(paresSimilitud)
 					
+					del(paresSimilitud)
 					paresSimilitud = []
+					print "Similitudes guardadas y memoria liberada"
 		
 		if not _nuevasValoraciones:
 			daops.insertaSimilitudes(paresSimilitud)
 		else:
 			daops.actualizaSimilitudes(paresSimilitud)
 		
-		print 'Similitudes insertadas'
-		paresSimilitud = []
+		print 'Similitudes almacenadas'
+		del(paresSimilitud)
 		
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
 		""" Recalcula las similitudes en base a unas ya existentes y a las
