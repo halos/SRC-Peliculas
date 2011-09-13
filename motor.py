@@ -250,23 +250,6 @@ class Motor (singleton.Singleton):
 		"""
 		
 		daoParSimilitud.DAOParSimilitud().insertaSimilitudes(_similitudes)
-
-	def actualizaSimilitudes(self, _similitudes):
-		""" Método para actualizar similitudes existentes
-	
-		Params:
-	
-			_similitudes(list): Lista de similitudes
-	
-		Return:
-	
-			(Nonetype): None
-		"""
-		
-		daos = daoParSimilitud.DAOParSimilitud()
-		
-		for s in _similitudes:
-			daos.actualizaSimilitud(s)
 			
 	def borraSimilitudes(self):
 		""" Método para borrar todaas las similitudes existentes (Cuidado!)
