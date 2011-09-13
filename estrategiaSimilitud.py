@@ -88,7 +88,11 @@ class EstrategiaSimilitud: #(singleton):
 		del _valoraciones
 		if _nuevasValoraciones:
 			del _nuevasValoraciones
+			# para las funciones que comprueban este parámetro
 			_nuevasValoraciones = True
+		
+		cont = 0
+		step = 100000
 		
 		# obtención de las valoraciones de cada usuario
 		print "Se va a empezar a calcular las similitudes"
@@ -103,26 +107,30 @@ class EstrategiaSimilitud: #(singleton):
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
 				
-				if len(paresSimilitud) == 10000:
-					print "Se guardan 10000 de similitudes"
+				if len(paresSimilitud) == step:
+					cont +=1
+					print "Se van a guardar %d similitudes" % (step,)
 					if not _nuevasValoraciones:
 						daops.insertaSimilitudes(paresSimilitud)
 					else:
 						daops.actualizaSimilitudes(paresSimilitud)
 					
+					for ps in paresSimilitud: del ps
 					del(paresSimilitud)
 					paresSimilitud = []
-					print "Similitudes guardadas y memoria liberada"
+					print "%d similitudes guardadas y memoria liberada" % (cont * step,)
 		
+		print "Guardando las últimas %d similitudes" % (len(paresSimilitud),)
 		if not _nuevasValoraciones:
 			daops.insertaSimilitudes(paresSimilitud)
 		else:
 			daops.actualizaSimilitudes(paresSimilitud)
 		
 		print 'Similitudes almacenadas'
+		for ps in paresSimilitud: del ps
 		del(paresSimilitud)
 		
-	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
+	def actualizaSimilitud(self, _nuevasValoraciones):
 		""" Recalcula las similitudes en base a unas ya existentes y a las
 		nuevas valoraciones 
 	
@@ -149,5 +157,5 @@ class EstrategiaSimilitud: #(singleton):
 				
 		# almacenar valoraciones actualizadas
 		#daoValoracion.DAOValoracion.guarda(valoraciones)
-		print 0
-		self.similitud(_valoraciones, _nuevasValoraciones)
+		
+		self.similitud(_nuevasValoraciones)

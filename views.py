@@ -5,6 +5,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect #, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+
+import threading
 import sys
 
 sys.path.append('srcp')
@@ -13,7 +15,7 @@ sys.path.append('srcp/estrategiasPredicción')
 sys.path.append('srcp/dj_DAO')
 
 import pearson
-import itemAvgAdjN
+import weithedSum
 import valoracion
 import daoValoracion
 import daoPelicula
@@ -226,13 +228,15 @@ def valorar(request, idPel):
 		
 		if request.session['nvaloraciones'] >= 5:
 			print "--> Se han hecho >=5 valoraciones, es momento de actualizar"
+			
 			__actualizarModelo(request)
-			print "--> Modelo actualizado"
+
+			print "--> Modelo actualizandose"
 			request.session['nvaloraciones'] = 0
 			
 		redirected_view = 'srcp.views.buscar'
 	
-	finally:
+	#finally:
 		# Always return an HttpResponseRedirect after successfully dealing
 		# with POST data. This prevents data from being posted twice if a
 		# user hits the Back button.
@@ -318,42 +322,25 @@ def get_recomendaciones(idUsu):
 		(list): peliculas recomendadas (Pelicula, clase django)
 	"""
 	
-	#daop = daoPelicula.DAOPelicula()
-	#estra_pred = estrategiaPrediccion.EstrategiaPrediccion(itemAvgAdjN.predice)
-	
-	# devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
-	#lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
+	k = 30
+	idUsu = request.session['idUsu']
+	daop = daoPelicula.DAOPelicula()		
+	lpelnop = getPeliculasNoPuntuadas(idUsu)
+	estra_pred = weithedSum.WeithedSum()
 	
 	# Creamos una lista de valores predichos
-	#lvalpred = []
+	lvalpred = []
 	
-	#for idPel in lpelnop:
-		#prediccion = estra_pred.predice(idUsu, idPel)
-		#val = valoracion.Valoracion(idUsu, idPel, prediccion)
-		#lvalpred.append(val)
-	
-	## Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
-	#lvalpred.sort(reverse=True)
-	#dj_pels = []
-	
-	#for v in lvalpred[:5]:
-		#dj_p = Pelicula.objects.get(pk=v.idPel)
-		#dj_pels.append(dj_p) 
-	
-	#return dj_pels
-	
-	daov = daoValoracion.DAOValoracion()
+	for idPel in lpelnop:
 		
-	vals = daov.getValoracionesUsuario(idUsu)
-	
-	djPels = Pelicula.objects.all()
+		sims = daop.getSimilitudesItem(idPel)
+		val = estra_pred.predice(sims, idUsu, idPel, k)
+		lvalpred.append(val)
+		
+	# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
+	lvalpred.sort(reverse=True)
 
-	for v in vals:
-		djPels = djPels.exclude(idPel=v.idPel)
-	
-	
-	return djPels[:5]
-	
+	return lvalpred[:5]
 
 def __crearModelo(estrat_sim=None):
 	""" 
@@ -386,9 +373,11 @@ def __actualizarModelo(request): # Para javi
 	
 	eSimilitud = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
 	
-	eSimilitud.actualizaSimilitud(request.session['nuevasValoraciones'])
-
-	del(request.session['nuevasValoraciones'])
+	nv = request.session['nuevasValoraciones'][:]
+	
+	t = threading.Thread(target=eSimilitud.actualizaSimilitud, args=(nv, ))  
+	t.start()
+	
 	request.session['nuevasValoraciones'] = []
 
 def __checkIsLogged(request):
