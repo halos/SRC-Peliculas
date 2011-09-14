@@ -8,7 +8,6 @@ import sys
 sys.path.append("DAO")
 
 import daoValoracion
-import daoParSimilitud
 import random
 
 class CrossValidation:
@@ -38,7 +37,6 @@ class CrossValidation:
 			print 'Error!'
 		# Borramos el contenido de las tablas similitudes y valoraciones
 		daov = daoValoracion.DAOValoracion()
-		daops = daoParSimilitud.DAOParSimilitud()
 		print 'Reseteamos...'
 		daov.reset()
 		#daops.reset() 
