@@ -10,8 +10,8 @@ sys.path.append("..")
 import valoracion
 #import motor
 
-class WeithedSum:
-    """ Clase que implementa el método de prediccion WeithedSum """
+class WeightedSum:
+    """ Clase que implementa el método de prediccion weightedSum """
 
     def __init__(self):
         """ Constructor básico"""

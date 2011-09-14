@@ -14,7 +14,7 @@ import metricas
 import estrategiaSimilitud
 import itemAvgAdj1
 import itemAvgAdjN
-import weithedSum
+import weightedSum
 import motor
 import db
 import crossValidation
@@ -109,7 +109,7 @@ def ejecutaPrediccion(tk, tep, valtest):
                 # Medimos el tiempo para la predicción
                 t_inic = metricas.get_clock()
                 # Si es itemAvgAdj, le aportamos los valores para las medias
-                if ep[0] != "Weithed Sum":
+                if ep[0] != "Weighted Sum":
                     ep[1].setValoracionesItem(valsItem)
                     ep[1].setValoracionesUsuario(valsUsu)
                 
@@ -184,7 +184,7 @@ tn = (2, 4, 8)
 tep = [( "Item Average Adjustment All-1", itemAvgAdj1.ItemAvgAdj1())]
 for n in tn:
     tep.append(( "Item Average Adjustment n = " + str(n), itemAvgAdjN.ItemAvgAdjN(n)))
-tep.append(( "Weithed Sum", weithedSum.WeithedSum()))
+tep.append(( "Weighted Sum", weightedSum.WeightedSum()))
     
 # Comenzamos la ejecución de la prueba
 print 'BEGIN'

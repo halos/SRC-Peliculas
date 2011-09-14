@@ -13,7 +13,7 @@ import pearson
 import metricas
 import itemAvgAdj1
 import itemAvgAdjN
-import weithedSum
+import weightedSum
 import motor
 import db
 import crossValidation
@@ -24,7 +24,7 @@ tk = (10, 20, 30)
 tep = [( "Item Average Adjustment All-1", itemAvgAdj1.ItemAvgAdj1())]
 for n in tn:
     tep.append(( "Item Average Adjustment n = " + str(n), itemAvgAdjN.ItemAvgAdjN(n)))
-tep.append(( "Weithed Sum", weithedSum.WeithedSum()))
+tep.append(( "Weighted Sum", weightedSum.WeightedSum()))
 vtemp = []
 vmae = []
 print 'Comenzamos la fase de predicción...'
@@ -75,7 +75,7 @@ for valoracion in lval:
             # Medimos el tiempo para la predicción
             
             # Si es itemAvgAdj, le aportamos los valores para las medias
-            if ep[0] != "Weithed Sum":
+            if ep[0] != "Weighted Sum":
                 ep[1].setValoracionesItem(valsItem)
                 ep[1].setValoracionesUsuario(valsUsu)
             # Creamos la estrategia de predicción
