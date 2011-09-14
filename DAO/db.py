@@ -7,6 +7,7 @@ from singleton import *
 
 class DB(Singleton):
     """ clase generica encargada de la conexion con la base de datos """
+    conexion=MySQLdb.Connection
     def __init__(self):
         """Inicializa la conexión a la base de datos"""
         self._conectar()
@@ -20,6 +21,11 @@ class DB(Singleton):
                                         db="ssii", \
                                         port=3306)
         return
+    
+    def desconectar(self):
+        self.conexion.close()
+        return
+    
     
     def _get_cursor(self):
         """hace ping a la conexión y devuelve el cursor"""
@@ -53,3 +59,23 @@ class DB(Singleton):
         cursor.close()  
         return
 
+    # Métodos adicionales
+    
+    def borrar_tablas(self):
+        """
+            Borra todas las tablas de la DB
+            Params:
+                usu: usuario a inserta
+        """
+        res = self.get_filas("SHOW TABLES")
+        tables = []
+        for i in res:
+            tables.append(i[0])
+        for tname in tables:
+            self.borrar_tabla(tname)
+
+    def borrar_tabla(self, tname):
+        """
+            Borra la tabla indicada de la DB
+        """
+        self.ejecutar('DROP TABLE IF EXISTS ' + tname + ' CASCADE')

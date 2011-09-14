@@ -5,7 +5,7 @@ import sys
 sys.path.append('..')
 
 import usuario
-from db import *
+import db
 from singleton import *
 
 class DAOUsuario(Singleton):
@@ -20,11 +20,13 @@ class DAOUsuario(Singleton):
 		metodo que devuelve todos los usuarios registrados en la aplicacion
 		
 		"""
-		datos = DB()
-		res=datos.get_filas("SELECT * FROM usuarios")
-		usus=[]
+		datos = db.DB()
+		res = datos.get_filas("SELECT * FROM usuarios")
+		
+		usus = []
 		for i in res:
 			usus.append(usuario.Usuario(i[0],i[1]))
+		
 		return usus
 	
 	def getUsuario(self,id):
@@ -33,21 +35,26 @@ class DAOUsuario(Singleton):
 		Params:
 			id: identificador del usuario a buscar
 		"""
-		datos=DB()
-		consulta="SELECT * FROM usuarios WHERE id = "+str(id)
-		res=datos.get_fila(consulta)
+		datos = db.DB()
+		consulta = "SELECT * FROM usuarios WHERE id = " + str(id)
+		
+		res = datos.get_fila(consulta)
 		usu = usuario.Usuario(res[0],res[1])
+		
 		return usu
 	
-	def insertar(self,usu):
+	def inserta(self,usu):
 		"""
 		Introduce un nuevo usuario en el sistema
 		Params:
 			usu: usuario a inserta
 		"""
-		datos=DB()
-		consulta="INSERT INTO usuarios (id,pass) VALUES ("+\
+		datos = db.DB()
+		
+		consulta = "INSERT INTO usuarios (id,pass) VALUES ("+\
 		str(usu.idUsu)+",'"+str(usu.passw)+"')"
+		
 		datos.ejecutar(consulta)
+		
 		return
 

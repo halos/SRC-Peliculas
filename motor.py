@@ -44,7 +44,7 @@ class Motor (singleton.Singleton):
 		daou = daoUsuario.DAOUsuario()
 		self.__user = daou.getUsuario(id)
 		if self.__comprobarIdentidad(self.__user, passw):
-			self.__actualizarModelo()
+			self.actualizarModelo()
 			return True
 		return False
 	
@@ -59,15 +59,15 @@ class Motor (singleton.Singleton):
 	
 			(): DESCRIPTION
 		"""
-		valoracion = valoracion.Valoracion(self.__user.idUsu, idPel, val)
+		val_nueva = valoracion.Valoracion(self.__user.idUsu, idPel, val)
 		daov = daoValoracion.DAOValoracion()
-		daov.inserta(valoracion) # Si existe, se actualiza
-		self.__nuevasValoraciones.append(valoracion)
+		daov.inserta(val_nueva) # Si existe, se actualiza
+		self.__nuevasValoraciones.append(val_nueva)
 		
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
 		self.__nvaloraciones += 1
 		if self.__nvaloraciones == 5:
-			self.__actualizarModelo()
+			self.actualizarModelo()
 			self.__nvaloraciones = 0
 		
 	def buscarPeliculas(self, consulta):
@@ -100,7 +100,22 @@ class Motor (singleton.Singleton):
 			return True
 		return False
 	
-	def __actualizarModelo(self): # Para javi
+	def crearModelo(self, estrat_sim):
+		""" Método para crear el modelo desde cero, borrando similitudes anteriores
+			Params:
+			
+				None
+			
+			Return:
+		
+				None		
+		"""		
+		# Obtenemos todas las valoraciones de la BD
+		valoraciones = self.getValoraciones()
+		
+		estrat_sim.insertaSimilitud(valoraciones)
+	
+	def actualizarModelo(self, estrat_sim):
 		""" Método para actualizar el modelo tras haber nuevas valoraciones
 	
 		Params:
@@ -111,15 +126,13 @@ class Motor (singleton.Singleton):
 	
 			None
 		"""
-		
 		valoraciones = []
 		
-		#obtener valoraciones de todas las películas puntuadas
+		# Obtenemos las valoraciones de todas las películas puntuadas
 		for v in self.__nuevasValoraciones:
 			valoraciones += self.getValoracionesItem(v.idPel).values()
 		
-		eSimilitud = estrategiaSimilitud.EstrategiaSimilitud()
-		eSimilitud.actualizaSimilitud(valoraciones, self.__nuevasValoraciones)
+		estrat_sim.actualizaSimilitud(valoraciones, self.__nuevasValoraciones) 
 		
 
 	def recomendar(self, estra_pred):
@@ -160,8 +173,8 @@ class Motor (singleton.Singleton):
 			Diccionario de valoraciones, cuyas claves son el idItem 
 			
 		"""
-		daov = daoValoracion.DAOValoracion()
-		return daov.getValoracionesUsuario(idUsu)
+		
+		return daoValoracion.DAOValoracion().getValoracionesUsuario(idUsu)
 		
 		
 	def getValoracionesItem(self, idItem):
@@ -176,11 +189,12 @@ class Motor (singleton.Singleton):
 			Diccionario de valoraciones, cuyas claves son el idUsuario
 			
 		"""
-		daov = daoValoracion.DAOValoracion()
-		return daov.getValoracionesItem(idItem)
+		
+		return daoValoracion.DAOValoracion().getValoracionesItem(idItem)
 		
 	def getValoraciones(self):
-		""" Método que devuelve el conjunto de todas las valoraciones hechas para todos los usuarios.
+		""" Método que devuelve el conjunto de todas las valoraciones hechas
+		para todos los usuarios.
 	
 		Params:
 	
@@ -188,11 +202,11 @@ class Motor (singleton.Singleton):
 	
 		Return:
 	
-			Diccionario de diccionarios, cuyas claves son el idUsu (primero), y despúes el idItem. 
+			(list): Lista de objetos Valoracion
 			
 		"""
-		daov = daoValoracion.DAOValoracion()
-		return daov.getValoraciones()
+		
+		return daoValoracion.DAOValoracion().getValoraciones()
 		
 	def getSimilitudes(self):
 		""" Function doc
@@ -205,8 +219,8 @@ class Motor (singleton.Singleton):
 	
 			(): DESCRIPTION
 		"""
-		daos = daoParSimilitud.DAOParSimilitud()
-		return daos.getSimilitudes()
+		
+		return daoParSimilitud.DAOParSimilitud().getSimilitudes()
 		
 	def getSimilitudesItem(self, idItem):
 		""" Método que devuelve el conjunto de las similitudes entre el item seleccionado y el resto.
@@ -220,8 +234,8 @@ class Motor (singleton.Singleton):
 			Diccionario de similitudes, cuyas claves son el idItem del elemento a comparar.
 			
 		"""
-		daos = daoParSimilitud.DAOParSimilitud()
-		return daos.getSimilitudesItem(idItem)
+		
+		return daoParSimilitud.DAOParSimilitud().getSimilitudesItem(idItem)
 
 	def insertaSimilitudes(self, _similitudes):
 		""" Método para insertar nuevas similitudes
@@ -235,24 +249,18 @@ class Motor (singleton.Singleton):
 			(Nonetype): None
 		"""
 		
-		daos = daoParSimilitud.DAOParSimilitud()
-		
-		for s in _similitudes:
-			daos.insertaSimilitud(s)
-
-	def actualizaSimilitudes(self, _similitudes):
-		""" Método para actualizar similitudes existentes
+		daoParSimilitud.DAOParSimilitud().insertaSimilitudes(_similitudes)
+			
+	def borraSimilitudes(self):
+		""" Método para borrar todaas las similitudes existentes (Cuidado!)
 	
 		Params:
 	
-			_similitudes(list): Lista de similitudes
+			None
 	
 		Return:
 	
 			(Nonetype): None
 		"""
 		
-		daos = daoParSimilitud.DAOParSimilitud()
-		
-		for s in _similitudes:
-			daos.actualizaSimilitud(s)
+		daoParSimilitud.DAOParSimilitud().reset()

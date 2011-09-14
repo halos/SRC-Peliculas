@@ -43,7 +43,7 @@ class ParSimilitud:
 			mismo usuario.
 		"""
 		
-		return (self.idP1,self.idP2) == (other.idP1,other.idP2) | \
+		return (self.idP1,self.idP2) == (other.idP1,other.idP2) or \
 		(self.idP1,self.idP2) == (other.idP2,other.idP1)
 
 	def __ne__(self, other):
@@ -60,7 +60,7 @@ class ParSimilitud:
 			al mismo usuario.
 		"""
 		
-		return (self.idP1,self.idP2) != (other.idP1,other.idP2) & \
+		return (self.idP1,self.idP2) != (other.idP1,other.idP2) and \
 		(self.idP1,self.idP2) != (other.idP2,other.idP1)
 		
 	def setsimilitud(self, similitud):
@@ -73,3 +73,63 @@ class ParSimilitud:
 		"""
 		
 		self.similitud = similitud
+
+	def __lt__(self, other):
+		""" Operador < para el grado de similitud
+	
+		Params:
+	
+			other(ParSimilitud): El otro ParSimilitud con el que va ser
+			comparado
+	
+		Return:
+	
+			(bool): Boobleano indicando si el objeto es menor que el segundo 
+		"""
+		
+		return self.similitud < other.similitud
+		
+	def __gt__(self, other):
+		""" Operador > para el grado de similitud
+	
+		Params:
+	
+			other(ParSimilitud): El otro ParSimilitud con el que va ser
+			comparado
+	
+		Return:
+	
+			(bool): Boobleano indicando si el objeto es mayor que el segundo 
+		"""
+		
+		return self.similitud > other.similitud
+
+	def __le__(self, other):
+		""" Operador <= para el grado de similitud
+	
+		Params:
+	
+			other(ParSimilitud): El otro ParSimilitud con el que va ser
+			comparado
+	
+		Return:
+	
+			(bool): Boobleano indicando si el objeto es menor o igual que el segundo 
+		"""
+		
+		return self.similitud <= other.similitud
+		
+	def __ge__(self, other):
+		""" Operador >= para el grado de similitud
+	
+		Params:
+	
+			other(ParSimilitud): El otro ParSimilitud con el que va ser
+			comparado
+	
+		Return:
+	
+			(bool): Boobleano indicando si el objeto es mayor o igual que el segundo 
+		"""
+		
+		return self.similitud >= other.similitud

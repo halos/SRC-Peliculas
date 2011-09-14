@@ -1,8 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import sys
+sys.path.append("DAO")
 
 import motor
 import parSimilitud
+import metricas
+import daoParSimilitud
+
 
 class EstrategiaSimilitud:
 	""" Interfaz de la estrategia de similitud """
@@ -20,70 +25,75 @@ class EstrategiaSimilitud:
 		if sim_func:
 			self.__calcula_similitud = sim_func
 
-	def similitud(self, _valoraciones, _nuevasValoraciones=[]):
-		""" Método para calcular la similitud entre películas
+	def insertaSimilitud(self, _valoraciones):
+		"""Inserta las similitudes en base a las valoraciones, crea el modelo desde cero
 	
 		Params:
 	
-			_valoraciones(list): Lista con las valoraciones de los usuarios
-			_nuevasValoraciones(list): Lista con las nuevas valoraciones
+			_valoraciones(list): Lista con todas las valoraciones
 	
 		Return:
 	
-			None #(list): Lista de similitudes entre las películas (ParSimilitud)
+			None
 		"""
 		
 		# lista con los ParSimilitud
+		m = motor.Motor()
 		paresSimilitud = []
-		valoraciones = {}
+		valDict = {}
+		
+		# para que no se modifiquen las valoraciones en memoria
+		valoraciones = _valoraciones[:]
+		
+		#Borramos todas las similitudes de la BD (OJo!)
+		print 'Borrando similitudes anteriores...'
+		m.borraSimilitudes()
+		# Desactivamos los índices para una inserción masiva, mucho más rápida
+		daoParSimilitud.DAOParSimilitud().disableKeys()
 		
 		# Todas las películas
 		# creación de la estructura de datos		
 		#	dict{idPel:dict{idUsu:valoracion}}
-		for i in _valoraciones:
-			if i.idPel not in valoraciones:
-				valoraciones[i.idPel] = {}
+		for i in valoraciones:
+			if i.idPel not in valDict:
+				valDict[i.idPel] = {}
 				
-			valoraciones[i.idPel][i.idUsu] = i.valoracion
+			valDict[i.idPel][i.idUsu] = i.valoracion
 		
 		# obtención de los id de las películas
-		p1 = valoraciones.keys()
+		p1 = valDict.keys()
+		p2 = p1[:] # copia
 		
-		
-		# Si se actualiza el modelo solo será para unas pocas peliculas
-		if _nuevasValoraciones: # Se actualiza el modelo
-			p2 = list(set([v.idPel for v in _nuevasValoraciones]))
-			
-		else: # Se crea por primera vez el modelo de similitudes
-			p2 = p1[:] # copia
-			
-		# obtención de las valoraciones de cada usuario
+		# Se crea por primera vez el modelo de similitudes
+		print 'Comienza el cálculo de similitudes'
 		for i in p1:
 			if i in p2:
 				p2.remove(i)
 			for j in p2:
 				similitud = self.__calcula_similitud(\
-					valoraciones[i], valoraciones[j])
+					valDict[i], valDict[j])
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
-		
+				
+			# Descargamos similitudes en la BD
+			if len(paresSimilitud) >= 1000000:
+				m.insertaSimilitudes(paresSimilitud)
+				paresSimilitud = [] # Vaciamos la lista, ya descargada en la BD
+				
+		# Descargamos el resto
+		if len(paresSimilitud) > 0:
+			m.insertaSimilitudes(paresSimilitud)
+				
+		print 'Fin del cálculo de similitudes\n'	 
 		#return paresSimilitud
-		# almacenamiento de similitudes
-		m = motor.Motor()
 		
-		sim_insertar = []
-		sim_actualizar = []
-		sim_anteriores = m.getSimilitudes()
+		print 'Regeneramos índices...'
+		t_inic = metricas.get_clock()
+		daoParSimilitud.DAOParSimilitud().enableKeys()
+		t_fin = metricas.get_clock()
+		print 'Tiempo utilizado para generar índices: %f' % (t_fin - t_inic) 
 		
-		for s in paresSimilitud:
-			if s in sim_anteriores:
-				sim_actualizar.append(s)
-			else:
-				sim_insertar.append(s)
-		
-		m.insertaSimilitudes(sim_insertar)
-		m.actualizaSimilitudes(sim_actualizar)
-		
+	
 	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
 		""" Recalcula las similitudes en base a unas ya existentes y a las
 		nuevas valoraciones 
@@ -97,6 +107,9 @@ class EstrategiaSimilitud:
 	
 			None #(list): Lista de similitudes entre las películas (ParSimilitud)
 		"""
+		if _nuevasValoraciones: # No hay nada que hacer
+			print 'No hay nuevas valoraciones que aportar'
+			return
 		
 		# para que no se modifiquen las valoraciones en memoria
 		valoraciones = _valoraciones[:]
@@ -108,7 +121,73 @@ class EstrategiaSimilitud:
 				valoraciones[indice].valoracion = nv.valoracion
 			else:
 				valoraciones.append(nv)
-		# almacenar valoraciones actualizadas
-		#daoValoracion.DAOValoracion.guarda(valoraciones)
 		
-		self.similitud(valoraciones, _nuevasValoraciones)
+		# lista con los ParSimilitud
+		paresSimilitud = []
+		valDict = {}
+		
+		# Todas las películas
+		# creación de la estructura de datos		
+		#	dict{idPel:dict{idUsu:valoracion}}
+		for i in _valoraciones:
+			if i.idPel not in valDict:
+				valDict[i.idPel] = {}
+			
+			valDict[i.idPel][i.idUsu] = i.valoracion
+		
+		# obtención de los id de las películas
+		p1 = valDict.keys()
+		
+		# Si se actualiza el modelo solo será para unas pocas peliculas
+		p2 = list(set([v.idPel for v in _nuevasValoraciones]))
+			
+		# obtención de las valoraciones de cada usuario
+		print 'Comienza el cálculo de similitudes'
+		for i in p1:
+			if i in p2:
+				p2.remove(i)
+			for j in p2:
+				similitud = self.__calcula_similitud(\
+					valDict[i], valDict[j])
+				ps = parSimilitud.ParSimilitud(i, j, similitud)
+				paresSimilitud.append(ps)
+				
+			# Descargamos similitudes en la BD
+			if len(paresSimilitud) >= 1000000:
+				self.almacenaSimilitudes(paresSimilitud)
+				paresSimilitud = [] # Vaciamos la lista, ya descargada en la BD
+				
+
+		# Descargamos el resto
+		if len(paresSimilitud) > 0:
+			self.almacenaSimilitudes(paresSimilitud)
+		print 'Fin del cálculo\n'
+		
+		
+		def almacenaSimilitudes(self, _paresSimilitud):
+			""" Almacena las similitudes calculadas teniendo en cuenta, si hay que
+				insertarlas o actualizarlas
+		
+			Params:
+		
+				_paresSimilitud(list): Lista con las similitudes a actualizar o insertar
+		
+			Return:
+		
+				None
+			"""
+			m = motor.Motor()
+			
+			# Almacenamos las similitudes
+			sim_insertar = []
+			sim_actualizar = []
+			sim_anteriores = m.getSimilitudes()
+	
+			for s in _paresSimilitud:
+				if s in sim_anteriores:
+					sim_actualizar.append(s)
+				else:
+					sim_insertar.append(s)
+					
+			m.insertaSimilitudes(sim_insertar)
+			m.actualizaSimilitudes(sim_actualizar)
