@@ -114,25 +114,6 @@ class Motor (singleton.Singleton):
 		valoraciones = self.getValoraciones()
 		
 		estrat_sim.insertaSimilitud(valoraciones)
-	
-	def actualizarModelo(self, estrat_sim):
-		""" Método para actualizar el modelo tras haber nuevas valoraciones
-	
-		Params:
-	
-			None
-	
-		Return:
-	
-			None
-		"""
-		valoraciones = []
-		
-		# Obtenemos las valoraciones de todas las películas puntuadas
-		for v in self.__nuevasValoraciones:
-			valoraciones += self.getValoracionesItem(v.idPel).values()
-		
-		estrat_sim.actualizaSimilitud(valoraciones, self.__nuevasValoraciones) 
 		
 
 	def recomendar(self, estra_pred):
