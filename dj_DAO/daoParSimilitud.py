@@ -4,6 +4,7 @@
 import sys
 sys.path.append('..')
 from singleton import *
+from django.db import connection, transaction
 
 import parSimilitud
 import srcp.models as djModels
@@ -109,8 +110,23 @@ class DAOParSimilitud(Singleton):
 			sims: Similitudes a insertar
 		"""
 		
-		for s in sims:
-			self.insertaSimilitud(s)
+		print "Deshabilitando llaves"
+		self.disableKeys()
+		print "Llaves deshabilitadas"
+		
+		cursor = connection.cursor()
+		consulta = "INSERT INTO srcp_similitud (Pel1_id, Pel2_id, similitud) VALUES "
+		
+		consulta += ', '.join( \
+					['(%d ,%d, %.7r)' % (s.idP1, s.idP2, s.similitud) for s in sims] \
+					)
+			
+		cursor.execute(consulta)
+		transaction.commit_unless_managed()
+		
+		print "Habilitando llaves"
+		self.enableKeys()
+		print "Llaves habilitadas"
 	
 	def actualizaSimilitud(self,sim):
 		"""
@@ -119,28 +135,16 @@ class DAOParSimilitud(Singleton):
 			sim: similitud a actualizar
 		"""
 		
-		sim_list = djModels.Similitud.objects.filter(Pel1=sim.idP1, Pel2=sim.idP2)
-		
-		if not sim_list:
-			
-			sim_list = djModels.Similitud.objects.filter(Pel1=sim.idP2, Pel2=sim.idP1)
-		
-			if not sim_list:
-			
-				self.insertaSimilitud(sim)
-				
-			else:
-				
-				sim_upd = sim_list[0]
-				sim_upd.similitud = sim.similitud
-				sim_upd.save()
-				
-		else:
-			
-			sim_upd = sim_list[0]
-			sim_upd.similitud = sim.similitud
-			sim_upd.save()
-			
+		cursor = connection.cursor()
+		consulta = "UPDATE srcp_similitud SET similitud = %.7r WHERE \
+						Pel1_id = %d AND Pel2_id = %d OR \
+						Pel1_id = %d AND Pel2_id = %d" % \
+						(sim.similitud, sim.idP1, sim.idP2, sim.idP2, sim.idP1)
+						
+		print "Se actualiza"
+		cursor.execute(consulta)
+		transaction.commit_unless_managed()
+		print "Actualizada"
 	
 	def actualizaSimilitudes(self,sims):
 		"""
@@ -149,8 +153,51 @@ class DAOParSimilitud(Singleton):
 			sim: similitud a actualizar
 		"""
 		
-		for s in sims:
+		sims_nuevas = []
+		sims_act = []
+		
+		print "Buscando similitudes en la BDD"
+		cont = 0
+		
+		for sim in sims:
+			cont += 1
+			if not cont % 100:
+				print "Se buscaron %d similitudes" % (cont, )
+			
+			
+				
+			sim_list = djModels.Similitud.objects.filter(Pel1=sim.idP1, Pel2=sim.idP2)
+			
+			if not sim_list:
+				sim_list = djModels.Similitud.objects.filter(Pel1=sim.idP2, Pel2=sim.idP1)
+			
+				if not sim_list:
+					sims_nuevas.append(sim)
+					
+				else:
+					sims_act.append(sim)
+					
+			else:
+				
+				sims_act.append(sim)
+		
+		print len(sims_act), "similitides a actualizar"
+		print len(sims_nuevas), "similitudes nuevas"
+		
+		print "Desabilitando llaves"
+		self.disableKeys()
+		print "Llaves desabilitadas"
+		
+		print "Insertando similitides"
+		self.insertaSimilitudes(sims_nuevas)
+		
+		print "Actualizando similitudes"
+		for s in sims_act:
 			self.actualizaSimilitud(s)
+		
+		print "Habilitando llaves"
+		self.enableKeys()
+		print "Llaves habilitadas"
 
 	def borraDB(self):
 		""" Function doc
@@ -164,15 +211,61 @@ class DAOParSimilitud(Singleton):
 			(): DESCRIPTION
 		"""
 		
-		djModels.Similitud.objects.all().delete()
+		cursor = connection.cursor()
+		consulta = 'DELETE FROM srcp_similitud'
 		
+		cursor.execute(consulta)
+		transaction.commit_unless_managed()
+		
+		#djModels.Similitud.objects.all().delete()
+				
+	def enableKeys(self):
+		""" Function doc
 	
-	#def reset(self):
-		#"""Elimina todos los datos de la tabla de similitudes
+		Params:
+	
+			None
+	
+		Return:
+	
+			(Nonetype): None
+		"""
 		
-		#ADVERTENCIA: usar sólo para pruebas del estudio de casos
-		#"""
-		#datos=DB()
-		#consulta = "DELETE FROM similitudes"
-		#datos.ejecutar (consulta)
-		#return
+		cursor = connection.cursor()
+		
+		cursor.execute('ALTER TABLE srcp_similitud ENABLE KEYS')
+		transaction.commit_unless_managed()
+		
+	def disableKeys(self):
+		""" Function doc
+	
+		Params:
+	
+			None
+	
+		Return:
+	
+			(Nonetype): None
+		"""
+		
+		cursor = connection.cursor()
+		
+		cursor.execute('ALTER TABLE srcp_similitud DISABLE KEYS')
+		transaction.commit_unless_managed()
+
+	def estaSimilitud(self, sim):
+		"""Comprueba si una similitud está en la BDD"""
+		
+		consulta = "SELECT * FROM srcp_similitud WHERE \
+						Pel1_id = %d AND Pel2_id = %d OR \
+						Pel1_id = %d AND Pel2_id = %d" % \
+						(sim.idP1, sim.idP2, sim.idP2, sim.idP1)
+		
+		try:
+			
+			Similitud.objects.raw(consulta)[0]
+			
+		except IndexError:
+			return False
+		else:
+			return True

@@ -2,13 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import sys
+#import os
 
+#sys.path.append('..')
 sys.path.append('dj_DAO')
 
 import motor
+#import settings
 import singleton
 import parSimilitud
 import daoParSimilitud
+
+#os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
+from srcp.models import Valoracion
 
 class EstrategiaSimilitud: #(singleton):
 	""" Interfaz de la estrategia de similitud """
@@ -26,17 +32,16 @@ class EstrategiaSimilitud: #(singleton):
 		if sim_func:
 			self.__calcula_similitud = sim_func
 
-	def similitud(self, _valoraciones, _nuevasValoraciones=[]):
+	def similitud(self):
 		""" Método para calcular la similitud entre películas
 	
 		Params:
 	
 			_valoraciones(list): Lista con las valoraciones de los usuarios
-			_nuevasValoraciones(list): Lista con las nuevas valoraciones
 	
 		Return:
 	
-			None #(list): Lista de similitudes entre las películas (ParSimilitud)
+			None
 		"""
 		
 		print "--> Entra en función similitud"
@@ -47,39 +52,33 @@ class EstrategiaSimilitud: #(singleton):
 		valoraciones = {}
 		
 		# borrar similitudes
-		if not _nuevasValoraciones:
-			print "--> Borra similitudes"
-			daops.borraDB()
+		print "--> Borra similitudes"
+		daops.borraDB()
+		
+		print "Obteniendo todas las valoraciones"
+		_valoraciones = Valoracion.objects.all()
 		
 		# Todas las películas
 		# creación de la estructura de datos		
 		#	dict{idPel:dict{idUsu:valoracion}}
 		print "Se va a crear la estructura de datos"
-		for i in _valoraciones:
-			if i.idPel not in valoraciones:
-				valoraciones[i.idPel] = {}
+		for v in _valoraciones:
+			if v.Pel.idPel not in valoraciones:
+				valoraciones[v.Pel.idPel] = {}
 				
-			valoraciones[i.idPel][i.idUsu] = i.valoracion
+			valoraciones[v.Pel.idPel][v.Usu.idUsu] = v.puntuacion
 		
 		# obtención de los id de las películas
 		print "Se obtienen las claves"
 		p1 = valoraciones.keys()
 		
-		# Si se actualiza el modelo solo será para unas pocas peliculas
-		if _nuevasValoraciones: # Se actualiza el modelo
-			print "Se actualiza el modelo"
-			p2 = list(set([v.idPel for v in _nuevasValoraciones]))
-			print "Son", len(p2), "peliculas"
-			
-		else: # Se crea por primera vez el modelo de similitudes
-			print "No se actualiza el modelo, se copian las claves"
-			p2 = p1[:] # copia
+		p2 = p1[:] # copia
 		
 		# Libera memoria
 		del _valoraciones
-		if _nuevasValoraciones:
-			del _nuevasValoraciones
-			_nuevasValoraciones = True
+		
+		cont = 0
+		step = 100000
 		
 		# obtención de las valoraciones de cada usuario
 		print "Se va a empezar a calcular las similitudes"
@@ -94,51 +93,19 @@ class EstrategiaSimilitud: #(singleton):
 				ps = parSimilitud.ParSimilitud(i, j, similitud)
 				paresSimilitud.append(ps)
 				
-				if len(paresSimilitud) == 10000:
-					print "Se guardan 10000 de similitudes"
-					if not _nuevasValoraciones:
-						daops.insertaSimilitudes(paresSimilitud)
-					else:
-						daops.actualizaSimilitudes(paresSimilitud)
+				if len(paresSimilitud) == step:
+					cont +=1
+					print "Se van a guardar %d similitudes" % (step,)
+					daops.insertaSimilitudes(paresSimilitud)
 					
+					for ps in paresSimilitud: del ps
 					del(paresSimilitud)
 					paresSimilitud = []
-					print "Similitudes guardadas y memoria liberada"
+					print "%d similitudes guardadas y memoria liberada" % (cont * step,)
 		
-		if not _nuevasValoraciones:
-			daops.insertaSimilitudes(paresSimilitud)
-		else:
-			daops.actualizaSimilitudes(paresSimilitud)
+		print "Guardando las últimas %d similitudes" % (len(paresSimilitud),)
+		daops.insertaSimilitudes(paresSimilitud)
 		
 		print 'Similitudes almacenadas'
+		for ps in paresSimilitud: del ps
 		del(paresSimilitud)
-		
-	def actualizaSimilitud(self, _valoraciones, _nuevasValoraciones):
-		""" Recalcula las similitudes en base a unas ya existentes y a las
-		nuevas valoraciones 
-	
-		Params:
-	
-			_valoraciones(list): Lista con las valoraciones de los usuarios
-			_nuevasValoraciones(list): Lista con las nuevas valoraciones
-	
-		Return:
-	
-			None #(list): Lista de similitudes entre las películas (ParSimilitud)
-		"""
-		
-		# para que no se modifiquen las valoraciones en memoria
-		#valoraciones = _valoraciones[:]
-		
-		# actualizar las valoraciones
-		#for nv in _nuevasValoraciones:
-			#if nv in valoraciones:
-				#indice = valoraciones.index(nv)
-				#valoraciones[indice].valoracion = nv.valoracion
-			#else:
-				#valoraciones.append(nv)
-				
-		# almacenar valoraciones actualizadas
-		#daoValoracion.DAOValoracion.guarda(valoraciones)
-		print 0
-		self.similitud(_valoraciones, _nuevasValoraciones)

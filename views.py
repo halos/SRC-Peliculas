@@ -5,6 +5,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect #, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+
+import threading
 import sys
 
 sys.path.append('srcp')
@@ -13,9 +15,12 @@ sys.path.append('srcp/estrategiasPredicción')
 sys.path.append('srcp/dj_DAO')
 
 import pearson
+import weithedSum
+import itemAvgAdj1
 import itemAvgAdjN
 import valoracion
 import daoValoracion
+import daoParSimilitud
 import daoPelicula
 import estrategiaSimilitud
 import estrategiaPrediccion
@@ -226,8 +231,10 @@ def valorar(request, idPel):
 		
 		if request.session['nvaloraciones'] >= 5:
 			print "--> Se han hecho >=5 valoraciones, es momento de actualizar"
+			
 			__actualizarModelo(request)
-			print "--> Modelo actualizado"
+
+			print "--> Modelo actualizandose"
 			request.session['nvaloraciones'] = 0
 			
 		redirected_view = 'srcp.views.buscar'
@@ -317,43 +324,36 @@ def get_recomendaciones(idUsu):
 
 		(list): peliculas recomendadas (Pelicula, clase django)
 	"""
-	
-	#daop = daoPelicula.DAOPelicula()
-	#estra_pred = estrategiaPrediccion.EstrategiaPrediccion(itemAvgAdjN.predice)
-	
-	# devuelve una lista de idPel, de aquellas películas no puntuadas por ese usuario
+	print "Entra get_recomendaciones"
+	daop = daoPelicula.DAOPelicula()
+	#daops = daoParSimilitud.DAOParSimilitud()
 	#lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
-	
-	# Creamos una lista de valores predichos
+	#estra_pred = weithedSum.WeithedSum()
+
+	## Creamos una lista de valores predichos
 	#lvalpred = []
-	
-	#for idPel in lpelnop:
-		#prediccion = estra_pred.predice(idUsu, idPel)
-		#val = valoracion.Valoracion(idUsu, idPel, prediccion)
+
+	#for p in lpelnop:
+		#print "idPel", p.idPel
+		#sims = daops.getSimilitudesItem(p.idPel)
+		#print 11
+		
+		#tn = (2, 4, 8)
+		#tep = [( "Item Average Adjustment All-1", itemAvgAdj1.ItemAvgAdj1())]
+		#for n in tn:
+			#tep.append(( "Item Average Adjustment n = " + str(n), itemAvgAdjN.ItemAvgAdjN(n)))
+		#tep.append(( "Weighted Sum", weithedSum.WeithedSum()))
+		
+		#val = estra_pred.predice(sims, idUsu, p.idPel, tep)
+		#print 12
 		#lvalpred.append(val)
-	
+		#print "13"
+		
 	## Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
 	#lvalpred.sort(reverse=True)
-	#dj_pels = []
-	
-	#for v in lvalpred[:5]:
-		#dj_p = Pelicula.objects.get(pk=v.idPel)
-		#dj_pels.append(dj_p) 
-	
-	#return dj_pels
-	
-	daov = daoValoracion.DAOValoracion()
-		
-	vals = daov.getValoracionesUsuario(idUsu)
-	
-	djPels = Pelicula.objects.all()
 
-	for v in vals:
-		djPels = djPels.exclude(idPel=v.idPel)
-	
-	
-	return djPels[:5]
-	
+	#return lvalpred[:5]
+	return daop.getPeliculasNoPuntuadas(idUsu)[:5]
 
 def __crearModelo(estrat_sim=None):
 	""" 
@@ -369,34 +369,9 @@ def __crearModelo(estrat_sim=None):
 	print "Se entra en __crearModelo"
 	if not estrat_sim:
 		estrat_sim = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
-	print "Se pide el DAO"
-	daov = daoValoracion.DAOValoracion()
-	print "Se piden todas las valoraciones"
-	vals = daov.getValoraciones()
 	print "Se llama a la estrategia de similitud"
-	estrat_sim.similitud(vals)
+	estrat_sim.similitud()
 	
-def __actualizarModelo(request): # Para javi
-	""" Método para actualizar el modelo tras haber nuevas valoraciones
-
-	Params:
-
-		None
-
-	Return:
-
-		None
-	"""
-	
-	daov = daoValoracion.DAOValoracion()
-	
-	eSimilitud = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
-	
-	eSimilitud.actualizaSimilitud(daov.getValoraciones(), request.session['nuevasValoraciones'])
-
-	del(request.session['nuevasValoraciones'])
-	request.session['nuevasValoraciones'] = []
-
 def __checkIsLogged(request):
 	
 	if 'idUsu' not in request.session:
