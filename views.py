@@ -16,8 +16,11 @@ sys.path.append('srcp/dj_DAO')
 
 import pearson
 import weithedSum
+import itemAvgAdj1
+import itemAvgAdjN
 import valoracion
 import daoValoracion
+import daoParSimilitud
 import daoPelicula
 import estrategiaSimilitud
 import estrategiaPrediccion
@@ -236,7 +239,7 @@ def valorar(request, idPel):
 			
 		redirected_view = 'srcp.views.buscar'
 	
-	#finally:
+	finally:
 		# Always return an HttpResponseRedirect after successfully dealing
 		# with POST data. This prevents data from being posted twice if a
 		# user hits the Back button.
@@ -321,26 +324,36 @@ def get_recomendaciones(idUsu):
 
 		(list): peliculas recomendadas (Pelicula, clase django)
 	"""
-	
-	k = 30
-	idUsu = request.session['idUsu']
-	daop = daoPelicula.DAOPelicula()		
-	lpelnop = getPeliculasNoPuntuadas(idUsu)
-	estra_pred = weithedSum.WeithedSum()
-	
-	# Creamos una lista de valores predichos
-	lvalpred = []
-	
-	for idPel in lpelnop:
-		
-		sims = daop.getSimilitudesItem(idPel)
-		val = estra_pred.predice(sims, idUsu, idPel, k)
-		lvalpred.append(val)
-		
-	# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
-	lvalpred.sort(reverse=True)
+	print "Entra get_recomendaciones"
+	daop = daoPelicula.DAOPelicula()
+	#daops = daoParSimilitud.DAOParSimilitud()
+	#lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
+	#estra_pred = weithedSum.WeithedSum()
 
-	return lvalpred[:5]
+	## Creamos una lista de valores predichos
+	#lvalpred = []
+
+	#for p in lpelnop:
+		#print "idPel", p.idPel
+		#sims = daops.getSimilitudesItem(p.idPel)
+		#print 11
+		
+		#tn = (2, 4, 8)
+		#tep = [( "Item Average Adjustment All-1", itemAvgAdj1.ItemAvgAdj1())]
+		#for n in tn:
+			#tep.append(( "Item Average Adjustment n = " + str(n), itemAvgAdjN.ItemAvgAdjN(n)))
+		#tep.append(( "Weighted Sum", weithedSum.WeithedSum()))
+		
+		#val = estra_pred.predice(sims, idUsu, p.idPel, tep)
+		#print 12
+		#lvalpred.append(val)
+		#print "13"
+		
+	## Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
+	#lvalpred.sort(reverse=True)
+
+	#return lvalpred[:5]
+	return daop.getPeliculasNoPuntuadas(idUsu)[:5]
 
 def __crearModelo(estrat_sim=None):
 	""" 
@@ -359,27 +372,6 @@ def __crearModelo(estrat_sim=None):
 	print "Se llama a la estrategia de similitud"
 	estrat_sim.similitud()
 	
-def __actualizarModelo(request): # Para javi
-	""" Método para actualizar el modelo tras haber nuevas valoraciones
-
-	Params:
-
-		None
-
-	Return:
-
-		None
-	"""
-	
-	eSimilitud = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
-	
-	nv = request.session['nuevasValoraciones'][:]
-	
-	t = threading.Thread(target=eSimilitud.actualizaSimilitud, args=(nv, ))  
-	t.start()
-	
-	request.session['nuevasValoraciones'] = []
-
 def __checkIsLogged(request):
 	
 	if 'idUsu' not in request.session:

@@ -145,7 +145,6 @@ class DAOParSimilitud(Singleton):
 		cursor.execute(consulta)
 		transaction.commit_unless_managed()
 		print "Actualizada"
-
 	
 	def actualizaSimilitudes(self,sims):
 		"""
@@ -212,9 +211,14 @@ class DAOParSimilitud(Singleton):
 			(): DESCRIPTION
 		"""
 		
-		djModels.Similitud.objects.all().delete()
+		cursor = connection.cursor()
+		consulta = 'DELETE FROM srcp_similitud'
 		
+		cursor.execute(consulta)
+		transaction.commit_unless_managed()
 		
+		#djModels.Similitud.objects.all().delete()
+				
 	def enableKeys(self):
 		""" Function doc
 	
