@@ -49,6 +49,7 @@ def login(request):
 	context = {}
 	
 	context['title'] = 'Login'
+	context['error'] = ''
 	
 	try:
 		
@@ -56,7 +57,7 @@ def login(request):
 			raise CSRPError('Login incorrecto')
 	
 		u = Usuario.objects.get(idUsu=request.POST['idUsu'])
-	
+		
 		if u.clave == request.POST['clave']:
 			
 			request.session['idUsu'] = u.idUsu
@@ -225,17 +226,17 @@ def valorar(request, idPel):
 		daov = daoValoracion.DAOValoracion()
 		daov.inserta(v)
 		
-		request.session['nuevasValoraciones'].append(v)
+		#request.session['nuevasValoraciones'].append(v)
 		# Cuando el nº de inserciones sea 5, actualizamos el modelo
-		request.session['nvaloraciones'] += 1
+		#request.session['nvaloraciones'] += 1
 		
-		if request.session['nvaloraciones'] >= 5:
-			print "--> Se han hecho >=5 valoraciones, es momento de actualizar"
+		#if request.session['nvaloraciones'] >= 5:
+			#print "--> Se han hecho >=5 valoraciones, es momento de actualizar"
 			
-			__actualizarModelo(request)
+			#__actualizarModelo(request)
 
-			print "--> Modelo actualizandose"
-			request.session['nvaloraciones'] = 0
+			#print "--> Modelo actualizandose"
+			#request.session['nvaloraciones'] = 0
 			
 		redirected_view = 'srcp.views.buscar'
 	
@@ -306,9 +307,10 @@ def buscar(request):
 	except CSRPError:
 		
 		context['titulo'] = 'Login'
+		context['error'] = "Sesión no iniciada"
 		response_page = 'srcp/login.html'
 	
-	else:
+	finally:
 	
 		return render_to_response(response_page, context, \
 									context_instance=RequestContext(request))
@@ -326,34 +328,36 @@ def get_recomendaciones(idUsu):
 	"""
 	print "Entra get_recomendaciones"
 	daop = daoPelicula.DAOPelicula()
-	#daops = daoParSimilitud.DAOParSimilitud()
-	#lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
-	#estra_pred = weithedSum.WeithedSum()
+	###########################################################################
+	daops = daoParSimilitud.DAOParSimilitud()
+	lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
+	estra_pred = weithedSum.WeithedSum()
 
-	## Creamos una lista de valores predichos
-	#lvalpred = []
+	# Creamos una lista de valores predichos
+	lvalpred = []
 
-	#for p in lpelnop:
-		#print "idPel", p.idPel
-		#sims = daops.getSimilitudesItem(p.idPel)
-		#print 11
+	for p in lpelnop:
+		print "idPel", p.idPel
+		sims = daops.getSimilitudesItem(p.idPel)
+		print 11
 		
-		#tn = (2, 4, 8)
-		#tep = [( "Item Average Adjustment All-1", itemAvgAdj1.ItemAvgAdj1())]
-		#for n in tn:
-			#tep.append(( "Item Average Adjustment n = " + str(n), itemAvgAdjN.ItemAvgAdjN(n)))
-		#tep.append(( "Weighted Sum", weithedSum.WeithedSum()))
+		tn = (2, 4, 8)
+		tep = [( "Item Average Adjustment All-1", itemAvgAdj1.ItemAvgAdj1())]
+		for n in tn:
+			tep.append(( "Item Average Adjustment n = " + str(n), itemAvgAdjN.ItemAvgAdjN(n)))
+		tep.append(( "Weighted Sum", weithedSum.WeithedSum()))
 		
-		#val = estra_pred.predice(sims, idUsu, p.idPel, tep)
-		#print 12
-		#lvalpred.append(val)
-		#print "13"
+		val = estra_pred.predice(sims, idUsu, p.idPel, tep)
+		print 12
+		lvalpred.append(val)
+		print "13"
 		
-	## Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
-	#lvalpred.sort(reverse=True)
+	# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
+	lvalpred.sort(reverse=True)
 
-	#return lvalpred[:5]
-	return daop.getPeliculasNoPuntuadas(idUsu)[:5]
+	return lvalpred[:5]
+	###########################################################################
+	return daop.getPeliculasNoPuntuadas(idUsu)[200:205]
 
 def __crearModelo(estrat_sim=None):
 	""" 
