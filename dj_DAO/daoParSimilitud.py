@@ -66,10 +66,13 @@ class DAOParSimilitud(Singleton):
 			(dict): {idPel:parSimilitud}
 		"""
 		
-		djSimilitudes = []
-		djSimilitudes += djModels.Similitud.objects.filter(Pel1=idPel)
-		djSimilitudes += djModels.Similitud.objects.filter(Pel2=idPel)
-
+		consulta = 'SELECT * FROM srcp_similitud \
+					WHERE Pel1_id=%d OR Pel2_id=%d \
+					ORDER BY similitud DESC LIMIT 7' % (idPel, idPel)
+		#consulta = 'SELECT * FROM srcp_similitud WHERE Pel1_id=%d OR Pel2_id=%d' % (idPel, idPel)
+		
+		djSimilitudes = djModels.Similitud.objects.raw(consulta)
+		
 		similitudes={}
 		
 		for djs in djSimilitudes:
@@ -81,9 +84,9 @@ class DAOParSimilitud(Singleton):
 		
 			else:
 				similitudes[djs.Pel2.idPel] = ps
-				
+		
 		del(djSimilitudes)
-
+		
 		return similitudes
 
 	def insertaSimilitud(self,sim):

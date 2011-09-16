@@ -80,3 +80,7 @@ class Valoracion:
 	    """
 	    
 	    return "(idUsu: %s, idPel: %s --> val: %s)" % (self.idUsu, self.idPel, self.valoracion)
+	    
+def cmp_val(a, b):
+    
+    return a.valoracion - b.valoracion

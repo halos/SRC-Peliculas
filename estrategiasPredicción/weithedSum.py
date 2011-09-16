@@ -36,8 +36,8 @@ class WeithedSum:
         for val in kval_vec:
             if val.idPel in simsItem:
                 simil = simsItem.get(val.idPel)
-                sum_num += simil.similitud * val.valoracion
-                sum_den += simil.similitud    
+                sum_num += float(simil.similitud) * float(val.valoracion)
+                sum_den += float(simil.similitud)
         
         if sum_den == 0:
             sum_den = 0.00000000001

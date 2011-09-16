@@ -15,6 +15,7 @@ sys.path.append('srcp/estrategiasPredicción')
 sys.path.append('srcp/dj_DAO')
 
 import pearson
+import agrupamiento
 import weithedSum
 import itemAvgAdj1
 import itemAvgAdjN
@@ -63,10 +64,11 @@ def login(request):
 			request.session['idUsu'] = u.idUsu
 			request.session['nvaloraciones'] = 0
 			request.session['nuevasValoraciones'] = []
+			request.session['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
 			
 			#response_page = 'srcp/index.html'
 			redirected_view = 'srcp.views.indice'
-		
+			
 		else:
 			
 			raise CSRPError('Login incorrecto')
@@ -148,19 +150,18 @@ def indice(request):
 		__checkIsLogged(request)
 		
 		context['titulo'] = 'Índice'
-		context['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
+		context['recomendaciones'] = request.session['recomendaciones']
 		response_page = 'srcp/index.html'
 		
-		#estra_pred = None
-		#recomendaciones = self.recomendar(estra_pred)
-		
-		#context['recomendaciones'] = recomendaciones
-	
 	# Error de login
 	except CSRPError:
 		
 		context['titulo'] = 'Login'
 		response_page = 'srcp/login.html'
+		
+	except Exception, ex:
+		
+		print ex
 	
 	finally:
 	
@@ -197,26 +198,12 @@ def valorar(request, idPel):
 				punt = int(punt)
 				break
 		
-		#redirected_view = 'srcp.views.buscar'
-		
 	except (KeyError, Valoracion.DoesNotExist):
 	
-		# Redisplay the poll voting form.
-		#context['pelicula'] = p
-		
-		#context['error'] = "Error al valorar la película."
-		#response_page = 'srcp/index.html'
-		
 		redirected_view = 'srcp.views.buscar'
 		
 	except CSRPError:
 		
-		#context['titulo'] = 'Login'
-		#response_page = 'srcp/login.html'
-		
-		#return render_to_response(response_page, context, \
-									#context_instance=RequestContext(request))
-									
 		redirected_view = 'srcp.views.login'
 		
 	else:
@@ -226,18 +213,6 @@ def valorar(request, idPel):
 		daov = daoValoracion.DAOValoracion()
 		daov.inserta(v)
 		
-		#request.session['nuevasValoraciones'].append(v)
-		# Cuando el nº de inserciones sea 5, actualizamos el modelo
-		#request.session['nvaloraciones'] += 1
-		
-		#if request.session['nvaloraciones'] >= 5:
-			#print "--> Se han hecho >=5 valoraciones, es momento de actualizar"
-			
-			#__actualizarModelo(request)
-
-			#print "--> Modelo actualizandose"
-			#request.session['nvaloraciones'] = 0
-			
 		redirected_view = 'srcp.views.buscar'
 	
 	finally:
@@ -264,7 +239,7 @@ def buscar(request):
 	
 		__checkIsLogged(request)
 		
-		context['recomendaciones'] = get_recomendaciones(request.session['idUsu'])
+		context['recomendaciones'] = request.session['recomendaciones']
 		response_page = 'srcp/index.html'
 		
 		# Si no se ha hecho ninguna búsqueda, se hace la anterior
@@ -275,15 +250,6 @@ def buscar(request):
 		else: # para cuando sea redirigido desde una valoración
 			busqueda = request.session['ult_busq']
 			
-		#daop = daoPelicula.DAOPelicula()
-		
-		#pels = daop.getPeliculasTitulo(busqueda)
-		
-		#for p in pels:
-			#pel = Pelicula(idPel=p.idPel, titulo=p.titulo, anio=p.anio)
-			#context['peliculas'].append(p)
-		
-		#context['idUsu'] = request.session['idUsu']
 		context['peliculas'] = []
 		
 		vals = Valoracion.objects.filter( Usu=request.session['idUsu'])
@@ -326,38 +292,41 @@ def get_recomendaciones(idUsu):
 
 		(list): peliculas recomendadas (Pelicula, clase django)
 	"""
+	
 	print "Entra get_recomendaciones"
 	daop = daoPelicula.DAOPelicula()
-	###########################################################################
+	daov = daoValoracion.DAOValoracion()
 	daops = daoParSimilitud.DAOParSimilitud()
-	lpelnop = daop.getPeliculasNoPuntuadas(idUsu)
 	estra_pred = weithedSum.WeithedSum()
-
-	# Creamos una lista de valores predichos
+	agrup = agrupamiento.Agrupamiento()
+	
+	lpelnop = daop.getPeliculasNoPuntuadas(idUsu)[:800]
 	lvalpred = []
+	k = 30
 
+	print "Calculando %d valoraciones" % len(lpelnop)
 	for p in lpelnop:
-		print "idPel", p.idPel
-		sims = daops.getSimilitudesItem(p.idPel)
-		print 11
-		
-		tn = (2, 4, 8)
-		tep = [( "Item Average Adjustment All-1", itemAvgAdj1.ItemAvgAdj1())]
-		for n in tn:
-			tep.append(( "Item Average Adjustment n = " + str(n), itemAvgAdjN.ItemAvgAdjN(n)))
-		tep.append(( "Weighted Sum", weithedSum.WeithedSum()))
-		
-		val = estra_pred.predice(sims, idUsu, p.idPel, tep)
-		print 12
-		lvalpred.append(val)
-		print "13"
-		
-	# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
-	lvalpred.sort(reverse=True)
+		valsUsu = daov.getValoracionesUsuario(idUsu)
+		simsItem = daops.getSimilitudesItem(p.idPel)
+		valsItem = daov.getValoracionesItem(p.idPel)
 
-	return lvalpred[:5]
-	###########################################################################
-	return daop.getPeliculasNoPuntuadas(idUsu)[200:205]
+		# Calculamos los k-vecinos más cercanos a ese elemento (con máximo "k")
+		kmaxValVec = agrup.agrupknn(simsItem, valsUsu, p.idPel, 30)
+		
+		prediccion =  estra_pred.predice(simsItem, idUsu, p.idPel, kmaxValVec[:k])
+		lvalpred.append(prediccion)
+	
+	# Ordenamos los elementos "Valoraciones", de forma descendente y por el valor de la puntación
+	
+	lvalpred.sort(reverse=True) #, cmp=valoracion.cmp_val)
+	
+	pels_rec = []
+	
+	for v in lvalpred[:5]:
+		pels_rec.append(daop.getPelicula(v.idPel))
+	
+	return pels_rec
+	#return daop.getPeliculasNoPuntuadas(idUsu)[200:205]
 
 def __crearModelo(estrat_sim=None):
 	""" 
