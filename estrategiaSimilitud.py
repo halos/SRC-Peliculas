@@ -2,18 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import sys
-#import os
 
-#sys.path.append('..')
 sys.path.append('dj_DAO')
 
-import motor
-#import settings
 import singleton
 import parSimilitud
 import daoParSimilitud
 
-#os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
 from srcp.models import Valoracion
 
 class EstrategiaSimilitud: #(singleton):

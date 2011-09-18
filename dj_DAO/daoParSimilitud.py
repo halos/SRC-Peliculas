@@ -68,8 +68,7 @@ class DAOParSimilitud(Singleton):
 		
 		consulta = 'SELECT * FROM srcp_similitud \
 					WHERE Pel1_id=%d OR Pel2_id=%d \
-					ORDER BY similitud DESC LIMIT 7' % (idPel, idPel)
-		#consulta = 'SELECT * FROM srcp_similitud WHERE Pel1_id=%d OR Pel2_id=%d' % (idPel, idPel)
+					ORDER BY similitud DESC LIMIT 1000' % (idPel, idPel)
 		
 		djSimilitudes = djModels.Similitud.objects.raw(consulta)
 		
@@ -219,8 +218,6 @@ class DAOParSimilitud(Singleton):
 		
 		cursor.execute(consulta)
 		transaction.commit_unless_managed()
-		
-		#djModels.Similitud.objects.all().delete()
 				
 	def enableKeys(self):
 		""" Function doc

@@ -161,7 +161,7 @@ def indice(request):
 		
 	except Exception, ex:
 		
-		print ex
+		print "Excepción inesperada:", ex
 	
 	finally:
 	
@@ -254,7 +254,11 @@ def buscar(request):
 		
 		vals = Valoracion.objects.filter( Usu=request.session['idUsu'])
 		
-		for p in Pelicula.objects.filter( titulo__icontains=busqueda):
+		res_busq = Pelicula.objects.filter(titulo__icontains=busqueda)
+		
+		context['num_peliculas'] = len(res_busq)
+		
+		for p in res_busq[:100]:
 			
 			try:
 				
@@ -293,22 +297,19 @@ def get_recomendaciones(idUsu):
 		(list): peliculas recomendadas (Pelicula, clase django)
 	"""
 	
-	print "Entra get_recomendaciones"
 	daop = daoPelicula.DAOPelicula()
 	daov = daoValoracion.DAOValoracion()
 	daops = daoParSimilitud.DAOParSimilitud()
 	estra_pred = weithedSum.WeithedSum()
 	agrup = agrupamiento.Agrupamiento()
 	
-	lpelnop = daop.getPeliculasNoPuntuadas(idUsu)[:800]
+	lpelnop = daop.getPeliculasNoPuntuadas(idUsu)[:1000]
 	lvalpred = []
 	k = 30
 
-	print "Calculando %d valoraciones" % len(lpelnop)
 	for p in lpelnop:
 		valsUsu = daov.getValoracionesUsuario(idUsu)
 		simsItem = daops.getSimilitudesItem(p.idPel)
-		valsItem = daov.getValoracionesItem(p.idPel)
 
 		# Calculamos los k-vecinos más cercanos a ese elemento (con máximo "k")
 		kmaxValVec = agrup.agrupknn(simsItem, valsUsu, p.idPel, 30)
@@ -339,10 +340,9 @@ def __crearModelo(estrat_sim=None):
 
 		(): DESCRIPTION
 	"""
-	print "Se entra en __crearModelo"
 	if not estrat_sim:
 		estrat_sim = estrategiaSimilitud.EstrategiaSimilitud(pearson.calcula_similitud)
-	print "Se llama a la estrategia de similitud"
+
 	estrat_sim.similitud()
 	
 def __checkIsLogged(request):
